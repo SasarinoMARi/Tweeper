@@ -22,16 +22,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+//        main()
+        startActivity(Intent(this, AuthenticationActivity::class.java))
+    }
 
-        setConsumerInfo()
-        button_req_auth.setOnClickListener {
-            Thread(Runnable {
-                requestToken = TwitterFactory.getSingleton().oAuthRequestToken
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(requestToken!!.authorizationURL))
-                startActivity(intent)
-            }).start()
-        }
+    private fun main() {
+        setContentView(R.layout.activity_main)
         button_enterpin.setOnClickListener {
             Thread(Runnable {
                 val pin = text_pin.text.toString()
@@ -41,6 +37,8 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         TwitterFactory.getSingleton().getOAuthAccessToken(requestToken)
                     }
+                    SystemPreference.AccessToken.set(this, accessToken!!.token)
+                    SystemPreference.AccessTokenSecret.set(this, accessToken!!.tokenSecret)
                 } catch (te: TwitterException) {
                     if (401 == te.statusCode) {
                         System.out.println("Unable to get the access token.")
@@ -55,11 +53,6 @@ class MainActivity : AppCompatActivity() {
                 updateTweet("OAuth and Tweet update Test (via Twitter4j)")
             }).start()
         }
-    }
-
-    private fun setConsumerInfo() {
-        TwitterFactory.getSingleton()
-            .setOAuthConsumer(getString(R.string.consumerKey), getString(R.string.consumerSecret))
     }
 
     private fun updateTweet(text: String) {

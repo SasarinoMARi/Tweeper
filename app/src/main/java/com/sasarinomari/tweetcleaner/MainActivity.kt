@@ -3,22 +3,14 @@ package com.sasarinomari.tweetcleaner
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
-import twitter4j.TwitterException
-import twitter4j.TwitterFactory
-import twitter4j.auth.AccessToken
-import twitter4j.auth.OAuth2Token
-import twitter4j.auth.RequestToken
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
 import android.content.Intent
-import android.net.Uri
+import android.os.LocaleList
+import com.sasarinomari.tweetcleaner.hetzer.HetzerActivity
+import twitter4j.*
 
 
 class MainActivity : AppCompatActivity() {
-
-    private var requestToken: RequestToken? = null
-    private var accessToken: AccessToken? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +26,10 @@ class MainActivity : AppCompatActivity() {
                 updateTweet(text)
             }).start()
         }
+        button_tl.setOnClickListener {
+            startActivity(Intent(this, HetzerActivity::class.java))
+        }
+
     }
 
     private fun updateTweet(text: String) {

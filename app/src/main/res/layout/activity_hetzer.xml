@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".hetzer.HetzerActivity">
+
+    <LinearLayout
+        android:id="@+id/layout_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:rotation="-20"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/text_delete"
+            style="@style/TextBaseBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="트윗 전부 삭제"
+            android:textColor="@drawable/fontbutton_red"
+            android:textSize="48sp" />
+
+        <TextView
+            style="@style/TextBaseBold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="!! 이 작업은 되돌릴 수 없습니다 !!" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/text_output"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:enabled="false"
+        android:fontFamily="@font/noto_sans_light"
+        android:textSize="9sp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

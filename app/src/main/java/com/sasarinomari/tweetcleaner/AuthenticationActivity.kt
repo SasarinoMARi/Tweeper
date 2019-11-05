@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_authentication.*
 import kr.booms.webview.BoomWebView
@@ -12,6 +13,7 @@ import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
+import twitter4j.conf.ConfigurationBuilder
 import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 
@@ -46,8 +48,8 @@ class AuthenticationActivity : Adam() {
         webView = BoomWebView.createWithContext(Content, "Sasarino", { _, _ -> },
             object : BoomWebViewClientInterface {
                 override fun onPageFinished(url: String) {
-                    when {
-                        url =="https://api.twitter.com/oauth/authorize" -> {
+                    when (url) {
+                        "https://api.twitter.com/oauth/authorize" -> {
                             webView!!.loadUrl("javascript:this.document.location.href = 'source://' + encodeURI(document.documentElement.outerHTML);")
                         }
                     }
@@ -57,6 +59,7 @@ class AuthenticationActivity : Adam() {
                     return when {
                         url.startsWith("source://") -> {
                             try {
+                                Content.visibility = View.GONE
                                 val html = URLDecoder.decode(url, "UTF-8").substring(9)
                                 val pin = StringFormatter.extractionString(html, "<code>", "</code>")
                                 Thread(Runnable {

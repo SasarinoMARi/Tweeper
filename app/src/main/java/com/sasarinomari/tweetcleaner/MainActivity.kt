@@ -22,35 +22,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        main()
         startActivity(Intent(this, AuthenticationActivity::class.java))
+        main()
     }
 
     private fun main() {
         setContentView(R.layout.activity_main)
-        button_enterpin.setOnClickListener {
+        button_tweet.setOnClickListener {
+            val text = text_tweet.text.toString()
             Thread(Runnable {
-                val pin = text_pin.text.toString()
-                try {
-                    accessToken = if (pin.isNotEmpty()) {
-                        TwitterFactory.getSingleton().getOAuthAccessToken(requestToken, pin)
-                    } else {
-                        TwitterFactory.getSingleton().getOAuthAccessToken(requestToken)
-                    }
-                    SystemPreference.AccessToken.set(this, accessToken!!.token)
-                    SystemPreference.AccessTokenSecret.set(this, accessToken!!.tokenSecret)
-                } catch (te: TwitterException) {
-                    if (401 == te.statusCode) {
-                        System.out.println("Unable to get the access token.")
-                    } else {
-                        te.printStackTrace()
-                    }
-                }
-            }).start()
-        }
-        button_req_tweet.setOnClickListener {
-            Thread(Runnable {
-                updateTweet("OAuth and Tweet update Test (via Twitter4j)")
+                updateTweet(text)
             }).start()
         }
     }
@@ -59,16 +40,10 @@ class MainActivity : AppCompatActivity() {
         try {
             val twitter = TwitterFactory.getSingleton()
             val status = twitter.updateStatus(text)
-            System.out.println("Successfully updated the status to [" + status.text + "].")
-            System.exit(0)
         } catch (te: TwitterException) {
             te.printStackTrace()
-            System.out.println("Failed to get timeline: " + te.message)
-            System.exit(-1)
         } catch (ioe: IOException) {
             ioe.printStackTrace()
-            System.out.println("Failed to read the system input.")
-            System.exit(-1)
         }
     }
 }

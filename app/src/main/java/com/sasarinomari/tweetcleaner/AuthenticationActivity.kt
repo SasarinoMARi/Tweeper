@@ -4,11 +4,22 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_authentication.*
+import kr.booms.webview.BoomWebView
+import kr.booms.webview.BoomWebViewClientInterface
+import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
+import twitter4j.auth.RequestToken
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 
 class AuthenticationActivity : Adam() {
+
+    private var webView: BoomWebView? = null
+
+    private lateinit var requestToken: RequestToken
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,16 +29,67 @@ class AuthenticationActivity : Adam() {
             TwitterFactory.getSingleton().oAuthAccessToken = accessToken
             setResult(RESULT_OK)
             finish()
+            return
         }
         setContentView(R.layout.activity_authentication)
+        initializeWebView()
         // Generate authentication url
         Thread(Runnable{
-            val requestToken = TwitterFactory.getSingleton().oAuthRequestToken
+            requestToken = TwitterFactory.getSingleton().oAuthRequestToken
             runOnUiThread {
-                webView.loadUrl(requestToken!!.authorizationURL)
+                webView!!.loadUrl(requestToken!!.authorizationURL)
             }
         }).start()
+    }
 
+    private fun initializeWebView() {
+        webView = BoomWebView.createWithContext(Content, "Sasarino", { _, _ -> },
+            object : BoomWebViewClientInterface {
+                override fun onPageFinished(url: String) {
+                    when {
+                        url =="https://api.twitter.com/oauth/authorize" -> {
+                            webView!!.loadUrl("javascript:this.document.location.href = 'source://' + encodeURI(document.documentElement.outerHTML);")
+                        }
+                    }
+                }
+
+                override fun shouldOverrideUrlLoading(url: String): Boolean {
+                    return when {
+                        url.startsWith("source://") -> {
+                            try {
+                                val html = URLDecoder.decode(url, "UTF-8").substring(9)
+                                val pin = StringFormatter.extractionString(html, "<code>", "</code>")
+                                Thread(Runnable {
+                                    try {
+                                        val accessToken = if (pin.isNotEmpty()) {
+                                            TwitterFactory.getSingleton().getOAuthAccessToken(requestToken, pin)
+                                        } else {
+                                            TwitterFactory.getSingleton().getOAuthAccessToken(requestToken)
+                                        }
+                                        accessToken!!
+                                        SystemPreference.AccessToken.set(this@AuthenticationActivity, accessToken.token)
+                                        SystemPreference.AccessTokenSecret.set(this@AuthenticationActivity, accessToken.tokenSecret)
+                                        setResult(RESULT_OK)
+                                        finish()
+                                    } catch (te: TwitterException) {
+                                        if (401 == te.statusCode) {
+                                            Toast.makeText(this@AuthenticationActivity,
+                                                "Unable to get the access token.",
+                                                Toast.LENGTH_LONG).show()
+                                        } else {
+                                            te.printStackTrace()
+                                        }
+                                    }
+                                }).start()
+                            } catch (e: UnsupportedEncodingException) {
+                                e.printStackTrace()
+                            }
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            })
     }
 
     private fun makeToken(): AccessToken? {

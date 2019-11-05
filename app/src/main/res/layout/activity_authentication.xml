@@ -7,8 +7,8 @@
         android:layout_height="match_parent"
         tools:context=".AuthenticationActivity">
 
-    <WebView
-            android:id="@+id/webView"
+    <RelativeLayout
+            android:id="@+id/Content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 

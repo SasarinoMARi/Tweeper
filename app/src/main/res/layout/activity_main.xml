@@ -8,34 +8,22 @@
         android:orientation="vertical"
         tools:context=".MainActivity">
 
-    <Button
-            android:id="@+id/button_req_auth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="request Authentication"/>
-
     <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
 
         <EditText
-                android:id="@+id/text_pin"
+                android:id="@+id/text_tweet"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"/>
         <Button
-                android:id="@+id/button_enterpin"
+                android:id="@+id/button_tweet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Enter"/>
+                android:text="Tweet"/>
 
     </LinearLayout>
-
-    <Button
-            android:id="@+id/button_req_tweet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="request Publish Tweet"/>
 
 </LinearLayout>

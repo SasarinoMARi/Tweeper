@@ -1,5 +1,6 @@
 package com.sasarinomari.tweetcleaner
 
+import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import java.io.IOException
 import android.os.Environment.getExternalStorageDirectory
+import com.sasarinomari.tweetcleaner.hetzer.HetzerActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
@@ -17,6 +19,10 @@ class DashboardActivity : Adam() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         loadUserInformation()
+
+        button_erase.setOnClickListener {
+            startActivity(Intent(this, HetzerActivity::class.java))
+        }
     }
 
     private fun loadUserInformation() {

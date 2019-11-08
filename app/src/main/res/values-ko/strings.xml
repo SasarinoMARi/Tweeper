@@ -20,4 +20,7 @@
     <string name="Condition_Description_FavCount">몇 명의 사람들이 마음에 들어 할 때 트윗을 남겨둘까요?</string>
     <string name="Condition_Description_RecentCount">최근 몇 개 까지의 트윗을 남겨둘까요?</string>
     <string name="Condition_Description_RecentMinute">최근 몇 분 까지의 트윗을 남겨둘까요?</string>
+    <string name="Delete">Delete</string>
+    <string name="Condition_Display_RetweetCount">%1$d회 이상 리트윗된 내 트윗</string>
+    <string name="Condition_Display_FavCount">%1$d명 이상 마음에 들어한 내 트윗</string>
 </resources>

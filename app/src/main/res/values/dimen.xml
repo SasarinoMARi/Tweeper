@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_padding">16dp</dimen>
+    <dimen name="activity_vertical_padding">10dp</dimen>
+    <dimen name="listitem_horizontal_padding">16dp</dimen>
+    <dimen name="listitem_vertical_padding">10dp</dimen>
+</resources>

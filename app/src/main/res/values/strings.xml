@@ -3,4 +3,20 @@
     <string name="TweetCleaner">Erase Tweet</string>
     <string name="FollowerManagement">Follower\nManagement</string>
     <string name="FollowingManagement">Following\nManagement</string>
+    <string name="DeleteOption">Erase Option</string>
+    <string name="DeleteOptionPlease">Select condition of tweet not to erase.</string>
+    <string name="WhichTweetDoNotRemove">Which tweet do you want avoid erasing?</string>
+    <string name="AddCondition">Add Condition</string>
+    <string name="OK">OK</string>
+    <string name="Condition_FavMyself"></string>
+    <string name="Condition_FavCount"></string>
+    <string name="Condition_RetweetCount"></string>
+    <string name="Condition_RecentCount"></string>
+    <string name="Condition_RecentMinute"></string>
+    <string name="OnlyNumberAllowed">Must enter numbers!</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Condition_Description_RetweetCount">리트윗이 몇 번을 넘겼을 때 트윗을 남길까요?</string>
+    <string name="Condition_Description_FavCount">몇 명의 사람이 마음에 들어 할 때 트윗을 남길까요?</string>
+    <string name="Condition_Description_RecentCount">마지막에 작성한 몇 개의 트윗을 남겨둘까요?</string>
+    <string name="Condition_Description_RecentMinute">최근 몇 분 까지의 트윗을 남겨둘까요?</string>
 </resources>

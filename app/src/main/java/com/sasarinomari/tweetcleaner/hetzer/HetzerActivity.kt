@@ -1,5 +1,6 @@
 package com.sasarinomari.tweetcleaner.hetzer
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,9 @@ import twitter4j.TwitterFactory
 class HetzerActivity : Adam(), HetzerInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        startActivity(Intent(this, HetzerConditionsActivity::class.java))
+
         setContentView(R.layout.activity_hetzer)
 
         text_delete.setOnClickListener {

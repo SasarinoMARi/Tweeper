@@ -4,4 +4,20 @@
     <string name="TweetCleaner">트윗 삭제</string>
     <string name="FollowerManagement">팔로워 관리</string>
     <string name="FollowingManagement">팔로잉 관리</string>
+    <string name="DeleteOption">삭제 옵션</string>
+    <string name="DeleteOptionPlease">지우지 않고 남겨둘 트윗을 지정하세요.</string>
+    <string name="WhichTweetDoNotRemove">어떤 트윗을 남겨둘까요?</string>
+    <string name="AddCondition">조건 추가</string>
+    <string name="OK">OK</string>
+    <string name="Condition_FavMyself">내가 마음에 들어한 트윗</string>
+    <string name="Condition_FavCount">다른 사람이 마음에 들어한 내 트윗</string>
+    <string name="Condition_RetweetCount">다른 사람이 리트윗한 내 트윗</string>
+    <string name="Condition_RecentCount">최근 작성한 트윗 (개수)</string>
+    <string name="Condition_RecentMinute">최근 작성한 트윗 (시간)</string>
+    <string name="OnlyNumberAllowed">숫자만 입력해주세요!</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Condition_Description_RetweetCount">몇 번 리트윗 되었을 때 트윗을 남겨둘까요?</string>
+    <string name="Condition_Description_FavCount">몇 명의 사람들이 마음에 들어 할 때 트윗을 남겨둘까요?</string>
+    <string name="Condition_Description_RecentCount">최근 몇 개 까지의 트윗을 남겨둘까요?</string>
+    <string name="Condition_Description_RecentMinute">최근 몇 분 까지의 트윗을 남겨둘까요?</string>
 </resources>

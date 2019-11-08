@@ -14,8 +14,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivity(Intent(this, AuthenticationActivity::class.java))
-        main()
+        startActivityForResult(Intent(this, AuthenticationActivity::class.java), 0)
+        //main()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            0 -> {
+                startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun main() {

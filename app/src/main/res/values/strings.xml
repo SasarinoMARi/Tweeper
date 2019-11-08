@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">TweetCleaner</string>
+    <string name="app_name">Tweeper</string>
+    <string name="TweetCleaner">Erase Tweet</string>
+    <string name="FollowerManagement">Follower\nManagement</string>
+    <string name="FollowingManagement">Following\nManagement</string>
 </resources>

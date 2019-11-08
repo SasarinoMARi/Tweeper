@@ -22,7 +22,7 @@ class HetzerActivity : Adam(), HetzerInterface {
             Thread(Runnable {
                 getTweet {
                     for (item in it) {
-                        log("[처리 시작] : ${if (item.text.length >15) "${item.text.substring(0, 20)}.." else item.text}")
+                        log("[처리 시작] : ${if (item.text.length >15) "${item.text.substring(0, 15)}.." else item.text}")
                         when {
                             excludeMyFavorite(item) -> {
                                 log("[트윗 제외됨] : 본인이 마음에 들어한 트윗")

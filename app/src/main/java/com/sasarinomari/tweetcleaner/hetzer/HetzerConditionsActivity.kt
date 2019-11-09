@@ -2,28 +2,29 @@ package com.sasarinomari.tweetcleaner.hetzer
 
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.view.ContextMenu
 import android.view.Gravity
-import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import android.widget.PopupMenu
-import android.widget.Toast
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.setActionButtonEnabled
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 
-class HetzerConditionsActivity : AppCompatActivity() {
+class HetzerConditionsActivity : Adam() {
+    enum class Results {
+        Conditions
+    }
+
+    var conditions = HetzerConditions()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,27 +32,36 @@ class HetzerConditionsActivity : AppCompatActivity() {
 
         val addDialog = createAddConditionDialog()
         button_addContition.setOnClickListener {
-            addDialog.show()
+            addDialog.show {
+                attachItemLists(this)
+            }
+        }
+        button_ok.setOnClickListener {
+            val i = Intent()
+            i.putExtra(Results.Conditions.name, conditions)
+            setResult(RESULT_OK, i)
+            finish()
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun createAddConditionDialog(): MaterialDialog {
         val addDialog = MaterialDialog(this, BottomSheet(LayoutMode.WRAP_CONTENT))
-        val listItems = listOf(
-            getString(R.string.Condition_FavMyself),
-            getString(R.string.Condition_RetweetCount),
-            getString(R.string.Condition_FavCount),
-            getString(R.string.Condition_RecentCount),
-            getString(R.string.Condition_RecentMinute)
-        )
         addDialog.title(R.string.AddCondition)
         addDialog.message(R.string.WhichTweetDoNotRemove)
         addDialog.negativeButton(R.string.Cancel)
-        addDialog.positiveButton(R.string.OK) {
+        addDialog.positiveButton(R.string.OK)
+        return addDialog
+    }
 
-        }
-        addDialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
+    @SuppressLint("CheckResult")
+    private fun attachItemLists(dialog: MaterialDialog) {
+        val listItems = ArrayList<String>()
+        listItems.add(getString(R.string.Condition_FavMyself))
+        listItems.add(getString(R.string.Condition_RetweetCount))
+        listItems.add(getString(R.string.Condition_FavCount))
+        listItems.add(getString(R.string.Condition_RecentCount))
+        listItems.add(getString(R.string.Condition_RecentMinute))
+        dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
             when (val text = textSeq.toString()) {
                 getString(R.string.Condition_FavMyself) -> {
                     addCondition_FavMySelf()
@@ -68,7 +78,7 @@ class HetzerConditionsActivity : AppCompatActivity() {
                         }
                         title(text = text)
                         message(R.string.Condition_Description_RetweetCount)
-                        positiveButton(R.string.OK) {dialog ->
+                        positiveButton(R.string.OK) { dialog ->
                             val text = dialog.getInputField().text.toString()
                             val number = text.toIntOrNull()
                             if (number != null) {
@@ -89,7 +99,7 @@ class HetzerConditionsActivity : AppCompatActivity() {
                         }
                         title(text = text)
                         message(R.string.Condition_Description_FavCount)
-                        positiveButton(R.string.OK) {dialog ->
+                        positiveButton(R.string.OK) { dialog ->
                             val text = dialog.getInputField().text.toString()
                             val number = text.toIntOrNull()
                             if (number != null) {
@@ -110,7 +120,7 @@ class HetzerConditionsActivity : AppCompatActivity() {
                         }
                         title(text = text)
                         message(R.string.Condition_Description_RecentCount)
-                        positiveButton(R.string.OK) {dialog ->
+                        positiveButton(R.string.OK) { dialog ->
                             val text = dialog.getInputField().text.toString()
                             val number = text.toIntOrNull()
                             if (number != null) {
@@ -134,7 +144,7 @@ class HetzerConditionsActivity : AppCompatActivity() {
                         }
                         title(text = text)
                         message(R.string.Condition_Description_RecentMinute)
-                        positiveButton(R.string.OK) {dialog ->
+                        positiveButton(R.string.OK) { dialog ->
                             val text = dialog.getInputField().text.toString()
                             val number = text.toIntOrNull()
                             if (number != null) {
@@ -145,53 +155,98 @@ class HetzerConditionsActivity : AppCompatActivity() {
                 }
             }
         }
-        return addDialog
     }
 
     private fun addCondition_RetweetCount(number: Int) {
-        val newConditionView = HetzerCondition(this)
+        conditions.avoidRetweetCount = number
+        val newConditionView = HetzerConditionView(this)
         newConditionView.setText(getString(R.string.Condition_Display_RetweetCount, number))
-        newConditionView.setMoreButtonCallback { createHetzerConditionPopupMenu(this@HetzerConditionsActivity, newConditionView)}
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidRetweetCount = 0
+            }
+        }
         layout_scrollContent.addView(newConditionView, 0)
     }
 
     private fun addCondition_FavCount(number: Int) {
-        val newConditionView = HetzerCondition(this)
+        conditions.avoidFavCount = number
+        val newConditionView = HetzerConditionView(this)
         newConditionView.setText(getString(R.string.Condition_Display_FavCount, number))
-        newConditionView.setMoreButtonCallback { createHetzerConditionPopupMenu(this@HetzerConditionsActivity, newConditionView)}
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidFavCount = 0
+            }
+        }
         layout_scrollContent.addView(newConditionView, 0)
     }
 
     private fun addCondition_RecentCount(number: Int) {
-        val newConditionView = HetzerCondition(this)
+        conditions.avoidRecentCount = number
+        val newConditionView = HetzerConditionView(this)
         newConditionView.setText(getString(R.string.Condition_Display_RecentCount, number))
-        newConditionView.setMoreButtonCallback { createHetzerConditionPopupMenu(this@HetzerConditionsActivity, newConditionView)}
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidRecentCount = 0
+            }
+        }
         layout_scrollContent.addView(newConditionView, 0)
     }
 
     private fun addCondition_RecentMinute(number: Int) {
-        val newConditionView = HetzerCondition(this)
+        conditions.avoidRecentMinute = number
+        val newConditionView = HetzerConditionView(this)
         newConditionView.setText(getString(R.string.Condition_Display_RecentDate, number))
-        newConditionView.setMoreButtonCallback { createHetzerConditionPopupMenu(this@HetzerConditionsActivity, newConditionView)}
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidRecentMinute = 0
+            }
+        }
         layout_scrollContent.addView(newConditionView, 0)
     }
 
     private fun addCondition_FavMySelf() {
-        val newConditionView = HetzerCondition(this)
+        conditions.avoidMyFav = true
+        val newConditionView = HetzerConditionView(this)
         newConditionView.setText(getString(R.string.Condition_FavMyself))
-        newConditionView.setMoreButtonCallback { createHetzerConditionPopupMenu(this@HetzerConditionsActivity, newConditionView)}
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidMyFav = false
+            }
+        }
         layout_scrollContent.addView(newConditionView, 0)
     }
 
-    private fun createHetzerConditionPopupMenu(context: Context, view: View) {
+    private fun createHetzerConditionPopupMenu(
+        context: Context,
+        view: View,
+        deleteCallback: () -> Unit
+    ) {
         val menu = PopupMenu(context, view)
         menu.setOnMenuItemClickListener {
-            when(it.itemId){
+            when (it.itemId) {
                 R.id.option_delete -> {
                     layout_scrollContent.removeView(view)
+                    deleteCallback()
                 }
             }
-            true }
+            true
+        }
         menu.inflate(R.menu.hetzer_contition_item_menu)
         menu.gravity = Gravity.END
         menu.show()

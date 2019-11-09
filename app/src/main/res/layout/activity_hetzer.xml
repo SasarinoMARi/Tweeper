@@ -41,8 +41,8 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:enabled="false"
-        android:fontFamily="@font/noto_sans_light"
-        android:textSize="9sp"
+        style="@style/TextBase"
+        android:textSize="10sp"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

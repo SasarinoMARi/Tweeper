@@ -69,6 +69,7 @@
             </LinearLayout>
 
             <Button
+                android:id="@+id/button_ok"
                 android:layout_marginTop="@dimen/listitem_vertical_padding"
                 android:layout_marginBottom="@dimen/listitem_vertical_padding"
                 android:layout_marginRight="@dimen/listitem_horizontal_padding"

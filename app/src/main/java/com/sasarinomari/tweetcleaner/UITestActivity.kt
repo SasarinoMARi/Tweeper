@@ -14,41 +14,31 @@ import su.levenetc.android.textsurface.contants.Pivot
 import su.levenetc.android.textsurface.contants.Align.*
 import su.levenetc.android.textsurface.contants.Direction
 import kotlin.random.Random
+import cn.pedant.SweetAlert.SweetAlertDialog
 
 
 class UITestActivity : AppCompatActivity() {
 
-    private fun createText(paint: Paint, text: String, prev: Text?): Text? {
-        val t = TextBuilder
-            .create(text)
-            .setPaint(paint)
-            .setSize(Random.nextFloat() % 20 + 30)
-            .setAlpha(0)
-            .setColor(randomColor())
-        if (prev == null) t.setPosition(SURFACE_CENTER)
-        else t.setPosition(randomPosition(), prev)
-
-        return t.build()
-    }
-
-    private fun randomColor(): Int {
-        return when (Random.nextInt() % 5) {
-            0 -> Color.RED
-            else -> Color.WHITE
-        }
-    }
-
-    private fun randomPosition(): Int {
-        return when (Random.nextInt() % 3) {
-            0 -> RIGHT_OF
-            1 -> BOTTOM_OF or CENTER_OF
-            else -> BOTTOM_OF
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uitest)
+
+        // testTextSufrace()
+        val pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
+        pDialog.titleText = "Loading"
+        pDialog.setCancelable(false)
+        pDialog.show()
+
+        Thread(Runnable { Thread.sleep(5000)
+        runOnUiThread{
+            pDialog.titleText="Changed Text"
+        }}).start()
+    }
+
+    // region TextSurface
+
+    private fun testTextSufrace() {
 
         val robotoBlack = ResourcesCompat.getFont(this, R.font.noto_sans_regular)
         val paint = Paint()
@@ -199,4 +189,38 @@ class UITestActivity : AppCompatActivity() {
             }
         }).start()
     }
+
+
+    private fun createText(paint: Paint, text: String, prev: Text?): Text? {
+        val t = TextBuilder
+            .create(text)
+            .setPaint(paint)
+            .setSize(Random.nextFloat() % 20 + 30)
+            .setAlpha(0)
+            .setColor(randomColor())
+        if (prev == null) t.setPosition(SURFACE_CENTER)
+        else t.setPosition(randomPosition(), prev)
+
+        return t.build()
+    }
+
+    private fun randomColor(): Int {
+        return when (Random.nextInt() % 5) {
+            0 -> Color.RED
+            else -> Color.WHITE
+        }
+    }
+
+    private fun randomPosition(): Int {
+        return when (Random.nextInt() % 3) {
+            0 -> RIGHT_OF
+            1 -> BOTTOM_OF or CENTER_OF
+            else -> BOTTOM_OF
+        }
+    }
+
+
+    // endregion
 }
+
+

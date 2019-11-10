@@ -23,4 +23,8 @@
     <string name="Delete">Delete</string>
     <string name="Condition_Display_RetweetCount">%1$d회 이상 리트윗된 내 트윗</string>
     <string name="Condition_Display_FavCount">%1$d명 이상 마음에 들어한 내 트윗</string>
+    <string name="Hetzer_TweetPulling">내 트윗 목록을 가져오는 중입니다.</string>
+    <string name="Hetzer_TweetRemoving">트윗을 삭제하는 중입니다</string>
+    <string name="Done">완료!</string>
+    <string name="Hetzer_Done">조건에 맞는 트윗이 모두 삭제되었습니다.</string>
 </resources>

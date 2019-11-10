@@ -42,4 +42,5 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:input:3.1.1'
     implementation 'com.afollestad.material-dialogs:bottomsheets:3.1.1'
     implementation 'com.github.elevenetc:textsurface:0.9.1'
+    implementation 'com.github.f0ris.sweetalert:library:1.5.6'
 }

@@ -2,15 +2,16 @@ package com.sasarinomari.tweetcleaner.hetzer
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
+import android.util.Log
+import androidx.core.content.ContextCompat
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
-import kotlinx.android.synthetic.main.activity_hetzer.*
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
+
 
 class HetzerActivity : Adam(), HetzerInterface {
     private lateinit var conditions: HetzerConditions
@@ -28,50 +29,64 @@ class HetzerActivity : Adam(), HetzerInterface {
     }
 
     private fun init() {
-        setContentView(R.layout.activity_hetzer)
-        text_delete.setOnClickListener {
-            layout_button.visibility = View.GONE
-            Thread(Runnable {
-                getTweet {
-                    for (i in 0..it.count()) {
-                        val item = it[i]
-                        log(
-                            "[처리 시작] : ${if (item.text.length > 15) "${item.text.substring(
-                                0,
-                                15
-                            )}.." else item.text}"
-                        )
-                        when {
-                            excludeMyFavorite(item) -> {
-                                log("[트윗 제외됨] : 본인이 마음에 들어한 트윗")
-                            }
-                            excludeRetweetCount(item) -> {
-                                log("[트윗 제외됨] : 많은 리트윗을 받은 트윗")
-                            }
-                            excludeFavoriteCount(item) -> {
-                                log("[트윗 제외됨] : 많은 사람이 마음에 들어한 트윗")
-                            }
-                            excludeMinimumCount(item, i) -> {
-                                log("[트윗 제외됨] : 너무 최근에 한 트윗(개수)")
-                            }
-                            excludeMinimumTick(item) -> {
-                                log("[트윗 제외됨] : 너무 최근에 한 트윗(시간)")
-                            }
-                            else -> {
-                                log("[트윗 삭제됨]")
-                                // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
-                                TwitterFactory.getSingleton().destroyStatus(item.id)
-                            }
+        val pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+            .setTitleText(getString(R.string.Hetzer_TweetPulling))
+
+        pDialog.progressHelper.barColor =
+            ContextCompat.getColor(this@HetzerActivity, R.color.colorAccent)
+        pDialog.setCancelable(false)
+        pDialog.show()
+
+        Thread(Runnable {
+            getTweet {
+                runOnUiThread {
+                    pDialog.setTitle(getString(R.string.Hetzer_TweetRemoving))
+                }
+                for (i in 0 until it.count()) {
+                    val item = it[i]
+                    val text = if (item.text.length > 15) "${item.text.substring(0, 15)}.." else item.text
+                    log(text)
+                    runOnUiThread {
+                        pDialog.contentText = text
+                    }
+                    when {
+                        excludeMyFavorite(item) -> {
+                            log("[트윗 제외됨] : 본인이 마음에 들어한 트윗")
+                        }
+                        excludeRetweetCount(item) -> {
+                            log("[트윗 제외됨] : 많은 리트윗을 받은 트윗")
+                        }
+                        excludeFavoriteCount(item) -> {
+                            log("[트윗 제외됨] : 많은 사람이 마음에 들어한 트윗")
+                        }
+                        excludeMinimumCount(item, i) -> {
+                            log("[트윗 제외됨] : 너무 최근에 한 트윗(개수)")
+                        }
+                        excludeMinimumTick(item) -> {
+                            log("[트윗 제외됨] : 너무 최근에 한 트윗(시간)")
+                        }
+                        else -> {
+                            log("[트윗 삭제됨]")
+                            // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
+                            TwitterFactory.getSingleton().destroyStatus(item.id)
                         }
                     }
-                    runOnUiThread {
-                        Toast.makeText(this@HetzerActivity, "트윗 삭제 작업 완료", Toast.LENGTH_LONG).show()
-                        setResult(RESULT_OK)
-                        finish()
-                    }
                 }
-            }).start()
-        }
+                runOnUiThread {
+                    pDialog.dismiss()
+
+                    val dDialog = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText(getString(R.string.Done))
+                        .setContentText(getString(R.string.Hetzer_Done))
+                        .setConfirmClickListener {
+                            setResult(RESULT_OK)
+                            finish()
+                        }
+                    dDialog.setCancelable(false)
+                    dDialog.show()
+                }
+            }
+        }).start()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -149,7 +164,7 @@ class HetzerActivity : Adam(), HetzerInterface {
         }
     }
 
-    private fun log(text: String) {
-        runOnUiThread { text_output.setText(text_output.text.toString() + "$text\n") }
+    private fun log(msg: String) {
+        Log.v("Hetzer", msg)
     }
 }

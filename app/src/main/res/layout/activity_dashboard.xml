@@ -69,6 +69,15 @@
                 android:rowCount="3">
 
                 <com.sasarinomari.tweetcleaner.DashboardCard
+                    android:id="@+id/button_uiTest"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    app:icon="@mipmap/ic_launcher_round"
+                    app:text="UI 테스트" />
+
+                <com.sasarinomari.tweetcleaner.DashboardCard
                     android:id="@+id/button_erase"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

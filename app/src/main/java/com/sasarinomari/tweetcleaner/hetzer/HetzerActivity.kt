@@ -59,6 +59,7 @@ class HetzerActivity : Adam(), HetzerInterface {
                             }
                             else -> {
                                 log("[트윗 삭제됨]")
+                                // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
                                 TwitterFactory.getSingleton().destroyStatus(item.id)
                             }
                         }
@@ -142,6 +143,7 @@ class HetzerActivity : Adam(), HetzerInterface {
             }
             callback(list)
         } catch (te: TwitterException) {
+            // TODO :리밋이 어떻게 처리되는지 확인할 필요 있음
             te.printStackTrace()
             println("Failed to get timeline: " + te.message)
         }

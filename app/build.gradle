@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.sasarinomari.tweetcleaner"
         minSdkVersion 23
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,4 +41,5 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.1.1'
     implementation 'com.afollestad.material-dialogs:input:3.1.1'
     implementation 'com.afollestad.material-dialogs:bottomsheets:3.1.1'
+    implementation 'com.github.elevenetc:textsurface:0.9.1'
 }

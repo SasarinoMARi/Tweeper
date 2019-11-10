@@ -19,7 +19,9 @@ class DashboardActivity : Adam() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         loadUserInformation()
-
+        button_uiTest.setOnClickListener{
+            startActivity(Intent(this, UITestActivity::class.java))
+        }
         button_erase.setOnClickListener {
             startActivity(Intent(this, HetzerActivity::class.java))
         }

@@ -15,8 +15,10 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
+import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
+import com.sasarinomari.tweetcleaner.SystemPreference
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 
 class HetzerConditionsActivity : Adam() {
@@ -24,12 +26,13 @@ class HetzerConditionsActivity : Adam() {
         Conditions
     }
 
-    var conditions = HetzerConditions()
+    private var conditions = HetzerConditions()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hetzer_conditions)
 
+        initializeWithHetzerConditions()
         val addDialog = createAddConditionDialog()
         button_addContition.setOnClickListener {
             addDialog.show {
@@ -37,11 +40,22 @@ class HetzerConditionsActivity : Adam() {
             }
         }
         button_ok.setOnClickListener {
+            SystemPreference.HetzerConditions.set(this@HetzerConditionsActivity, conditions.toJson())
             val i = Intent()
             i.putExtra(Results.Conditions.name, conditions)
             setResult(RESULT_OK, i)
             finish()
         }
+    }
+
+    private fun initializeWithHetzerConditions() {
+        val json = SystemPreference.HetzerConditions.getString(this) ?: return
+        conditions = Gson().fromJson(json, HetzerConditions::class.java)
+        if (conditions.avoidMyFav) addCondition_FavMySelf()
+        if (conditions.avoidRetweetCount > 0) addCondition_RetweetCount(conditions.avoidRetweetCount)
+        if (conditions.avoidFavCount > 0) addCondition_FavCount(conditions.avoidFavCount)
+        if (conditions.avoidRecentCount > 0) addCondition_RecentCount(conditions.avoidRecentCount)
+        if (conditions.avoidRecentMinute > 0) addCondition_RecentMinute(conditions.avoidRecentMinute)
     }
 
     private fun createAddConditionDialog(): MaterialDialog {
@@ -56,11 +70,11 @@ class HetzerConditionsActivity : Adam() {
     @SuppressLint("CheckResult")
     private fun attachItemLists(dialog: MaterialDialog) {
         val listItems = ArrayList<String>()
-        listItems.add(getString(R.string.Condition_FavMyself))
-        listItems.add(getString(R.string.Condition_RetweetCount))
-        listItems.add(getString(R.string.Condition_FavCount))
-        listItems.add(getString(R.string.Condition_RecentCount))
-        listItems.add(getString(R.string.Condition_RecentMinute))
+        if (!conditions.avoidMyFav) listItems.add(getString(R.string.Condition_FavMyself))
+        if (conditions.avoidRetweetCount == 0) listItems.add(getString(R.string.Condition_RetweetCount))
+        if (conditions.avoidFavCount == 0) listItems.add(getString(R.string.Condition_FavCount))
+        if (conditions.avoidRecentCount == 0) listItems.add(getString(R.string.Condition_RecentCount))
+        if (conditions.avoidRecentMinute == 0) listItems.add(getString(R.string.Condition_RecentMinute))
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
             when (val text = textSeq.toString()) {
                 getString(R.string.Condition_FavMyself) -> {

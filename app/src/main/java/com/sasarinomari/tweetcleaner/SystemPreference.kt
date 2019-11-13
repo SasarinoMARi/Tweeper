@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.SharedPreferences
 
 enum class SystemPreference {
-    AccessToken, AccessTokenSecret;
+    AccessToken, AccessTokenSecret,
+    HetzerConditions
+
+    ;
 
     companion object {
         private const val preferenceName = ".system"

@@ -2,8 +2,11 @@ package com.sasarinomari.tweetcleaner.hetzer
 
 import android.os.Parcel
 import android.os.Parcelable
+import android.R.id.edit
+import com.google.gson.Gson
 
-class HetzerConditions() :Parcelable {
+
+class HetzerConditions() : Parcelable {
     var avoidMyFav : Boolean = false
     var avoidFavCount : Int = 0
     var avoidRetweetCount : Int = 0
@@ -24,6 +27,10 @@ class HetzerConditions() :Parcelable {
         parcel.writeInt(avoidRetweetCount)
         parcel.writeInt(avoidRecentCount)
         parcel.writeInt(avoidRecentMinute)
+    }
+
+    fun toJson() : String {
+        return Gson().toJson(this)
     }
 
     override fun describeContents(): Int {

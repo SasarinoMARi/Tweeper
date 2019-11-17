@@ -145,6 +145,25 @@ class HetzerActivity : Adam(), HetzerInterface {
         }
     }
 
+    override fun excludeMedia(status: Status): Boolean {
+        return conditions.avoidMedia && status.mediaEntities.isEmpty()
+    }
+
+    override fun excludeNoMedia(status: Status): Boolean {
+        return conditions.avoidNoMedia && status.mediaEntities.isNotEmpty()
+    }
+
+    override fun excludeNoGeo(status: Status): Boolean {
+        return conditions.avoidNoGeo && status.geoLocation != null
+    }
+
+    override fun excludeKeyword(status: Status): Boolean {
+        for(item in conditions.avoidKeywords) {
+            if(status.text.contains(item)) return true
+        }
+        return false
+    }
+
     private fun getTweet(callback: (List<Status>) -> Unit) {
         try {
             // gets Twitter instance with default credentials

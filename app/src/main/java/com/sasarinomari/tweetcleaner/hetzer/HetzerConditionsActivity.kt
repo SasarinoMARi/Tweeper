@@ -56,6 +56,12 @@ class HetzerConditionsActivity : Adam() {
         if (conditions.avoidFavCount > 0) addCondition_FavCount(conditions.avoidFavCount)
         if (conditions.avoidRecentCount > 0) addCondition_RecentCount(conditions.avoidRecentCount)
         if (conditions.avoidRecentMinute > 0) addCondition_RecentMinute(conditions.avoidRecentMinute)
+        if (conditions.avoidMedia) addCondition_IncludedMedia()
+        if (conditions.avoidNoMedia) addCondition_ExcludedMedia()
+        if (conditions.avoidNoGeo) addCondition_IncludedGeo()
+        for (i in conditions.avoidKeywords) {
+            addCondition_IncludedKeyword(i)
+        }
     }
 
     private fun createAddConditionDialog(): MaterialDialog {
@@ -75,6 +81,12 @@ class HetzerConditionsActivity : Adam() {
         if (conditions.avoidFavCount == 0) listItems.add(getString(R.string.Condition_FavCount))
         if (conditions.avoidRecentCount == 0) listItems.add(getString(R.string.Condition_RecentCount))
         if (conditions.avoidRecentMinute == 0) listItems.add(getString(R.string.Condition_RecentMinute))
+        listItems.add(getString(R.string.Condition_IncludedKeyword))
+        if (!conditions.avoidMedia && !conditions.avoidNoMedia){
+            listItems.add(getString(R.string.Condition_IncludedMedia))
+            listItems.add(getString(R.string.Condition_ExcludedMedia))
+        }
+        if (!conditions.avoidNoGeo) listItems.add(getString(R.string.Condition_IncludedGEO))
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
             when (val text = textSeq.toString()) {
                 getString(R.string.Condition_FavMyself) -> {
@@ -167,6 +179,25 @@ class HetzerConditionsActivity : Adam() {
                         }
                     }
                 }
+                getString(R.string.Condition_IncludedKeyword) -> {
+                    MaterialDialog(this@HetzerConditionsActivity).show {
+                        title(text = text)
+                        message(R.string.Condition_Description_IncludedKeyword)
+                        positiveButton(R.string.OK) { dialog ->
+                            val text = dialog.getInputField().text.toString()
+                            addCondition_IncludedKeyword(text)
+                        }
+                    }
+                }
+                getString(R.string.Condition_IncludedMedia)-> {
+                    addCondition_IncludedMedia()
+                }
+                getString(R.string.Condition_ExcludedMedia)-> {
+                    addCondition_ExcludedMedia()
+                }
+                getString(R.string.Condition_IncludedGEO)-> {
+                    addCondition_IncludedGeo()
+                }
             }
         }
     }
@@ -241,6 +272,67 @@ class HetzerConditionsActivity : Adam() {
                 newConditionView
             ) {
                 conditions.avoidMyFav = false
+            }
+        }
+        layout_scrollContent.addView(newConditionView, 0)
+    }
+
+    private fun addCondition_IncludedKeyword(keyword: String) {
+        if(conditions.avoidKeywords.contains(keyword)) return
+        conditions.avoidKeywords.add(keyword)
+        val newConditionView = HetzerConditionView(this)
+        newConditionView.setText(getString(R.string.Condition_Display_IncludedKeyword, keyword))
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidKeywords.remove(keyword)
+            }
+        }
+        layout_scrollContent.addView(newConditionView, 0)
+    }
+
+    private fun addCondition_IncludedMedia() {
+        conditions.avoidMedia = true
+        val newConditionView = HetzerConditionView(this)
+        newConditionView.setText(getString(R.string.Condition_IncludedMedia))
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidMedia = false
+            }
+        }
+        layout_scrollContent.addView(newConditionView, 0)
+    }
+
+    private fun addCondition_ExcludedMedia() {
+        conditions.avoidNoMedia = true
+        val newConditionView = HetzerConditionView(this)
+        newConditionView.setText(getString(R.string.Condition_ExcludedMedia))
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidNoMedia = false
+            }
+        }
+        layout_scrollContent.addView(newConditionView, 0)
+    }
+
+    private fun addCondition_IncludedGeo() {
+        conditions.avoidNoGeo = true
+        val newConditionView = HetzerConditionView(this)
+        newConditionView.setText(getString(R.string.Condition_IncludedGEO))
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView
+            ) {
+                conditions.avoidNoGeo = false
             }
         }
         layout_scrollContent.addView(newConditionView, 0)

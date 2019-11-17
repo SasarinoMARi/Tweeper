@@ -44,7 +44,7 @@ class HetzerActivity : Adam(), HetzerInterface {
                 }
                 for (i in 0 until it.count()) {
                     val item = it[i]
-                    val text = if (item.text.length > 15) "${item.text.substring(0, 15)}.." else item.text
+                    val text = /* if (item.text.length > 25) "${item.text.substring(0, 23)}.." else */ item.text
                     log(text)
                     runOnUiThread {
                         pDialog.contentText = text

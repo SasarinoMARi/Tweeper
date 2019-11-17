@@ -24,6 +24,10 @@ class UITestActivity : AppCompatActivity() {
         setContentView(R.layout.activity_uitest)
 
         // testTextSufrace()
+        //testSweetDialog()
+    }
+
+    private fun testSweetDialog() {
         val pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
         pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
         pDialog.titleText = "Loading"
@@ -31,9 +35,9 @@ class UITestActivity : AppCompatActivity() {
         pDialog.show()
 
         Thread(Runnable { Thread.sleep(5000)
-        runOnUiThread{
-            pDialog.titleText="Changed Text"
-        }}).start()
+            runOnUiThread{
+                pDialog.titleText="Changed Text"
+            }}).start()
     }
 
     // region TextSurface

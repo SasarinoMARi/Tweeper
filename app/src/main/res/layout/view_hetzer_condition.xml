@@ -11,11 +11,12 @@
 
     <TextView
         android:id="@+id/text"
-        style="@style/TextBase"
+        android:fontFamily="@font/noto_sans_light"
+        android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="Title"
+        android:text="Text"
         tools:ignore="HardcodedText" />
 
 

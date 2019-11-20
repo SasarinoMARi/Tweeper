@@ -35,4 +35,5 @@
     <string name="Condition_IncludedGEO">위치 정보를 포함하지 않은 트윗</string>
     <string name="Condition_Display_IncludedKeyword">내용에 \'%1$s\'를 포함한 트윗</string>
     <string name="Condition_Description_IncludedKeyword">내용에 어떤 문구가 포함되었을 때 트윗을 남겨둘까요?</string>
+    <string name="CleanTweet">이 조건으로 실행하기</string>
 </resources>

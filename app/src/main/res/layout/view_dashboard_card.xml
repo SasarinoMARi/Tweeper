@@ -23,13 +23,13 @@
 
         <TextView
             android:id="@+id/text"
-            style="@style/TextBase"
+            android:fontFamily="@font/noto_sans_light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="텍스트"
+            android:text="Text"
             android:textAlignment="center"
-            android:textColor="#6f6f6f"
+            android:textColor="@color/black"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>

@@ -11,6 +11,10 @@ import android.os.Environment.getExternalStorageDirectory
 import com.sasarinomari.tweetcleaner.hetzer.HetzerActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
+import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.ShapeDrawable
+
+
 
 
 class DashboardActivity : Adam() {
@@ -25,6 +29,9 @@ class DashboardActivity : Adam() {
         button_erase.setOnClickListener {
             startActivity(Intent(this, HetzerActivity::class.java))
         }
+
+        image_profilePicture.background = ShapeDrawable(OvalShape())
+        image_profilePicture.clipToOutline = true
     }
 
     private fun loadUserInformation() {

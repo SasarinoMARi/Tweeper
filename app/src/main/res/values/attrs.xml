@@ -3,5 +3,6 @@
     <declare-styleable name="DashboardCard">
         <attr name="text" format="reference|string" />
         <attr name="icon" format="reference" />
+        <attr name="ovalColor" format="color" />
     </declare-styleable>
 </resources>

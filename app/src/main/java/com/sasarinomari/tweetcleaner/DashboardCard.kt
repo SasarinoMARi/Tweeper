@@ -2,11 +2,16 @@ package com.sasarinomari.tweetcleaner
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.view_dashboard_card.view.*
+import android.content.res.Resources.NotFoundException
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
 
 class DashboardCard : CardView {
     constructor(context: Context) : super(context) {
@@ -35,9 +40,13 @@ class DashboardCard : CardView {
     private fun setTypeArray(typedArray: TypedArray) {
         val iconAttr = typedArray.getResourceId(R.styleable.DashboardCard_icon, 0)
         val textAttr = typedArray.getString(R.styleable.DashboardCard_text)
+        val ovalAttr = typedArray.getColor(R.styleable.DashboardCard_ovalColor, 0)
 
         icon.setImageResource(iconAttr)
         text.text = textAttr
+
+        val shape = oval.drawable as GradientDrawable
+        shape.setColor(ovalAttr)
 
         typedArray.recycle()
     }

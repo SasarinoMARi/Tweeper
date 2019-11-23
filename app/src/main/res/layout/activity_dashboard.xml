@@ -18,14 +18,23 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:layout_width="66dp"
+            android:layout_height="66dp"
+            android:src="@drawable/oval"
+            app:layout_constraintTop_toTopOf="@id/image_profilePicture"
+            app:layout_constraintLeft_toLeftOf="@id/image_profilePicture"
+            app:layout_constraintRight_toRightOf="@id/image_profilePicture"
+            app:layout_constraintBottom_toBottomOf="@id/image_profilePicture"/>
+
+        <ImageView
             android:id="@+id/image_profilePicture"
             android:layout_width="62dp"
             android:layout_height="62dp"
-            android:layout_alignParentEnd="true"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
 
         <TextView
             android:id="@+id/text_Name"
@@ -36,7 +45,9 @@
             android:text="Name"
             android:textColor="@color/white"
             android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@id/text_ScreenName"
             app:layout_constraintLeft_toRightOf="@id/image_profilePicture"
+            app:layout_constraintVertical_chainStyle="packed"
             app:layout_constraintTop_toTopOf="@id/image_profilePicture"
             tools:ignore="HardcodedText" />
 
@@ -50,8 +61,9 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             android:textStyle="italic"
-            app:layout_constraintTop_toBottomOf="@id/text_Name"
+            app:layout_constraintBottom_toBottomOf="@id/image_profilePicture"
             app:layout_constraintLeft_toLeftOf="@id/text_Name"
+            app:layout_constraintTop_toBottomOf="@id/text_Name"
             tools:ignore="HardcodedText" />
 
         <RelativeLayout
@@ -67,46 +79,41 @@
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:alignmentMode="alignMargins"
-            android:columnCount="2"
+            android:columnCount="1"
             android:columnOrderPreserved="false"
             android:rowCount="3"
             app:layout_constraintTop_toBottomOf="@id/image_profilePicture">
 
-            <com.sasarinomari.tweetcleaner.DashboardCard
-                android:id="@+id/button_uiTest"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                app:icon="@mipmap/ic_launcher_round"
-                app:text="UI 테스트" />
 
             <com.sasarinomari.tweetcleaner.DashboardCard
                 android:id="@+id/button_erase"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="128dp"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 app:icon="@drawable/delete_empty"
+                app:ovalColor="#00CF91"
                 app:text="@string/TweetCleaner" />
 
             <com.sasarinomari.tweetcleaner.DashboardCard
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="128dp"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
-                app:icon="@drawable/account_arrow_left"
-                app:text="@string/FollowerManagement" />
+                app:icon="@drawable/account_arrow_right"
+                app:ovalColor="#FE9E76"
+                app:text="@string/FollowingManagement" />
 
             <com.sasarinomari.tweetcleaner.DashboardCard
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="128dp"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 app:icon="@drawable/account_arrow_left"
-                app:text="@string/FollowingManagement" />
+                app:ovalColor="#FFD600"
+                app:text="@string/FollowerManagement" />
 
         </GridLayout>
 

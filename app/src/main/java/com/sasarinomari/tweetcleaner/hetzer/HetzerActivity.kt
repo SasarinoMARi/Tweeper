@@ -46,9 +46,6 @@ class HetzerActivity : Adam(), HetzerInterface {
                     val item = it[i]
                     val text = /* if (item.text.length > 25) "${item.text.substring(0, 23)}.." else */ item.text
                     log(text)
-                    runOnUiThread {
-                        pDialog.contentText = text
-                    }
                     when {
                         excludeMyFavorite(item) -> {
                             log("[트윗 제외됨] : 본인이 마음에 들어한 트윗")
@@ -65,7 +62,22 @@ class HetzerActivity : Adam(), HetzerInterface {
                         excludeMinimumTick(item) -> {
                             log("[트윗 제외됨] : 너무 최근에 한 트윗(시간)")
                         }
+                        excludeMedia(item) -> {
+
+                        }
+                        excludeKeyword(item) ->{
+
+                        }
+                        excludeNoMedia(item) -> {
+
+                        }
+                        excludeNoGeo(item) -> {
+
+                        }
                         else -> {
+                            runOnUiThread {
+                                pDialog.contentText = text
+                            }
                             log("[트윗 삭제됨]")
                             // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
                             TwitterFactory.getSingleton().destroyStatus(item.id)
@@ -146,11 +158,11 @@ class HetzerActivity : Adam(), HetzerInterface {
     }
 
     override fun excludeMedia(status: Status): Boolean {
-        return conditions.avoidMedia && status.mediaEntities.isEmpty()
+        return conditions.avoidMedia && status.mediaEntities.isNotEmpty()
     }
 
     override fun excludeNoMedia(status: Status): Boolean {
-        return conditions.avoidNoMedia && status.mediaEntities.isNotEmpty()
+        return conditions.avoidNoMedia && status.mediaEntities.isEmpty()
     }
 
     override fun excludeNoGeo(status: Status): Boolean {

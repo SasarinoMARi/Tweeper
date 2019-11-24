@@ -12,7 +12,6 @@ import twitter4j.Status
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 
-
 class HetzerActivity : Adam(), HetzerInterface {
     private lateinit var conditions: HetzerConditions
 
@@ -39,40 +38,42 @@ class HetzerActivity : Adam(), HetzerInterface {
 
         Thread(Runnable {
             getTweet {
+                if(it.isNotEmpty())
                 runOnUiThread {
                     pDialog.setTitle(getString(R.string.Hetzer_TweetRemoving))
                 }
                 for (i in 0 until it.count()) {
                     val item = it[i]
-                    val text = /* if (item.text.length > 25) "${item.text.substring(0, 23)}.." else */ item.text
+                    val text = item.text
+                    val cut = if (text.length > 25) "${text.substring(0,23)}.." else text
                     log(text)
                     when {
                         excludeMyFavorite(item) -> {
-                            log("[트윗 제외됨] : 본인이 마음에 들어한 트윗")
+                            log("[제외] 내가 마음에 들어한 트윗\n$cut")
                         }
                         excludeRetweetCount(item) -> {
-                            log("[트윗 제외됨] : 많은 리트윗을 받은 트윗")
+                            log("[제외] 많은 리트윗을 받은 트윗\n$cut")
                         }
                         excludeFavoriteCount(item) -> {
-                            log("[트윗 제외됨] : 많은 사람이 마음에 들어한 트윗")
+                            log("[제외] 많은 사람이 마음에 들어한 트윗\n$cut")
                         }
                         excludeMinimumCount(item, i) -> {
-                            log("[트윗 제외됨] : 너무 최근에 한 트윗(개수)")
+                            log("[제외] 최근에 한 트윗(개수)\n$cut")
                         }
                         excludeMinimumTick(item) -> {
-                            log("[트윗 제외됨] : 너무 최근에 한 트윗(시간)")
+                            log("[제외] 너무 최근에 한 트윗(시간)\n$cut")
                         }
                         excludeMedia(item) -> {
-
+                            log("[제외됨] 미디어를 포함한 트윗\n$cut")
                         }
-                        excludeKeyword(item) ->{
-
+                        excludeKeyword(item) -> {
+                            log("[제외됨] 키워드를 포함한 트윗\n$cut")
                         }
                         excludeNoMedia(item) -> {
-
+                            log("[제외됨] 미디어를 포함하지 않은 트윗\n$cut")
                         }
                         excludeNoGeo(item) -> {
-
+                            log("[제외됨] 위치 정보를 포함하지 않은 트윗\n$cut")
                         }
                         else -> {
                             runOnUiThread {
@@ -85,8 +86,6 @@ class HetzerActivity : Adam(), HetzerInterface {
                     }
                 }
                 runOnUiThread {
-                    pDialog.dismiss()
-
                     val dDialog = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText(getString(R.string.Done))
                         .setContentText(getString(R.string.Hetzer_Done))
@@ -120,24 +119,21 @@ class HetzerActivity : Adam(), HetzerInterface {
     }
 
     override fun excludeMyFavorite(status: Status): Boolean {
-        return conditions.avoidMyFav && status.isFavorited
-
+        if (!conditions.avoidMyFav) return false
+        if (status.isRetweet) return false
+        return status.isFavorited
     }
 
     override fun excludeRetweetCount(status: Status): Boolean {
-        return when {
-            status.isRetweet -> false
-            conditions.avoidRetweetCount == 0 -> false
-            else -> status.retweetCount >= conditions.avoidRetweetCount
-        }
+        if (conditions.avoidRetweetCount == 0) return false
+        if (status.isRetweet) return false
+        return status.retweetCount >= conditions.avoidRetweetCount
     }
 
     override fun excludeFavoriteCount(status: Status): Boolean {
-        return when {
-            status.isRetweet -> false
-            conditions.avoidFavCount == 0 -> false
-            else -> status.favoriteCount >= conditions.avoidFavCount
-        }
+        if (conditions.avoidFavCount == 0) return false
+        if (status.isRetweet) return false
+        return status.favoriteCount >= conditions.avoidFavCount
     }
 
     override fun excludeMinimumCount(status: Status, index: Int): Boolean {
@@ -158,29 +154,35 @@ class HetzerActivity : Adam(), HetzerInterface {
     }
 
     override fun excludeMedia(status: Status): Boolean {
-        return conditions.avoidMedia && status.mediaEntities.isNotEmpty()
+        if (!conditions.avoidMedia) return false
+        if (status.isRetweet) return false
+        return status.mediaEntities.isNotEmpty()
     }
 
     override fun excludeNoMedia(status: Status): Boolean {
-        return conditions.avoidNoMedia && status.mediaEntities.isEmpty()
+        if (!conditions.avoidNoMedia) return false
+        if (status.isRetweet) return false
+        return status.mediaEntities.isEmpty()
     }
 
     override fun excludeNoGeo(status: Status): Boolean {
-        return conditions.avoidNoGeo && status.geoLocation != null
+        if (!conditions.avoidNoGeo) return false
+        if (status.isRetweet) return false
+        return status.geoLocation != null
     }
 
     override fun excludeKeyword(status: Status): Boolean {
-        for(item in conditions.avoidKeywords) {
-            if(status.text.contains(item)) return true
+        for (item in conditions.avoidKeywords) {
+            if (status.text.contains(item)) return true
         }
         return false
     }
 
     private fun getTweet(callback: (List<Status>) -> Unit) {
+        val list = ArrayList<Status>()
         try {
             // gets Twitter instance with default credentials
             val twitter = TwitterFactory.getSingleton()
-            val list = ArrayList<Status>()
             for (i in 1..Int.MAX_VALUE) {
                 val paging = Paging(i, 20)
                 val statuses = twitter.getUserTimeline(paging)
@@ -189,9 +191,16 @@ class HetzerActivity : Adam(), HetzerInterface {
             }
             callback(list)
         } catch (te: TwitterException) {
-            // TODO :리밋이 어떻게 처리되는지 확인할 필요 있음
             te.printStackTrace()
-            println("Failed to get timeline: " + te.message)
+            runOnUiThread {
+            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.Error))
+                .setContentText(getString(R.string.RateLimitError))
+                .setConfirmClickListener {
+                    callback(list)
+                }
+                .show()
+            }
         }
     }
 

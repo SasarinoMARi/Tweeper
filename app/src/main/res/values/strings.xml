@@ -38,4 +38,6 @@
     <string name="TweetCleanerDescription">지정한 조건과 일치하는 트윗들을 삭제합니다.</string>
     <string name="FollowingManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
     <string name="FollowerManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
+    <string name="Error">에러!</string>
+    <string name="RateLimitError">모든 트윗을 불러오지 못했습니다.\n나중에 다시 시도해 주세요</string>
 </resources>

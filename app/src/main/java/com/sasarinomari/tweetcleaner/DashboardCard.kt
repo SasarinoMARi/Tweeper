@@ -40,10 +40,12 @@ class DashboardCard : CardView {
     private fun setTypeArray(typedArray: TypedArray) {
         val iconAttr = typedArray.getResourceId(R.styleable.DashboardCard_icon, 0)
         val textAttr = typedArray.getString(R.styleable.DashboardCard_text)
+        val descAttr = typedArray.getString(R.styleable.DashboardCard_description)
         val ovalAttr = typedArray.getColor(R.styleable.DashboardCard_ovalColor, 0)
-
+ 
         icon.setImageResource(iconAttr)
         text.text = textAttr
+        description.text = descAttr
 
         val shape = oval.drawable as GradientDrawable
         shape.setColor(ovalAttr)

@@ -95,6 +95,7 @@
                 android:layout_columnWeight="1"
                 app:icon="@drawable/delete_empty"
                 app:ovalColor="#00CF91"
+                app:description="@string/TweetCleanerDescription"
                 app:text="@string/TweetCleaner" />
 
             <com.sasarinomari.tweetcleaner.DashboardCard
@@ -104,6 +105,7 @@
                 android:layout_columnWeight="1"
                 app:icon="@drawable/account_arrow_right"
                 app:ovalColor="#FE9E76"
+                app:description="@string/FollowingManagementDescription"
                 app:text="@string/FollowingManagement" />
 
             <com.sasarinomari.tweetcleaner.DashboardCard
@@ -112,6 +114,7 @@
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 app:icon="@drawable/account_arrow_left"
+                app:description="@string/FollowerManagementDescription"
                 app:ovalColor="#FFD600"
                 app:text="@string/FollowerManagement" />
 

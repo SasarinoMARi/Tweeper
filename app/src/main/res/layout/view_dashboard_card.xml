@@ -40,13 +40,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:fontFamily="@font/noto_sans_light"
+            android:fontFamily="@font/noto_sans_bold"
             android:text="Text"
             android:textSize="20sp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="@id/oval"
+            app:layout_constraintBottom_toTopOf="@id/description"
             app:layout_constraintLeft_toRightOf="@id/oval"
             app:layout_constraintTop_toTopOf="@id/oval"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/noto_sans_light"
+            android:text="Text"
+            android:textSize="12sp"
+            android:textColor="@color/grey"
+            app:layout_constraintBottom_toBottomOf="@id/oval"
+            app:layout_constraintLeft_toRightOf="@id/oval"
+            app:layout_constraintTop_toBottomOf="@id/text"
             tools:ignore="HardcodedText" />
 
 

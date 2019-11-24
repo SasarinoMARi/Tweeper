@@ -26,6 +26,12 @@ class DashboardActivity : Adam() {
         button_erase.setOnClickListener {
             startActivity(Intent(this, HetzerActivity::class.java))
         }
+        button_followingManagement.setOnClickListener {
+            startActivity(Intent(this, FollowingManagement::class.java))
+        }
+        button_followerManagement.setOnClickListener {
+            startActivity(Intent(this, FollowerManagement::class.java))
+        }
 
         image_profilePicture.background = ShapeDrawable(OvalShape())
         image_profilePicture.clipToOutline = true

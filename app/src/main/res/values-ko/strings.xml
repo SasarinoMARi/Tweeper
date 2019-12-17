@@ -41,4 +41,8 @@
     <string name="FollowerManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
     <string name="Error">에러!</string>
     <string name="RateLimitError">모든 트윗을 불러오지 못했습니다.\n나중에 다시 시도해 주세요</string>
+    <string name="AreYouSure">확실한가요?</string>
+    <string name="TweetCannotRestore">삭제된 트윗은 되돌릴 수 없습니다.</string>
+    <string name="YesDeleteIt">네, 삭제할게요!</string>
+    <string name="Wait">잠깐만요...</string>
 </resources>

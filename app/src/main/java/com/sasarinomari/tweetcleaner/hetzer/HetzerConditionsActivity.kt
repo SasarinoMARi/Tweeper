@@ -20,6 +20,8 @@ import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
 import com.sasarinomari.tweetcleaner.SystemPreference
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
+import cn.pedant.SweetAlert.SweetAlertDialog
+
 
 class HetzerConditionsActivity : Adam() {
     enum class Results {
@@ -40,11 +42,18 @@ class HetzerConditionsActivity : Adam() {
             }
         }
         button_ok.setOnClickListener {
-            SystemPreference.HetzerConditions.set(this@HetzerConditionsActivity, conditions.toJson())
-            val i = Intent()
-            i.putExtra(Results.Conditions.name, conditions)
-            setResult(RESULT_OK, i)
-            finish()
+            SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText(getString(R.string.AreYouSure))
+                .setContentText(getString(R.string.TweetCannotRestore))
+                .setConfirmText(getString(R.string.YesDeleteIt))
+                .setConfirmClickListener {
+                    SystemPreference.HetzerConditions.set(this@HetzerConditionsActivity, conditions.toJson())
+                    val i = Intent()
+                    i.putExtra(Results.Conditions.name, conditions)
+                    setResult(RESULT_OK, i)
+                    finish()
+                }
+                .show()
         }
     }
 

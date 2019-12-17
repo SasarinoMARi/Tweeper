@@ -40,4 +40,8 @@
     <string name="FollowerManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
     <string name="Error">에러!</string>
     <string name="RateLimitError">모든 트윗을 불러오지 못했습니다.\n나중에 다시 시도해 주세요</string>
+    <string name="AreYouSure">Are you sure?</string>
+    <string name="TweetCannotRestore">Deleted tweet is cannot restore.</string>
+    <string name="YesDeleteIt">Yes, Delete it!</string>
+    <string name="Wait">Wait...</string>
 </resources>

@@ -44,4 +44,5 @@ dependencies {
     implementation 'com.github.elevenetc:textsurface:0.9.1'
     implementation 'com.github.f0ris.sweetalert:library:1.5.6'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.android.gms:play-services-ads:18.3.0'
 }

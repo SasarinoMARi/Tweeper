@@ -1,126 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DashboardActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".DashboardActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ScrollView android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@drawable/gradient_title"
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <View
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@drawable/gradient_title"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                    android:layout_width="66dp"
+                    android:layout_height="66dp"
+                    android:src="@drawable/oval"
+                    app:layout_constraintTop_toTopOf="@id/image_profilePicture"
+                    app:layout_constraintLeft_toLeftOf="@id/image_profilePicture"
+                    app:layout_constraintRight_toRightOf="@id/image_profilePicture"
+                    app:layout_constraintBottom_toBottomOf="@id/image_profilePicture"/>
+
+            <ImageView
+                    android:id="@+id/image_profilePicture"
+                    android:layout_width="62dp"
+                    android:layout_height="62dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+
+            <TextView
+                    android:id="@+id/text_Name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/noto_sans_bold"
+                    android:text="Name"
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    app:layout_constraintBottom_toTopOf="@id/text_ScreenName"
+                    app:layout_constraintLeft_toRightOf="@id/image_profilePicture"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintTop_toTopOf="@id/image_profilePicture"
+                    tools:ignore="HardcodedText"/>
+
+            <TextView
+                    android:id="@+id/text_ScreenName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/text_Name"
+                    android:fontFamily="@font/noto_sans_light"
+                    android:text="ScreenName"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    app:layout_constraintBottom_toBottomOf="@id/image_profilePicture"
+                    app:layout_constraintLeft_toLeftOf="@id/text_Name"
+                    app:layout_constraintTop_toBottomOf="@id/text_Name"
+                    tools:ignore="HardcodedText"/>
+
+            <RelativeLayout
+                    android:id="@+id/_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+            </RelativeLayout>
+
+
+            <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:alignmentMode="alignMargins"
+                    android:columnCount="1"
+                    android:columnOrderPreserved="false"
+                    android:rowCount="3"
+                    app:layout_constraintTop_toBottomOf="@id/image_profilePicture">
+
+
+                <com.sasarinomari.tweetcleaner.DashboardCard
+                        android:id="@+id/button_erase"
+                        android:layout_width="0dp"
+                        android:layout_height="128dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        app:icon="@drawable/delete_empty"
+                        app:ovalColor="#00CF91"
+                        app:description="@string/TweetCleanerDescription"
+                        app:text="@string/TweetCleaner"/>
+
+                <com.sasarinomari.tweetcleaner.DashboardCard
+                        android:layout_width="0dp"
+                        android:layout_height="128dp"
+                        android:id="@+id/button_followingManagement"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        app:icon="@drawable/account_arrow_right"
+                        app:ovalColor="#FE9E76"
+                        app:description="@string/FollowingManagementDescription"
+                        app:text="@string/FollowingManagement"/>
+
+                <com.sasarinomari.tweetcleaner.DashboardCard
+                        android:layout_width="0dp"
+                        android:id="@+id/button_followerManagement"
+                        android:layout_height="128dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        app:icon="@drawable/account_arrow_left"
+                        app:description="@string/FollowerManagementDescription"
+                        app:ovalColor="#FFD600"
+                        app:text="@string/FollowerManagement"/>
+
+            </GridLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <LinearLayout
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:layout_width="66dp"
-            android:layout_height="66dp"
-            android:src="@drawable/oval"
-            app:layout_constraintTop_toTopOf="@id/image_profilePicture"
-            app:layout_constraintLeft_toLeftOf="@id/image_profilePicture"
-            app:layout_constraintRight_toRightOf="@id/image_profilePicture"
-            app:layout_constraintBottom_toBottomOf="@id/image_profilePicture"/>
-
-        <ImageView
-            android:id="@+id/image_profilePicture"
-            android:layout_width="62dp"
-            android:layout_height="62dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/text_Name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/noto_sans_bold"
-            android:text="Name"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toTopOf="@id/text_ScreenName"
-            app:layout_constraintLeft_toRightOf="@id/image_profilePicture"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintTop_toTopOf="@id/image_profilePicture"
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:id="@+id/text_ScreenName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/text_Name"
-            android:fontFamily="@font/noto_sans_light"
-            android:text="ScreenName"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="@id/image_profilePicture"
-            app:layout_constraintLeft_toLeftOf="@id/text_Name"
-            app:layout_constraintTop_toBottomOf="@id/text_Name"
-            tools:ignore="HardcodedText" />
-
-        <RelativeLayout
-            android:id="@+id/_header"
+            android:id="@+id/layout_ad"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
-
-
-        </RelativeLayout>
-
-
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:alignmentMode="alignMargins"
-            android:columnCount="1"
-            android:columnOrderPreserved="false"
-            android:rowCount="3"
-            app:layout_constraintTop_toBottomOf="@id/image_profilePicture">
-
-
-            <com.sasarinomari.tweetcleaner.DashboardCard
-                android:id="@+id/button_erase"
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                app:icon="@drawable/delete_empty"
-                app:ovalColor="#00CF91"
-                app:description="@string/TweetCleanerDescription"
-                app:text="@string/TweetCleaner" />
-
-            <com.sasarinomari.tweetcleaner.DashboardCard
-                android:layout_width="0dp"
-                android:layout_height="128dp"
-                android:id="@+id/button_followingManagement"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                app:icon="@drawable/account_arrow_right"
-                app:ovalColor="#FE9E76"
-                app:description="@string/FollowingManagementDescription"
-                app:text="@string/FollowingManagement" />
-
-            <com.sasarinomari.tweetcleaner.DashboardCard
-                android:layout_width="0dp"
-                android:id="@+id/button_followerManagement"
-                android:layout_height="128dp"
-                android:layout_rowWeight="1"
-                android:layout_columnWeight="1"
-                app:icon="@drawable/account_arrow_left"
-                app:description="@string/FollowerManagementDescription"
-                app:ovalColor="#FFD600"
-                app:text="@string/FollowerManagement" />
-
-        </GridLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            android:layout_height="wrap_content">
+    </LinearLayout>
+</LinearLayout>

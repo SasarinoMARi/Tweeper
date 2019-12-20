@@ -59,9 +59,7 @@ class DashboardActivity : Adam() {
     }
 
     private fun loadUserInformation() {
-        Thread(Runnable {
-            val twitter = TwitterFactory.getSingleton()
-            val me = twitter.showUser(twitter.id)
+        SharedUserProperties.getMe { me ->
             runOnUiThread {
                 text_Name.text = me.name
                 text_ScreenName.text = me.screenName
@@ -69,6 +67,6 @@ class DashboardActivity : Adam() {
                     .load(me.biggerProfileImageURL)
                     .into(image_profilePicture)
             }
-        }).start()
+        }
     }
 }

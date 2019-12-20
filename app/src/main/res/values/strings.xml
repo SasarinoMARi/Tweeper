@@ -44,4 +44,7 @@
     <string name="TweetCannotRestore">Deleted tweet is cannot restore.</string>
     <string name="YesDeleteIt">Yes, Delete it!</string>
     <string name="Wait">Wait...</string>
+    <string name="FriendPulling">팔로우 목록을 가져오는 중입니다.</string>
+    <string name="FollowerPulling">팔로워 목록을 가져오는 중입니다.</string>
+    <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중입니다.</string>
 </resources>

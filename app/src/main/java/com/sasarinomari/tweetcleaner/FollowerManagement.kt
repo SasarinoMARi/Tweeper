@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.sasarinomari.tweetcleaner.adapter.UserUnfollowItem
+import kotlinx.android.synthetic.main.activity_follower_management.*
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import twitter4j.User
@@ -34,10 +36,10 @@ class FollowerManagement : AppCompatActivity() {
                         pDialog.titleText = getString(R.string.CompareFsFw)
                     }
                     val uf = comLists(fs, fw)
-                    for (u in uf) {
-                        Log.i("Ufu", u.screenName)
+                    runOnUiThread {
+                        pDialog.dismiss()
+                        initializeUi(uf)
                     }
-                    pDialog.dismiss()
                 }
             }
         } catch (te: TwitterException) {
@@ -49,6 +51,10 @@ class FollowerManagement : AppCompatActivity() {
                     .show()
             }
         }
+    }
+
+    private fun initializeUi(uf: List<User>) {
+        list.adapter = UserUnfollowItem(uf)
     }
 
     private fun comLists(fs: List<User>, fw: List<User>): List<User> {

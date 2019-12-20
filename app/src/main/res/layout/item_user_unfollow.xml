@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:orientation="horizontal"
+                android:background="@color/colorPrimary"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+    <ImageView
+            android:id="@+id/image_profilePicture"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:background="@color/white"/>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_toEndOf="@id/image_profilePicture"
+                  android:layout_marginStart="10dp"
+                  android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/text_Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_sans_bold"
+                android:text="Name"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/text_ScreenName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/noto_sans_light"
+                android:text="\@ScreenName"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                tools:ignore="HardcodedText"/>
+
+        <TextView
+                android:id="@+id/text_bio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/noto_sans_light"
+                android:text="Profile bio Description Area. This can be looooooooooooong Text and also can include line break.\ngood."
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText"/>
+    </LinearLayout>
+
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Unfollow"
+            android:textAllCaps="false"
+            android:layout_alignParentEnd="true"/>
+
+</RelativeLayout>

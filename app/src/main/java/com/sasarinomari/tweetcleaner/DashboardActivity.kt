@@ -64,7 +64,7 @@ class DashboardActivity : Adam() {
                 text_Name.text = me.name
                 text_ScreenName.text = me.screenName
                 Picasso.get() // Todo: Resize 작업 필요할 지 확인하기
-                    .load(me.biggerProfileImageURL)
+                    .load(me.profileImageURL.replace("normal.jpg", "400x400.jpg"))
                     .into(image_profilePicture)
             }
         }

@@ -21,6 +21,7 @@ import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.ads.MobileAds
+import com.sasarinomari.tweetcleaner.danger.RemoveFriends
 
 class DashboardActivity : Adam() {
 
@@ -31,11 +32,12 @@ class DashboardActivity : Adam() {
         button_erase.setOnClickListener {
             startActivity(Intent(this, HetzerActivity::class.java))
         }
-        button_followingManagement.setOnClickListener {
-            startActivity(Intent(this, FollowingManagement::class.java))
-        }
         button_followerManagement.setOnClickListener {
             startActivity(Intent(this, FollowerManagement::class.java))
+        }
+
+        button_removeFriends.setOnClickListener {
+            startActivity(Intent(this, RemoveFriends::class.java))
         }
 
         image_profilePicture.background = ShapeDrawable(OvalShape())

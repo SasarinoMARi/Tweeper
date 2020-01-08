@@ -47,4 +47,9 @@
     <string name="FriendPulling">팔로우 목록을 가져오는 중입니다.</string>
     <string name="FollowerPulling">팔로워 목록을 가져오는 중입니다.</string>
     <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중입니다.</string>
+    <string name="TweetReport">트윗 일지</string>
+    <string name="TweetReportDescription">트윗, 팔로우쉽 변화 추이를 봅니다.</string>
+    <string name="PermissionRequestTitle">권한이 필요합니다.</string>
+    <string name="Yes">넵</string>
+    <string name="No">아니요</string>
 </resources>

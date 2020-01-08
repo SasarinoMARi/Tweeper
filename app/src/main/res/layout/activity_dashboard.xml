@@ -105,6 +105,16 @@
 
                 <com.sasarinomari.tweetcleaner.DashboardCard
                         android:layout_width="0dp"
+                        android:id="@+id/button_tweetReport"
+                        android:layout_height="128dp"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        app:description="@string/TweetReportDescription"
+                        app:ovalColor="#888888"
+                        app:text="@string/TweetReport"/>
+
+                <com.sasarinomari.tweetcleaner.DashboardCard
+                        android:layout_width="0dp"
                         android:id="@+id/button_followerManagement"
                         android:layout_height="128dp"
                         android:layout_rowWeight="1"

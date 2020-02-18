@@ -105,14 +105,13 @@
 
                 <com.sasarinomari.tweetcleaner.DashboardCard
                         android:layout_width="0dp"
+                        android:id="@+id/button_tweetReport"
                         android:layout_height="128dp"
-                        android:id="@+id/button_followingManagement"
                         android:layout_rowWeight="1"
                         android:layout_columnWeight="1"
-                        app:icon="@drawable/account_arrow_right"
-                        app:ovalColor="#FE9E76"
-                        app:description="@string/FollowingManagementDescription"
-                        app:text="@string/FollowingManagement"/>
+                        app:description="@string/TweetReportDescription"
+                        app:ovalColor="#888888"
+                        app:text="@string/TweetReport"/>
 
                 <com.sasarinomari.tweetcleaner.DashboardCard
                         android:layout_width="0dp"
@@ -125,6 +124,16 @@
                         app:ovalColor="#FFD600"
                         app:text="@string/FollowerManagement"/>
 
+                <com.sasarinomari.tweetcleaner.DashboardCard
+                        android:layout_width="0dp"
+                        android:layout_height="128dp"
+                        android:id="@+id/button_removeFriends"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        app:ovalColor="#FF0000"
+                        app:icon="@null"
+                        app:description="모든 팔로잉 및 팔로워를 블언블합니다."
+                        app:text="외톨이"/>
             </GridLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">트윗지기</string>
     <string name="TweetCleaner">트윗 삭제</string>
-    <string name="FollowerManagement">팔로워 관리</string>
+    <string name="FollowerManagement">언팔매니저</string>
     <string name="FollowingManagement">팔로잉 관리</string>
     <string name="DeleteOption">삭제 옵션</string>
     <string name="DeleteOptionPlease">지우지 않고 남겨둘 트윗을 지정하세요.</string>
@@ -36,16 +36,21 @@
     <string name="Condition_Display_IncludedKeyword">내용에 \'%1$s\'를 포함한 트윗</string>
     <string name="Condition_Description_IncludedKeyword">내용에 어떤 문구가 포함되었을 때 트윗을 남겨둘까요?</string>
     <string name="CleanTweet">이 조건으로 실행하기</string>
-    <string name="TweetCleanerDescription">지정한 조건과 일치하는 트윗들을 삭제합니다.</string>
+    <string name="TweetCleanerDescription">조건에 맞는 트윗들을 삭제합니다.</string>
     <string name="FollowingManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
-    <string name="FollowerManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
+    <string name="FollowerManagementDescription">나를 팔로우하지 않는 사람들을 봅니다.</string>
     <string name="Error">에러!</string>
     <string name="RateLimitError">모든 트윗을 불러오지 못했습니다.\n나중에 다시 시도해 주세요</string>
     <string name="AreYouSure">확실한가요?</string>
     <string name="TweetCannotRestore">삭제된 트윗은 되돌릴 수 없습니다.</string>
     <string name="YesDeleteIt">네, 삭제할게요!</string>
-    <string name="Wait">잠깐만요…</string>
+    <string name="Wait">잠깐만요...</string>
     <string name="FriendPulling">팔로우 목록을 가져오는 중입니다.</string>
     <string name="FollowerPulling">팔로워 목록을 가져오는 중입니다.</string>
-    <string name="CompareFsFw">가져온 목록을 비교하고 있습니다.</string>
+    <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중입니다.</string>
+    <string name="TweetReport">트윗 일지</string>
+    <string name="TweetReportDescription">트윗, 팔로우쉽 변화 추이를 봅니다.</string>
+    <string name="PermissionRequestTitle">권한이 필요합니다.</string>
+    <string name="Yes">넵</string>
+    <string name="No">아니요</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.sasarinomari.tweetcleaner.adapter
 
+import android.app.Activity
 import android.widget.BaseAdapter
 import twitter4j.User
 import android.graphics.drawable.Drawable
@@ -13,9 +14,17 @@ import android.view.ViewGroup
 import com.sasarinomari.tweetcleaner.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user_unfollow.view.*
+import android.content.Intent
+import androidx.core.content.ContextCompat.startActivity
+import android.net.Uri
+import cn.pedant.SweetAlert.SweetAlertDialog
+import com.sasarinomari.tweetcleaner.SystemPreference
+import twitter4j.Twitter
+import twitter4j.TwitterFactory
 
 
-class UserUnfollowItem(private val users: List<User>) : BaseAdapter() {
+class UserUnfollowItem(private val users: ArrayList<User>,
+                       private val ai:ActivityInterface) : BaseAdapter() {
 
     override fun getCount(): Int {
         return users.size
@@ -41,6 +50,16 @@ class UserUnfollowItem(private val users: List<User>) : BaseAdapter() {
             .load(user.profileImageURL.replace("normal.jpg", "200x200.jpg"))
             .into(convertView.image_profilePicture)
 
+        convertView.button_detail.setOnClickListener {
+            ai.onclickDetail(user.screenName)
+        }
+        convertView.button_unfollow.setOnClickListener {
+            ai.onClickUnfollow(user.id, Runnable {
+                users.remove(user)
+                notifyDataSetChanged()
+            })
+        }
+
         return convertView
     }
 
@@ -50,5 +69,10 @@ class UserUnfollowItem(private val users: List<User>) : BaseAdapter() {
 
     override fun getItem(position: Int): Any {
         return users[position]
+    }
+
+    interface ActivityInterface {
+        fun onClickUnfollow(userId: Long, doneCallback: Runnable)
+        fun onclickDetail(screenName: String)
     }
 }

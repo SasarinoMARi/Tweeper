@@ -1,28 +1,19 @@
 package com.sasarinomari.tweetcleaner
 
 import android.content.Intent
-import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import twitter4j.TwitterException
-import twitter4j.TwitterFactory
-import java.io.IOException
-import android.os.Environment.getExternalStorageDirectory
 import com.sasarinomari.tweetcleaner.hetzer.HetzerActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
 import android.widget.LinearLayout
-import androidx.core.view.size
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.initialization.InitializationStatus
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener
 import com.google.android.gms.ads.MobileAds
 import com.sasarinomari.tweetcleaner.danger.RemoveFriends
-import kotlinx.android.synthetic.main.activity_main.*
+import com.sasarinomari.tweetcleaner.tweetreport.TweetReportActivity
 
 class DashboardActivity : Adam() {
 
@@ -37,7 +28,7 @@ class DashboardActivity : Adam() {
             startActivity(Intent(this, FollowerManagement::class.java))
         }
         button_tweetReport.setOnClickListener {
-            startActivity(Intent(this, TweetReport::class.java))
+            startActivity(Intent(this, TweetReportActivity::class.java))
         }
 
         button_removeFriends.setOnClickListener {

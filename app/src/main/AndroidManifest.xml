@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning"
             tools:replace="android:icon">
-        <activity android:name=".TweetReport">
+        <activity android:name=".tweetreport.TweetReportActivity">
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -28,7 +28,6 @@
         <activity android:name=".DashboardActivity"/>
         <activity android:name=".hetzer.HetzerConditionsActivity"/>
         <activity android:name=".hetzer.HetzerActivity"/>
-        <activity android:name=".FollowingManagement"/>
         <activity android:name=".FollowerManagement"/>
         <activity android:name=".UITestActivity"/>
 

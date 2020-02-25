@@ -13,7 +13,7 @@ internal class ReportRecorder(private val context: Context) {
     fun attachReport(report: Report) {
         val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE).edit()
         val reps = getReports()
-        reps.add(report)
+        reps.add(0, report)
         val json = Gson().toJson(reps)
         prefs.putString(KEY_report, json)
         prefs.apply()

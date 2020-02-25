@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.sasarinomari.tweetcleaner.R
-import kotlinx.android.synthetic.main.view_hetzer_condition.view.*
+import kotlinx.android.synthetic.main.item_hetzer_condition.view.*
 
 class HetzerConditionView(context: Context) : LinearLayout(context) {
 
@@ -19,6 +19,6 @@ class HetzerConditionView(context: Context) : LinearLayout(context) {
     }
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_hetzer_condition, this, true)
+        LayoutInflater.from(context).inflate(R.layout.item_hetzer_condition, this, true)
     }
 }

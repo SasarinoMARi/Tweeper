@@ -6,8 +6,7 @@ import twitter4j.User
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class TweetReport(private val context: Context) {
-
+internal class TweetReport(context: Context) {
     private val rec = ReportRecorder(context)
 
     fun start() {
@@ -25,6 +24,8 @@ internal class TweetReport(private val context: Context) {
     }
 
     private fun writeReport(me: User, fr: List<User>, fw: List<User>) {
+        val recentRep = getReports()[0]
+
         val report = Report()
         report.userId = me.id
         report.date = Date()
@@ -35,6 +36,11 @@ internal class TweetReport(private val context: Context) {
         for (i in fw) {
             report.followers.add(SimpleUser.createFromUser(i))
         }
+
+        // ㅊㅇ
+        report.tweetCountVar = report.tweetCount - recentRep.tweetCount
+        report.friendsVar = report.friends.count() - recentRep.friends.count()
+        report.followersVar = report.followers.count() - recentRep.followers.count()
 
         rec.attachReport(report)
     }

@@ -18,11 +18,12 @@ class TweetReportActivity : Adam() {
 
         setOvalColor()
         initUpdateButton()
-        initReportRecord()
+        initReportRecordList()
     }
 
-    private fun initReportRecord() {
-        engine.getReports()
+    private fun initReportRecordList() {
+        val reports = engine.getReports()
+        listView.adapter = TweetReportItem(reports)
     }
 
     private fun initUpdateButton() {

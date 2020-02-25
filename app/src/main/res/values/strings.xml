@@ -59,4 +59,9 @@
     <string name="JobDone">작업을 완료했습니다.</string>
     <string name="Chainblock">체인블락</string>
     <string name="ChainblockDescription">대상 유저의 모든 팔로잉과 팔로워를 블락합니다.</string>
+    <string name="Report_Label_TweetCount">트윗 수 : </string>
+    <string name="Report_Label_FriendCount">팔로잉 수 : </string>
+    <string name="Report_Label_FollowerCount">팔로워 수 : </string>
+    <string name="Format_Date">yyyy년 MM월 dd일</string>
+    <string name="Format_Time">aa hh시 mm분</string>
 </resources>

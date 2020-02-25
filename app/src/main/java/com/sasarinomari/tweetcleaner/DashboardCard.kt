@@ -2,16 +2,12 @@ package com.sasarinomari.tweetcleaner
 
 import android.content.Context
 import android.content.res.TypedArray
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.view_dashboard_card.view.*
-import android.content.res.Resources.NotFoundException
-import android.graphics.drawable.ColorDrawable
+import kotlinx.android.synthetic.main.item_dashboard_card.view.*
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.ShapeDrawable
 
 class DashboardCard : CardView {
     constructor(context: Context) : super(context) {
@@ -31,7 +27,7 @@ class DashboardCard : CardView {
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
-        LayoutInflater.from(context).inflate(R.layout.view_dashboard_card, this, true)
+        LayoutInflater.from(context).inflate(R.layout.item_dashboard_card, this, true)
         this.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.DashboardCard, defStyle, 0)
         setTypeArray(typedArray)

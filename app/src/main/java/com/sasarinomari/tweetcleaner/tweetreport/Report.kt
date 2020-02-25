@@ -9,8 +9,11 @@ import kotlin.collections.ArrayList
 internal class Report() : Parcelable {
     var userId: Long = -1
     var tweetCount: Int = -1
+    var tweetCountVar: Int? = null
     var friends = ArrayList<SimpleUser>()
+    var friendsVar: Int? = null
     var followers = ArrayList<SimpleUser>()
+    var followersVar: Int? = null
     var date = Date(0)
 
     constructor(parcel: Parcel) : this() {

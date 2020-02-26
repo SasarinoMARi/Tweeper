@@ -75,7 +75,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                android:background="@drawable/arrow_up_bold_box" />
+                android:src="@drawable/arrow_up_bold_box" />
 
             <TextView
                 android:id="@+id/text_tweetCount_Value"
@@ -115,7 +115,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                android:background="@drawable/arrow_up_bold_box" />
+                android:src="@drawable/arrow_up_bold_box" />
 
             <TextView
                 android:id="@+id/text_friendCount_Value"
@@ -155,7 +155,7 @@
                 android:layout_height="20dp"
                 android:layout_marginStart="2dp"
                 android:layout_marginEnd="2dp"
-                android:background="@drawable/arrow_down_bold_box" />
+                android:src="@drawable/arrow_down_bold_box" />
 
             <TextView
                 android:id="@+id/text_FollowerCount_Value"

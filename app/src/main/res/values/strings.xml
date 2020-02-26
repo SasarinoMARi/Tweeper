@@ -64,4 +64,7 @@
     <string name="Report_Label_FollowerCount">팔로워 수 : </string>
     <string name="Format_Date">yyyy년 MM월 dd일</string>
     <string name="Format_Time">aa hh시 mm분</string>
+    <string name="TweetReportProcessing">트윗 일지를 작성중입니다..</string>
+    <string name="TweetReportDone">트윗 일지를 작성했습니다.</string>
+    <string name="TweetReportCant">이미 트윗일지를 기록했습니다.\n앱을 재시작한 후 시도해 주세요.</string>
 </resources>

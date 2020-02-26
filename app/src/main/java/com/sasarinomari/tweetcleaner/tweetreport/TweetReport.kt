@@ -6,7 +6,8 @@ import twitter4j.User
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class TweetReport(context: Context) {
+internal class TweetReport(context: Context,
+                           private val ai: ActivityInterface) {
     private val rec = ReportRecorder(context)
 
     fun start() {
@@ -43,9 +44,14 @@ internal class TweetReport(context: Context) {
         report.followersVar = report.followers.count() - recentRep.followers.count()
 
         rec.attachReport(report)
+        ai.onFinished()
     }
 
     fun getReports(): ArrayList<Report> {
         return rec.getReports()
+    }
+
+    interface ActivityInterface {
+        fun onFinished()
     }
 }

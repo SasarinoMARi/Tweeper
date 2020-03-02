@@ -6,7 +6,7 @@ import twitter4j.User
 import java.util.*
 import kotlin.collections.ArrayList
 
-internal class Report() : Parcelable {
+internal class Report {
     var userId: Long = -1
     var tweetCount: Int = -1
     var tweetCountVar: Int? = null
@@ -16,83 +16,43 @@ internal class Report() : Parcelable {
     var followersVar: Int? = null
     var date = Date(0)
 
-    constructor(parcel: Parcel) : this() {
-        parcel.run {
-            userId = readLong()
-            date = readSerializable() as Date
-            tweetCount = readInt()
-            val friendsCount = readInt()
-            for (i in 0 until friendsCount)
-                friends.add(SimpleUser(parcel))
-            val followersCount = readInt()
-            for (i in 0 until followersCount)
-                followers.add(SimpleUser(parcel))
-        }
+    override operator fun equals(other: Any?): Boolean {
+        return if (other is Report) this.userId == other.userId else super.equals(other)
     }
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.run {
-            writeLong(userId)
-            writeSerializable(date)
-            writeInt(tweetCount)
-            writeInt(friends.count())
-            for (i in friends) i.writeToParcel(dest, flags)
-            writeInt(followers.count())
-            for (i in followers) i.writeToParcel(dest, flags)
-        }
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Report> {
-        override fun createFromParcel(parcel: Parcel): Report {
-            return Report(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Report?> {
-            return arrayOfNulls(size)
-        }
+    override fun hashCode(): Int {
+        var result = userId.hashCode()
+        result = 31 * result + tweetCount
+        result = 31 * result + (tweetCountVar ?: 0)
+        result = 31 * result + friends.hashCode()
+        result = 31 * result + (friendsVar ?: 0)
+        result = 31 * result + followers.hashCode()
+        result = 31 * result + (followersVar ?: 0)
+        result = 31 * result + date.hashCode()
+        return result
     }
 }
 
-internal class SimpleUser() : Parcelable {
+internal class SimpleUser {
     var id: Long = -1
     var screenName: String? = null
 
-    constructor(parcel: Parcel) : this() {
-        parcel.run {
-            id = readLong()
-            screenName = readString()
-        }
-    }
-
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.run {
-            writeLong(id)
-            writeString(screenName)
-        }
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<SimpleUser> {
-        override fun createFromParcel(parcel: Parcel): SimpleUser {
-            return SimpleUser(parcel)
-        }
-
-        override fun newArray(size: Int): Array<SimpleUser?> {
-            return arrayOfNulls(size)
-        }
-
+    companion object CREATOR {
         fun createFromUser(user: User): SimpleUser {
             val me = SimpleUser()
             me.id = user.id
             me.screenName = me.screenName
             return me
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return if (other is SimpleUser) this.id == other.id else super.equals(other)
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + (screenName?.hashCode() ?: 0)
+        return result
     }
 }

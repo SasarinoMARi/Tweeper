@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.R
 import kotlinx.android.synthetic.main.item_tweet_report.view.*
 import java.text.SimpleDateFormat
@@ -114,6 +115,10 @@ internal class TweetReportItem: BaseAdapter() {
 
     override fun getItem(position: Int): Report {
         return reports[position]
+    }
+
+    fun getItemToJson(position: Int): String? {
+        return Gson().toJson(getItem(position))
     }
 
 }

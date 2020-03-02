@@ -17,6 +17,7 @@
             tools:replace="android:icon">
         <activity android:name=".tweetreport.TweetReportActivity">
         </activity>
+        <activity android:name=".tweetreport.TweetReportDetail"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

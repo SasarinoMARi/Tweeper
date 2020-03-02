@@ -1,5 +1,6 @@
 package com.sasarinomari.tweetcleaner.tweetreport
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -28,17 +29,28 @@ class TweetReportActivity : Adam() {
 
     private lateinit var dProcessing: SweetAlertDialog
     private lateinit var dDone: SweetAlertDialog
-    private lateinit var dCant : SweetAlertDialog
+    private lateinit var dCant: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tweet_report)
 
         setOvalColor()
-        listView.adapter = adapter
+        initListView()
         initDialogs()
         initUpdateButton()
         updateReportRecordList()
+    }
+
+    private fun initListView() {
+        listView.adapter = adapter
+        listView.setOnItemClickListener { parent, view, position, id ->
+            if (adapter.count-1 == position) return@setOnItemClickListener
+            val intent = Intent(this@TweetReportActivity, TweetReportDetail::class.java)
+            intent.putExtra(TweetReportDetail.currentData, adapter.getItemToJson(position))
+            intent.putExtra(TweetReportDetail.previousData, adapter.getItemToJson(position + 1))
+            startActivity(intent)
+        }
     }
 
     private fun initDialogs() {
@@ -67,23 +79,12 @@ class TweetReportActivity : Adam() {
 
     private fun initUpdateButton() {
         button_update.setOnClickListener {
-            if(!reportWritten) {
+            if (!reportWritten) {
                 engine.start()
                 dProcessing.show()
-            }
-            else {
+            } else {
                 dCant.show()
             }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        PermissionHelper.onRequestPermissionsResult(this, permissions, requestCode, grantResults) {
-            finish()
         }
     }
 

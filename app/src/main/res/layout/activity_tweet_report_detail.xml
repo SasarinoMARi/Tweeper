@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
+        android:background="#83D5ff"
         android:paddingTop="1dp"
         android:paddingBottom="1dp">
 
@@ -56,8 +56,6 @@
         android:id="@+id/layout_newFriends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="4dp"
         android:orientation="vertical">
 
         <TextView
@@ -66,7 +64,14 @@
             android:fontFamily="@font/noto_sans_bold"
             android:text="@string/NewFriends"
             android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#83D5ff" />
 
     </LinearLayout>
 
@@ -74,8 +79,8 @@
         android:id="@+id/layout_noMoreFriends"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -86,14 +91,19 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#83D5ff" />
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_newFollowers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -104,14 +114,19 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#83D5ff" />
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_noMoreFollowers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="4dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -121,6 +136,11 @@
             android:text="@string/NoMoreFollowers"
             android:textColor="@color/white"
             android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#83D5ff" />
 
     </LinearLayout>
 

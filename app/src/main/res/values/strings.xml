@@ -67,8 +67,8 @@
     <string name="TweetReportProcessing">트윗 일지를 작성중입니다..</string>
     <string name="TweetReportDone">트윗 일지를 작성했습니다.</string>
     <string name="TweetReportCant">이미 트윗일지를 기록했습니다.\n앱을 재시작한 후 시도해 주세요.</string>
-    <string name="NewFriends">새 친구들</string>
-    <string name="NoMoreFriends">더는 친구가 아니야..</string>
-    <string name="NewFollowers">새 팔로워!</string>
-    <string name="NoMoreFollowers">당신에게 등을 진 사람</string>
+    <string name="NewFriends">이어진 팔로우</string>
+    <string name="NoMoreFriends">끊어진 팔로우</string>
+    <string name="NewFollowers">새로운 팔로워</string>
+    <string name="NoMoreFollowers">사라진 팔로워</string>
 </resources>

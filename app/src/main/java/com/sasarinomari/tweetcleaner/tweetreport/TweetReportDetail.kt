@@ -1,13 +1,20 @@
 package com.sasarinomari.tweetcleaner.tweetreport
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_tweet_report_detail.*
+import kotlinx.android.synthetic.main.item_simpleuser.view.*
 import kotlinx.android.synthetic.main.item_tweet_report.view.*
 import java.text.SimpleDateFormat
 
@@ -27,7 +34,6 @@ class TweetReportDetail : Adam() {
 
         initHeader(currentReport)
         initBody(currentReport, previousReport)
-
     }
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
@@ -134,36 +140,44 @@ class TweetReportDetail : Adam() {
 
         if (newFriends.count() > 0)
             for (i in newFriends) {
-                layout_newFriends.addView(addReportView(i))
+                addReportView(layout_newFriends, i)
             }
         else layout_newFriends.visibility = View.GONE
 
         if (noMoreFriends.count() > 0)
             for (i in noMoreFriends) {
-                layout_noMoreFriends.addView(addReportView(i))
+                addReportView(layout_noMoreFriends, i)
             }
         else layout_noMoreFriends.visibility = View.GONE
 
         if (newFollowers.count() > 0)
             for (i in newFollowers) {
-                layout_newFollowers.addView(addReportView(i))
+                addReportView(layout_newFollowers, i)
             }
         else layout_newFollowers.visibility = View.GONE
 
         if (noMoreFollowers.count() > 0)
             for (i in noMoreFollowers) {
-                layout_noMoreFollowers.addView(addReportView(i))
+                addReportView(layout_noMoreFollowers, i)
             }
         else layout_noMoreFollowers.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
-    private fun addReportView(user: SimpleUser): View {
-        val tv = TextView(this)
-        tv.textSize = 15f
-        tv.setTextColor(getColor(R.color.white))
-        tv.text = "@${user.screenName}(${user.id})"
-        return tv
+    private fun addReportView(parent: ViewGroup, user: SimpleUser) {
+        val view = LayoutInflater.from(this).inflate(R.layout.item_simpleuser, parent, false)
+        view.text_Name.text = user.name
+        view.text_ScreenName.text = "@${user.screenName}"
+        view.text_Id.text = user.id.toString()
+        Picasso.get()
+            .load(user.profilePicUrl)
+            .into(view.image_profilePicture)
+
+        view.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=${user.screenName}")))
+        }
+
+        parent.addView(view)
     }
 
     private fun getReport(json: String): Report? {

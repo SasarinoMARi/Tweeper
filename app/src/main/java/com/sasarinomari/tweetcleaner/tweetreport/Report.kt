@@ -1,7 +1,5 @@
 package com.sasarinomari.tweetcleaner.tweetreport
 
-import android.os.Parcel
-import android.os.Parcelable
 import twitter4j.User
 import java.util.*
 import kotlin.collections.ArrayList
@@ -21,27 +19,23 @@ internal class Report {
     }
 
     override fun hashCode(): Int {
-        var result = userId.hashCode()
-        result = 31 * result + tweetCount
-        result = 31 * result + (tweetCountVar ?: 0)
-        result = 31 * result + friends.hashCode()
-        result = 31 * result + (friendsVar ?: 0)
-        result = 31 * result + followers.hashCode()
-        result = 31 * result + (followersVar ?: 0)
-        result = 31 * result + date.hashCode()
-        return result
+        return userId.hashCode()
     }
 }
 
 internal class SimpleUser {
     var id: Long = -1
     var screenName: String? = null
+    var name : String? = null
+    var profilePicUrl: String? = null
 
     companion object CREATOR {
         fun createFromUser(user: User): SimpleUser {
             val me = SimpleUser()
             me.id = user.id
-            me.screenName = me.screenName
+            me.screenName = user.screenName
+            me.profilePicUrl = user.profileImageURL
+            me.name = user.name
             return me
         }
     }
@@ -51,8 +45,6 @@ internal class SimpleUser {
     }
 
     override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + (screenName?.hashCode() ?: 0)
-        return result
+        return id.hashCode()
     }
 }

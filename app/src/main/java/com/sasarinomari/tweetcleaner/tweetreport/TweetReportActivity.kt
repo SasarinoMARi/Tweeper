@@ -80,8 +80,8 @@ class TweetReportActivity : Adam() {
     private fun initUpdateButton() {
         button_update.setOnClickListener {
             if (!reportWritten) {
-                engine.start()
                 dProcessing.show()
+                engine.start()
             } else {
                 dCant.show()
             }

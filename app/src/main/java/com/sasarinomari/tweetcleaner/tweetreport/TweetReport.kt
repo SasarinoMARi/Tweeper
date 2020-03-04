@@ -5,7 +5,6 @@ import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 import com.sasarinomari.tweetcleaner.SimpleUser
 import twitter4j.User
 import java.util.*
-import kotlin.collections.ArrayList
 
 internal class TweetReport(context: Context,
                            private val ai: ActivityInterface) {
@@ -16,9 +15,14 @@ internal class TweetReport(context: Context,
     }
 
     private fun fetchUserData() {
-        SharedTwitterProperties.getMe { me ->
-            SharedTwitterProperties.getFollowers { fw ->
-                SharedTwitterProperties.getFriends { fr ->
+        val ai = object : SharedTwitterProperties.ActivityInterface {
+            override fun onRateLimit(apiPoint: String) {
+                ai.onRateLimit(apiPoint)
+            }
+        }
+        SharedTwitterProperties.getMe(ai) { me ->
+            SharedTwitterProperties.getFollowers(ai) { fw ->
+                SharedTwitterProperties.getFriends(ai) { fr ->
                     writeReport(me, fr, fw)
                 }
             }
@@ -55,6 +59,7 @@ internal class TweetReport(context: Context,
     }
 
     interface ActivityInterface {
+        fun onRateLimit(apiPoint: String)
         fun onFinished()
     }
 }

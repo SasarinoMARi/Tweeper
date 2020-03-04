@@ -10,6 +10,7 @@ import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 
+/*
 class RemoveFriends : Adam() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,3 +82,4 @@ class RemoveFriends : Adam() {
 
     }
 }
+        */

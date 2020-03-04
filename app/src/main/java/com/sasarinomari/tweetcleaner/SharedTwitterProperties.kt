@@ -26,21 +26,25 @@ class SharedTwitterProperties private constructor() {
             return twitter
         }
 
-        @Throws(TwitterException::class)
-        fun getMe(callback: (User) -> Unit) {
+        fun getMe(ai: ActivityInterface, callback: (User) -> Unit) {
             if (me != null) {
                 callback(me!!)
                 return
             }
             Thread(Runnable {
-                val twitter = SharedTwitterProperties.instance()
-                me = twitter.showUser(twitter.id)
+                try {
+                    val twitter = SharedTwitterProperties.instance()
+                    me = twitter.showUser(twitter.id)
+                } catch (te: TwitterException) {
+                    te.printStackTrace()
+                    ai.onRateLimit("show/user/me")
+                }
                 callback(me!!)
             }).start()
         }
 
         @Throws(TwitterException::class)
-        fun getFriends(callback: (List<User>) -> Unit) {
+        fun getFriends(ai: ActivityInterface, callback: (List<User>) -> Unit) {
             if (friends != null) {
                 callback(friends!!)
                 return
@@ -51,21 +55,26 @@ class SharedTwitterProperties private constructor() {
                 // gets Twitter instance with default credentials
                 var cursor: Long = -1
                 val twitter = SharedTwitterProperties.instance()
-                getMe { me ->
-                    while (true) {
-                        val users = twitter.getFriendsList(me.id, cursor, 100, true, true)
-                        list.addAll(users)
-                        if (users.hasNext()) cursor = users.nextCursor
-                        else break
+                getMe(ai) { me ->
+                    try {
+                        while (true) {
+                            val users = twitter.getFriendsList(me.id, cursor, 100, true, true)
+                            list.addAll(users)
+                            if (users.hasNext()) cursor = users.nextCursor
+                            else break
+                        }
+                        friends = list
+                        callback(list)
+                    } catch (te: TwitterException) {
+                        te.printStackTrace()
+                        ai.onRateLimit("get/friends")
                     }
-                    friends = list
-                    callback(list)
                 }
             }).start()
         }
 
         @Throws(TwitterException::class)
-        fun getFollowers(callback: (List<User>) -> Unit) {
+        fun getFollowers(ai: ActivityInterface, callback: (List<User>) -> Unit) {
             if (followers != null) {
                 callback(followers!!)
                 return
@@ -76,15 +85,20 @@ class SharedTwitterProperties private constructor() {
                 // gets Twitter instance with default credentials
                 var cursor: Long = -1
                 val twitter = SharedTwitterProperties.instance()
-                getMe { me ->
-                    while (true) {
-                        val users = twitter.getFollowersList(me.id, cursor, 100, true, true)
-                        list.addAll(users)
-                        if (users.hasNext()) cursor = users.nextCursor
-                        else break
+                getMe(ai) { me ->
+                    try {
+                        while (true) {
+                            val users = twitter.getFollowersList(me.id, cursor, 100, true, true)
+                            list.addAll(users)
+                            if (users.hasNext()) cursor = users.nextCursor
+                            else break
+                        }
+                        followers = list
+                        callback(list)
+                    } catch (te: TwitterException) {
+                        te.printStackTrace()
+                        ai.onRateLimit("get/followers")
                     }
-                    followers = list
-                    callback(list)
                 }
             }).start()
         }
@@ -96,6 +110,10 @@ class SharedTwitterProperties private constructor() {
             followers = null
             reportWritten = false
         }
+    }
+
+    interface ActivityInterface {
+        fun onRateLimit(apiPoint: String)
     }
 }
 

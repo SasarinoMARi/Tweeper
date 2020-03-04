@@ -28,7 +28,7 @@
         <activity android:name=".DashboardActivity"/>
         <activity android:name=".hetzer.HetzerConditionsActivity"/>
         <activity android:name=".hetzer.HetzerActivity"/>
-        <activity android:name=".FollowerManagement"/>
+        <activity android:name=".fwmanage.FollowerManagement"/>
         <activity android:name=".UITestActivity"/>
         <activity android:name=".auth.AuthenticationActivity" />
 

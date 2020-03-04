@@ -1,4 +1,4 @@
-package com.sasarinomari.tweetcleaner.adapter
+package com.sasarinomari.tweetcleaner.fwmanage
 
 import android.widget.BaseAdapter
 import twitter4j.User

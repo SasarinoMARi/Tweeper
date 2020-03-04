@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context=".FollowerManagement">
+    tools:context=".fwmanage.FollowerManagement">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,4 +43,19 @@
         android:layout_height="match_parent"
         android:divider="@null" />
 
+    <LinearLayout
+        android:id="@+id/layout_noApplicable"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/noto_sans_light"
+            android:text="@string/NoApplicableUser"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 </LinearLayout>

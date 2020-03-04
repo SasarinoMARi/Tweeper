@@ -3,14 +3,14 @@ package com.sasarinomari.tweetcleaner
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.auth.AuthData
 import com.sasarinomari.tweetcleaner.auth.TokenManagementActivity
 import twitter4j.TwitterFactory
 import java.lang.Exception
 
 
-class MainActivity : Adam() {
-
+class MainActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,7 +24,7 @@ class MainActivity : Adam() {
             else -> {
                 SharedTwitterProperties.instance().oAuthAccessToken = loggedUser.token!!
                 try {
-                    SharedTwitterProperties.getMe {
+                    SharedTwitterProperties.getMe(this) {
                         openDashboard()
                         finish()
                     }
@@ -53,5 +53,14 @@ class MainActivity : Adam() {
 
     private fun doAuth() {
         startActivityForResult(Intent(this, TokenManagementActivity::class.java), 0)
+    }
+
+    override fun onRateLimit(apiPoint: String) {
+        runOnUiThread {
+            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.Error))
+                .setContentText(getString(R.string.RateLimitError, apiPoint))
+                .show()
+        }
     }
 }

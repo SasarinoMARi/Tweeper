@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
 import android.widget.LinearLayout
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -15,12 +16,11 @@ import com.google.android.gms.ads.MobileAds
 import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.auth.AuthData
 import com.sasarinomari.tweetcleaner.auth.TokenManagementActivity
-import com.sasarinomari.tweetcleaner.danger.RemoveFriends
+import com.sasarinomari.tweetcleaner.fwmanage.FollowerManagement
 import com.sasarinomari.tweetcleaner.tweetreport.TweetReportActivity
 import twitter4j.TwitterFactory
 
-class DashboardActivity : Adam() {
-
+class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
@@ -36,10 +36,6 @@ class DashboardActivity : Adam() {
         }
         button_tweetReport.setOnClickListener {
             startActivity(Intent(this, TweetReportActivity::class.java))
-        }
-
-        button_removeFriends.setOnClickListener {
-            startActivity(Intent(this, RemoveFriends::class.java))
         }
 
         image_profilePicture.background = ShapeDrawable(OvalShape())
@@ -67,7 +63,7 @@ class DashboardActivity : Adam() {
         text_ScreenName.text = ""
         image_profilePicture.setImageResource(0)
 
-        SharedTwitterProperties.getMe { me ->
+        SharedTwitterProperties.getMe(this) { me ->
             runOnUiThread {
                 text_Name.text = me.name
                 text_ScreenName.text = me.screenName
@@ -110,5 +106,14 @@ class DashboardActivity : Adam() {
         SharedTwitterProperties.clear(newTwitter)
         AuthData.Recorder(this).setFocusedUser(authData)
         setResult(RESULT_OK)
+    }
+
+    override fun onRateLimit(apiPoint: String) {
+        runOnUiThread {
+            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.Error))
+                .setContentText(getString(R.string.RateLimitError, apiPoint))
+                .show()
+        }
     }
 }

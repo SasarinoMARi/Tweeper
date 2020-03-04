@@ -1,60 +1,56 @@
-package com.sasarinomari.tweetcleaner
+package com.sasarinomari.tweetcleaner.fwmanage
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.sasarinomari.tweetcleaner.adapter.UserUnfollowItem
+import com.sasarinomari.tweetcleaner.Adam
+import com.sasarinomari.tweetcleaner.R
+import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 import kotlinx.android.synthetic.main.activity_follower_management.*
 import twitter4j.TwitterException
-import twitter4j.TwitterFactory
 import twitter4j.User
 
-class FollowerManagement : AppCompatActivity() {
+class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
+    private lateinit var pDialog: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_follower_management)
 
-
-        val pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
             .setTitleText(getString(R.string.FriendPulling))
 
-        pDialog.progressHelper.barColor =
-            ContextCompat.getColor(this, R.color.colorAccent)
+        pDialog.progressHelper.barColor = ContextCompat.getColor(this, R.color.colorAccent)
         pDialog.setCancelable(false)
         pDialog.show()
 
-        try {
-            SharedTwitterProperties.getFriends { fs ->
-                runOnUiThread {
-                    pDialog.titleText = getString(R.string.FollowerPulling)
-                }
-                SharedTwitterProperties.getFollowers { fw ->
-                    runOnUiThread {
-                        pDialog.titleText = getString(R.string.CompareFsFw)
-                    }
-                    val uf = comLists(fs, fw)
-                    runOnUiThread {
-                        pDialog.dismiss()
-                        initializeUi(uf)
-                    }
-                }
-            }
-        } catch (te: TwitterException) {
-            te.printStackTrace()
+        SharedTwitterProperties.getFriends(this) { fs ->
             runOnUiThread {
-                SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText(getString(R.string.Error))
-                    .setContentText("Rate Limit Exceeded")
-                    .show()
+                pDialog.titleText = getString(R.string.FollowerPulling)
+            }
+            SharedTwitterProperties.getFollowers(this) { fw ->
+                runOnUiThread {
+                    pDialog.titleText = getString(R.string.CompareFsFw)
+                }
+                val uf = comLists(fs, fw)
+                runOnUiThread {
+                    pDialog.dismissWithAnimation()
+                    initializeUi(uf)
+                }
             }
         }
     }
 
     private fun initializeUi(uf: ArrayList<User>) {
+        if (uf.isEmpty()) {
+            list.visibility = View.GONE
+            layout_noApplicable.visibility = View.VISIBLE
+            return
+        }
         list.adapter = UserUnfollowItem(uf, object : UserUnfollowItem.ActivityInterface {
             override fun onClickUnfollow(userId: Long, doneCallback: Runnable) {
                 val d1 = SweetAlertDialog(this@FollowerManagement, SweetAlertDialog.WARNING_TYPE)
@@ -63,20 +59,19 @@ class FollowerManagement : AppCompatActivity() {
                     .setConfirmText(getString(R.string.Yes))
 
                 d1.setConfirmClickListener {
-                    d1.dismiss()
+                    d1.dismissWithAnimation()
                     Thread(Runnable {
                         val twitter = SharedTwitterProperties.instance()
                         twitter.destroyFriendship(userId)
                         runOnUiThread {
-                            val d2 =
-                                SweetAlertDialog(
-                                    this@FollowerManagement,
-                                    SweetAlertDialog.SUCCESS_TYPE
-                                )
-                                    .setTitleText(getString(R.string.Done))
-                                    .setContentText(getString(R.string.JobDone))
+                            val d2 = SweetAlertDialog(
+                                this@FollowerManagement,
+                                SweetAlertDialog.SUCCESS_TYPE
+                            )
+                                .setTitleText(getString(R.string.Done))
+                                .setContentText(getString(R.string.JobDone))
                             d2.setConfirmClickListener {
-                                d2.dismiss()
+                                d2.dismissWithAnimation()
                                 doneCallback.run()
                             }
                             d2.show()
@@ -122,5 +117,18 @@ class FollowerManagement : AppCompatActivity() {
             }
         }
         return res
+    }
+
+    override fun onRateLimit(apiPoint: String) {
+        runOnUiThread {
+            pDialog.dismissWithAnimation()
+            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.Error))
+                .setContentText(getString(R.string.RateLimitError, apiPoint))
+                .setConfirmClickListener {
+                    finish()
+                }
+                .show()
+        }
     }
 }

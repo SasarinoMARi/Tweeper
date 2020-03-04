@@ -3,6 +3,7 @@ package com.sasarinomari.tweetcleaner.auth
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.booms.webview.BoomWebView
@@ -15,7 +16,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
 
-class AuthenticationActivity : Adam() {
+class AuthenticationActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     private val twitterInstance = TwitterFactory().instance
     private var webView: BoomWebView? = null
     private lateinit var requestToken: RequestToken
@@ -84,7 +85,7 @@ class AuthenticationActivity : Adam() {
 
     private fun apiTest(accessToken: AccessToken) {
         SharedTwitterProperties.clear(twitterInstance)
-        SharedTwitterProperties.getMe { user ->
+        SharedTwitterProperties.getMe(this) { user ->
             val authData = AuthData()
             authData.token = accessToken
             authData.lastLogin = Date()
@@ -98,6 +99,14 @@ class AuthenticationActivity : Adam() {
             setResult(RESULT_OK)
             finish()
         }
+    }
 
+    override fun onRateLimit(apiPoint: String) {
+        runOnUiThread {
+            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                .setTitleText(getString(R.string.Error))
+                .setContentText(getString(R.string.RateLimitError, apiPoint))
+                .show()
+        }
     }
 }

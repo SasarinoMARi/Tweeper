@@ -1,26 +1,14 @@
 package com.sasarinomari.tweetcleaner.adapter
 
-import android.app.Activity
 import android.widget.BaseAdapter
 import twitter4j.User
-import android.graphics.drawable.Drawable
-import android.content.Context
-import android.widget.TextView
 import android.content.Context.LAYOUT_INFLATER_SERVICE
-import androidx.core.content.ContextCompat.getSystemService
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sasarinomari.tweetcleaner.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user_unfollow.view.*
-import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
-import android.net.Uri
-import cn.pedant.SweetAlert.SweetAlertDialog
-import com.sasarinomari.tweetcleaner.SystemPreference
-import twitter4j.Twitter
-import twitter4j.TwitterFactory
 
 
 class UserUnfollowItem(private val users: ArrayList<User>,

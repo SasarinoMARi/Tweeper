@@ -9,7 +9,7 @@ import kotlin.collections.ArrayList
 
 internal class TweetReport(context: Context,
                            private val ai: ActivityInterface) {
-    private val rec = ReportRecorder(context)
+    private val rec = Report.Recorder(context)
 
     fun start() {
         fetchUserData()
@@ -26,8 +26,6 @@ internal class TweetReport(context: Context,
     }
 
     private fun writeReport(me: User, fr: List<User>, fw: List<User>) {
-        val recentRep = getReports()[0]
-
         val report = Report()
         report.userId = me.id
         report.date = Date()
@@ -40,9 +38,13 @@ internal class TweetReport(context: Context,
         }
 
         // ㅊㅇ
-        report.tweetCountVar = report.tweetCount - recentRep.tweetCount
-        report.friendsVar = report.friends.count() - recentRep.friends.count()
-        report.followersVar = report.followers.count() - recentRep.followers.count()
+        val reps = getReports()
+        if(reps.isNotEmpty()) {
+            val recentRep = reps[0]
+            report.tweetCountVar = report.tweetCount - recentRep.tweetCount
+            report.friendsVar = report.friends.count() - recentRep.friends.count()
+            report.followersVar = report.followers.count() - recentRep.followers.count()
+        }
 
         rec.attachReport(report)
         ai.onFinished()

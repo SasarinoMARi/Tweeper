@@ -18,7 +18,6 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
-import com.sasarinomari.tweetcleaner.SystemPreference
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 import cn.pedant.SweetAlert.SweetAlertDialog
 
@@ -47,7 +46,7 @@ class HetzerConditionsActivity : Adam() {
                 .setContentText(getString(R.string.TweetCannotRestore))
                 .setConfirmText(getString(R.string.YesDeleteIt))
                 .setConfirmClickListener {
-                    SystemPreference.HetzerConditions.set(this@HetzerConditionsActivity, conditions.toJson())
+                    HetzerConditions.Recorder(this).set(conditions)
                     val i = Intent()
                     i.putExtra(Results.Conditions.name, conditions)
                     setResult(RESULT_OK, i)
@@ -58,8 +57,7 @@ class HetzerConditionsActivity : Adam() {
     }
 
     private fun initializeWithHetzerConditions() {
-        val json = SystemPreference.HetzerConditions.getString(this) ?: return
-        conditions = Gson().fromJson(json, HetzerConditions::class.java)
+        conditions = HetzerConditions.Recorder(this).get() ?:return
         if (conditions.avoidMyFav) addCondition_FavMySelf()
         if (conditions.avoidRetweetCount > 0) addCondition_RetweetCount(conditions.avoidRetweetCount)
         if (conditions.avoidFavCount > 0) addCondition_FavCount(conditions.avoidFavCount)

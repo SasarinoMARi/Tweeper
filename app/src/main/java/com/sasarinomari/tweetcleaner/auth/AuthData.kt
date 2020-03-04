@@ -24,7 +24,7 @@ class AuthData {
 
     internal class Recorder(private val context: Context) {
         private var prefId = "record"
-        private var KEY_report = "auth"
+        private var key = "auth"
 
         @SuppressLint("CommitPrefEdits")
         fun addUser(report: AuthData) {
@@ -32,7 +32,7 @@ class AuthData {
             val authData = getUsers()
             authData.add(0, report)
             val json = Gson().toJson(authData)
-            prefs.putString(KEY_report, json)
+            prefs.putString(key, json)
             prefs.apply()
         }
 
@@ -43,13 +43,13 @@ class AuthData {
         private fun saveUsers(authData: ArrayList<AuthData>) {
             val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE).edit()
             val json = Gson().toJson(authData)
-            prefs.putString(KEY_report, json)
+            prefs.putString(key, json)
             prefs.apply()
         }
 
         fun getUsers(): ArrayList<AuthData> {
             val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE)
-            val json = prefs.getString(KEY_report, null) ?: return ArrayList()
+            val json = prefs.getString(key, null) ?: return ArrayList()
             val type = object : TypeToken<ArrayList<AuthData>>() {}.type
             return Gson().fromJson(json, type)
         }

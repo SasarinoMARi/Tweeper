@@ -1,8 +1,12 @@
 package com.sasarinomari.tweetcleaner.hetzer
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 
 
 class HetzerConditions() : Parcelable {
@@ -61,6 +65,29 @@ class HetzerConditions() : Parcelable {
 
         override fun newArray(size: Int): Array<HetzerConditions?> {
             return arrayOfNulls(size)
+        }
+    }
+
+    internal class Recorder(private val context: Context) {
+        private var prefId = "record"
+
+        @SuppressLint("CommitPrefEdits")
+        fun set(con: HetzerConditions) {
+            val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE).edit()
+            val json = Gson().toJson(con)
+            prefs.putString(getKey(), json)
+            prefs.apply()
+        }
+
+        fun get(): HetzerConditions? {
+            val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE)
+            val json = prefs.getString(getKey(), null) ?: return null
+            val type = object : TypeToken<HetzerConditions>() {}.type
+            return Gson().fromJson(json, type)
+        }
+
+        private fun getKey() : String {
+            return "hCon" + SharedTwitterProperties.instance().id
         }
     }
 }

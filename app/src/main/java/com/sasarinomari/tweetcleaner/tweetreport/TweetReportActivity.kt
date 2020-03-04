@@ -7,17 +7,14 @@ import android.os.Bundle
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
+import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 import com.sasarinomari.tweetcleaner.permissionhelper.PermissionHelper
 import kotlinx.android.synthetic.main.activity_tweet_report.*
 
 class TweetReportActivity : Adam() {
-    companion object {
-        var reportWritten = false
-    }
-
     private val engine = TweetReport(this, object : TweetReport.ActivityInterface {
         override fun onFinished() {
-            reportWritten = true
+            SharedTwitterProperties.reportWritten = true
             runOnUiThread {
                 dProcessing.dismiss()
                 dDone.show()
@@ -76,7 +73,7 @@ class TweetReportActivity : Adam() {
 
     private fun initUpdateButton() {
         button_update.setOnClickListener {
-            if (!reportWritten) {
+            if (!SharedTwitterProperties.reportWritten) {
                 dProcessing.show()
                 engine.start()
             } else {

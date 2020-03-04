@@ -20,6 +20,7 @@ class SharedTwitterProperties private constructor() {
         private var me: User? = null
         private var friends: List<User>? = null
         private var followers: List<User>? = null
+        var reportWritten = false // 트윗일지에서 사용
 
         fun instance(): Twitter {
             return twitter
@@ -93,6 +94,7 @@ class SharedTwitterProperties private constructor() {
             me = null
             friends = null
             followers = null
+            reportWritten = false
         }
     }
 }

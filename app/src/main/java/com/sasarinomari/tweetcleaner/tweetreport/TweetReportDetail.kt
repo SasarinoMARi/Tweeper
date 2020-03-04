@@ -175,7 +175,11 @@ class TweetReportDetail : Adam() {
             .into(view.image_profilePicture)
 
         view.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=${user.screenName}")))
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=${user.screenName}")))
+            } catch (e: Exception) {
+                startActivity(Intent(Intent.ACTION_VIEW,Uri.parse("https://twitter.com/#!/${user.screenName}")))
+            }
         }
 
         parent.addView(view)

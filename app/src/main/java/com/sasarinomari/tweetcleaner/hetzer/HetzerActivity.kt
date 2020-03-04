@@ -33,7 +33,7 @@ class HetzerActivity : Adam(), HetzerInterface {
             .setTitleText(getString(R.string.Hetzer_TweetPulling))
 
         pDialog.progressHelper.barColor =
-            ContextCompat.getColor(this@HetzerActivity, R.color.colorAccent)
+            ContextCompat.getColor(this@HetzerActivity, R.color.colorSecondary)
         pDialog.setCancelable(false)
         pDialog.show()
 

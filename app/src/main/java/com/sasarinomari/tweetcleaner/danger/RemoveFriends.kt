@@ -31,7 +31,7 @@ class RemoveFriends : Adam() {
             .setTitleText(getString(R.string.FriendPulling))
 
         pDialog.progressHelper.barColor =
-            ContextCompat.getColor(this, R.color.colorAccent)
+            ContextCompat.getColor(this, R.color.colorSecondary)
         pDialog.setCancelable(false)
         pDialog.show()
 

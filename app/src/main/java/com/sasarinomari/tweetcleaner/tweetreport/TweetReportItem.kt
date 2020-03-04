@@ -9,6 +9,7 @@ import android.widget.BaseAdapter
 import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.R
 import kotlinx.android.synthetic.main.item_tweet_report.view.*
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 
@@ -24,6 +25,7 @@ internal class TweetReportItem: BaseAdapter() {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         val context = parent.context
+        val df = DecimalFormat("###,###")
 
         if (convertView == null) {
             val inflater = context.getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -40,68 +42,68 @@ internal class TweetReportItem: BaseAdapter() {
 
         when {
             report.tweetCountVar == null || report.tweetCountVar == 0 -> { // 값 없음 (첫번째 로그일 경우)
-                convertView.text_tweetCount.text = report.tweetCount.toString()
+                convertView.text_tweetCount.text = df.format(report.tweetCount)
                 convertView.image_tweetCount_Arrow.visibility = View.GONE
                 convertView.text_tweetCount_Value.visibility = View.GONE
             }
             report.tweetCountVar!! < 0 -> { // 감소
-                convertView.text_tweetCount.text = "${report.tweetCount} ("
+                convertView.text_tweetCount.text = "${df.format(report.tweetCount)} ("
                 convertView.image_tweetCount_Arrow.visibility = View.VISIBLE
                 convertView.text_tweetCount_Value.visibility = View.VISIBLE
                 convertView.image_tweetCount_Arrow.setImageResource(R.drawable.arrow_down_bold_box)
-                convertView.text_tweetCount_Value.text = "${report.tweetCountVar})"
+                convertView.text_tweetCount_Value.text = "${df.format(report.tweetCountVar)})"
             }
             else -> { // 증가
-                convertView.text_tweetCount.text = "${report.tweetCount} ("
+                convertView.text_tweetCount.text = "${df.format(report.tweetCount)} ("
                 convertView.image_tweetCount_Arrow.visibility = View.VISIBLE
                 convertView.text_tweetCount_Value.visibility = View.VISIBLE
                 convertView.image_tweetCount_Arrow.setImageResource(R.drawable.arrow_up_bold_box)
-                convertView.text_tweetCount_Value.text = "${report.tweetCountVar})"
+                convertView.text_tweetCount_Value.text = "${df.format(report.tweetCountVar)})"
             }
         }
 
 
         when {
             report.friendsVar == null || report.friendsVar == 0 -> {
-                convertView.text_friendCount.text = report.friends.count().toString()
+                convertView.text_friendCount.text = df.format(report.friends.count())
                 convertView.image_friendCount_Arrow.visibility = View.GONE
                 convertView.text_friendCount_Value.visibility = View.GONE
             }
             report.friendsVar!! < 0 -> {
-                convertView.text_friendCount.text = "${report.friends.count()} ("
+                convertView.text_friendCount.text = "${df.format(report.friends.count())} ("
                 convertView.image_friendCount_Arrow.visibility = View.VISIBLE
                 convertView.text_friendCount_Value.visibility = View.VISIBLE
                 convertView.image_friendCount_Arrow.setImageResource(R.drawable.arrow_down_bold_box)
-                convertView.text_friendCount_Value.text = "${report.friendsVar})"
+                convertView.text_friendCount_Value.text = "${df.format(report.friendsVar)})"
             }
             else -> {
-                convertView.text_friendCount.text = "${report.friends.count()} ("
+                convertView.text_friendCount.text = "${df.format(report.friends.count())} ("
                 convertView.image_friendCount_Arrow.visibility = View.VISIBLE
                 convertView.text_friendCount_Value.visibility = View.VISIBLE
                 convertView.image_friendCount_Arrow.setImageResource(R.drawable.arrow_up_bold_box)
-                convertView.text_friendCount_Value.text = "${report.friendsVar})"
+                convertView.text_friendCount_Value.text = "${df.format(report.friendsVar)})"
             }
         }
 
         when {
             report.followersVar == null || report.followersVar == 0 -> {
-                convertView.text_followerCount.text = report.followers.count().toString()
+                convertView.text_followerCount.text = df.format(report.followers.count())
                 convertView.image_followerCount_Image.visibility = View.GONE
                 convertView.text_FollowerCount_Value.visibility = View.GONE
             }
             report.followersVar!! < 0 -> {
-                convertView.text_followerCount.text = "${report.followers.count()} ("
+                convertView.text_followerCount.text = "${df.format(report.followers.count())} ("
                 convertView.image_followerCount_Image.visibility = View.VISIBLE
                 convertView.text_FollowerCount_Value.visibility = View.VISIBLE
                 convertView.image_followerCount_Image.setImageResource(R.drawable.arrow_down_bold_box)
-                convertView.text_FollowerCount_Value.text = "${report.followersVar})"
+                convertView.text_FollowerCount_Value.text = "${df.format(report.followersVar)})"
             }
             else -> {
-                convertView.text_followerCount.text = "${report.followers.count()} ("
+                convertView.text_followerCount.text = "${df.format(report.followers.count())} ("
                 convertView.image_followerCount_Image.visibility = View.VISIBLE
                 convertView.text_FollowerCount_Value.visibility = View.VISIBLE
                 convertView.image_followerCount_Image.setImageResource(R.drawable.arrow_up_bold_box)
-                convertView.text_FollowerCount_Value.text = "${report.followersVar})"
+                convertView.text_FollowerCount_Value.text = "${df.format(report.followersVar)})"
             }
         }
 

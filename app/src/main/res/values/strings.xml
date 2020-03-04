@@ -75,4 +75,10 @@
     <string name="TokenManagementDetail">트윗일지에 로그인된 계정을 관리합니다.</string>
     <string name="AddUser">유저 추가</string>
     <string name="NoApplicableUser">해당하는 유저가 없습니다.</string>
+    <string name="ScreenNameHint">타깃의 아이디는?</string>
+    <string name="Follower">팔로워</string>
+    <string name="Friend">팔로잉</string>
+    <string name="ChainBlockWarning1">이 유저가 확실한가요?</string>
+    <string name="ChainBlockWarning2">이 행동은 돌이킬 수 없습니다.\n트윗지기 앱은 이에 대하여 어떠한 책임도 지지 않습니다.\n한번 더 신중히 생각해 보시기 바랍니다.</string>
+    <string name="UserNotFoundError">해당 유저를 찾을 수 없었습니다.</string>
 </resources>

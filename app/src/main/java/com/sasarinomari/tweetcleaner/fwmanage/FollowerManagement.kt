@@ -24,7 +24,7 @@ class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
         pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
             .setTitleText(getString(R.string.FriendPulling))
 
-        pDialog.progressHelper.barColor = ContextCompat.getColor(this, R.color.colorAccent)
+        pDialog.progressHelper.barColor = ContextCompat.getColor(this, R.color.colorSecondary)
         pDialog.setCancelable(false)
         pDialog.show()
 
@@ -83,19 +83,9 @@ class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
 
             override fun onclickDetail(screenName: String) {
                 try {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("twitter://user?screen_name=$screenName")
-                        )
-                    )
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=$screenName")))
                 } catch (e: Exception) {
-                    startActivity(
-                        Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse("https://twitter.com/#!/$screenName")
-                        )
-                    )
+                    startActivity(Intent(Intent.ACTION_VIEW,Uri.parse("https://twitter.com/#!/$screenName")))
                 }
             }
 

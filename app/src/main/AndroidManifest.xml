@@ -17,6 +17,7 @@
             tools:replace="android:icon">
         <activity android:name=".auth.TokenManagementActivity"></activity>
         <activity android:name=".tweetreport.TweetReportActivity"></activity>
+        <activity android:name=".chainb.ChainBlockActivity"></activity>
         <activity android:name=".tweetreport.TweetReportDetail" />
         <activity android:name=".MainActivity">
             <intent-filter>

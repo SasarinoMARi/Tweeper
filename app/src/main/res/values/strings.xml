@@ -71,4 +71,7 @@
     <string name="NoMoreFriends">끊어진 팔로우</string>
     <string name="NewFollowers">새로운 팔로워</string>
     <string name="NoMoreFollowers">사라진 팔로워</string>
+    <string name="TokenManagement">로그인 관리</string>
+    <string name="TokenManagementDetail">트윗일지에 로그인된 계정을 관리합니다.</string>
+    <string name="AddUser">유저 추가</string>
 </resources>

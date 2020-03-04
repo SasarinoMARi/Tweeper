@@ -1,17 +1,14 @@
 package com.sasarinomari.tweetcleaner.danger
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
-import com.sasarinomari.tweetcleaner.SharedUserProperties
+import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
-import twitter4j.User
 
 class RemoveFriends : Adam() {
 
@@ -38,8 +35,8 @@ class RemoveFriends : Adam() {
         pDialog.show()
 
         try {
-            val t = TwitterFactory.getSingleton()
-            SharedUserProperties.getFriends { fs ->
+            val t = SharedTwitterProperties.instance()
+            SharedTwitterProperties.getFriends { fs ->
                 runOnUiThread {
                     pDialog.titleText = getString(R.string.FollowerPulling)
                 }
@@ -48,7 +45,7 @@ class RemoveFriends : Adam() {
                     Log.i("RemoveFriends", "Unfollow @${li.screenName}")
                 }
 
-                SharedUserProperties.getFollowers { fw ->
+                SharedTwitterProperties.getFollowers { fw ->
                     runOnUiThread {
                         pDialog.titleText = getString(R.string.CompareFsFw)
                     }

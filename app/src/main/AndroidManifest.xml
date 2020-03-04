@@ -15,9 +15,9 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning"
             tools:replace="android:icon">
-        <activity android:name=".tweetreport.TweetReportActivity">
-        </activity>
-        <activity android:name=".tweetreport.TweetReportDetail"></activity>
+        <activity android:name=".auth.TokenManagementActivity"></activity>
+        <activity android:name=".tweetreport.TweetReportActivity"></activity>
+        <activity android:name=".tweetreport.TweetReportDetail" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -25,12 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".AuthenticationActivity"/>
         <activity android:name=".DashboardActivity"/>
         <activity android:name=".hetzer.HetzerConditionsActivity"/>
         <activity android:name=".hetzer.HetzerActivity"/>
         <activity android:name=".FollowerManagement"/>
         <activity android:name=".UITestActivity"/>
+        <activity android:name=".auth.AuthenticationActivity" />
 
         <meta-data
                 android:name="com.google.android.gms.ads.APPLICATION_ID"

@@ -1,7 +1,8 @@
 package com.sasarinomari.tweetcleaner.tweetreport
 
 import android.content.Context
-import com.sasarinomari.tweetcleaner.SharedUserProperties
+import com.sasarinomari.tweetcleaner.SharedTwitterProperties
+import com.sasarinomari.tweetcleaner.SimpleUser
 import twitter4j.User
 import java.util.*
 import kotlin.collections.ArrayList
@@ -15,9 +16,9 @@ internal class TweetReport(context: Context,
     }
 
     private fun fetchUserData() {
-        SharedUserProperties.getMe { me ->
-            SharedUserProperties.getFollowers { fw ->
-                SharedUserProperties.getFriends { fr ->
+        SharedTwitterProperties.getMe { me ->
+            SharedTwitterProperties.getFollowers { fw ->
+                SharedTwitterProperties.getFriends { fr ->
                     writeReport(me, fr, fw)
                 }
             }

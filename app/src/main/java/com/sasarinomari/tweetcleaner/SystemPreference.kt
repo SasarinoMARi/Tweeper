@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 enum class SystemPreference {
-    AccessToken, AccessTokenSecret,
     HetzerConditions
-
     ;
 
     companion object {

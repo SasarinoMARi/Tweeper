@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
+import com.sasarinomari.tweetcleaner.SharedTwitterProperties
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
@@ -81,7 +82,7 @@ class HetzerActivity : Adam(), HetzerInterface {
                             }
                             log("[트윗 삭제됨]")
                             // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
-                            TwitterFactory.getSingleton().destroyStatus(item.id)
+                            SharedTwitterProperties.instance().destroyStatus(item.id)
                         }
                     }
                 }
@@ -182,7 +183,7 @@ class HetzerActivity : Adam(), HetzerInterface {
         val list = ArrayList<Status>()
         try {
             // gets Twitter instance with default credentials
-            val twitter = TwitterFactory.getSingleton()
+            val twitter = SharedTwitterProperties.instance()
             for (i in 1..Int.MAX_VALUE) {
                 val paging = Paging(i, 20)
                 val statuses = twitter.getUserTimeline(paging)

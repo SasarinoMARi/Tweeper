@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.Adam
 import com.sasarinomari.tweetcleaner.R
+import com.sasarinomari.tweetcleaner.SimpleUser
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_tweet_report_detail.*
 import kotlinx.android.synthetic.main.item_simpleuser.view.*

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweetcleaner.adapter.UserUnfollowItem
@@ -29,11 +28,11 @@ class FollowerManagement : AppCompatActivity() {
         pDialog.show()
 
         try {
-            SharedUserProperties.getFriends { fs ->
+            SharedTwitterProperties.getFriends { fs ->
                 runOnUiThread {
                     pDialog.titleText = getString(R.string.FollowerPulling)
                 }
-                SharedUserProperties.getFollowers { fw ->
+                SharedTwitterProperties.getFollowers { fw ->
                     runOnUiThread {
                         pDialog.titleText = getString(R.string.CompareFsFw)
                     }
@@ -66,7 +65,7 @@ class FollowerManagement : AppCompatActivity() {
                 d1.setConfirmClickListener {
                     d1.dismiss()
                     Thread(Runnable {
-                        val twitter = TwitterFactory.getSingleton()
+                        val twitter = SharedTwitterProperties.instance()
                         twitter.destroyFriendship(userId)
                         runOnUiThread {
                             val d2 =

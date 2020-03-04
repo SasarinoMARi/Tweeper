@@ -36,8 +36,11 @@
                 android:id="@+id/image_profilePicture"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
+                android:focusable="true"
+                android:clickable="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

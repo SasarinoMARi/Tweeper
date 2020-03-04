@@ -29,7 +29,6 @@ class TweetReportActivity : Adam() {
 
     private lateinit var dProcessing: SweetAlertDialog
     private lateinit var dDone: SweetAlertDialog
-    private lateinit var dCant: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,8 +66,6 @@ class TweetReportActivity : Adam() {
                 }
             }
 
-        dCant = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-        dCant.setContentText(getString(R.string.TweetReportCant))
     }
 
     private fun updateReportRecordList() {
@@ -83,7 +80,9 @@ class TweetReportActivity : Adam() {
                 dProcessing.show()
                 engine.start()
             } else {
-                dCant.show()
+                SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText(getString(R.string.TweetReportCant))
+                    .show()
             }
         }
     }

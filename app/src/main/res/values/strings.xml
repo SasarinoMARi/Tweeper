@@ -81,4 +81,8 @@
     <string name="ChainBlockWarning1">이 유저가 확실한가요?</string>
     <string name="ChainBlockWarning2">이 행동은 돌이킬 수 없습니다.\n트윗지기 앱은 이에 대하여 어떠한 책임도 지지 않습니다.\n한번 더 신중히 생각해 보시기 바랍니다.</string>
     <string name="UserNotFoundError">해당 유저를 찾을 수 없었습니다.</string>
+    <string name="NotCompletely">API 리밋으로 인하여 일부 데이터를 불러오지 못했습니다.</string>
+    <string name="ChainBlockDone">체인블락을 완료했습니다.</string>
+    <string name="UserProtected">프로텍트 설정된 유저를 대상으로 사용할 수 없습니다.</string>
+    <string name="ChainBlockProcessing">해당 유저들을 블락하는 중입니다.</string>
 </resources>

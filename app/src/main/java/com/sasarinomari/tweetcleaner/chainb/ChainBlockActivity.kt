@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
@@ -16,6 +17,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chain_block.*
 import twitter4j.TwitterException
 import twitter4j.User
+import twitter4j.api.FriendsFollowersResources
 import java.text.DecimalFormat
 
 class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
@@ -29,6 +31,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         phase1()
     }
 
+    // 타깃 유저 지정 단계
     private fun phase1() {
         layout_first.visibility = View.VISIBLE
         layout_second.visibility = View.GONE
@@ -57,16 +60,25 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             pd = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
             pd?.setCancelable(false)
             pd?.show()
-            lookup(screenN) {
+            lookup(screenN) { user ->
                 runOnUiThread {
                     pd?.dismissWithAnimation()
-                    phase2(it)
+                    if (user.isProtected) {
+                        input_ScreenName.text = null
+                        SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                            .setTitleText(getString(R.string.Error))
+                            .setContentText(getString(R.string.UserProtected))
+                            .show()
+                    } else {
+                        phase2(user)
+                    }
                 }
             }
 
         }
     }
 
+    // 타깃 유저 확인 단계
     @SuppressLint("SetTextI18n")
     private fun phase2(user: User) {
         layout_first.visibility = View.GONE
@@ -84,9 +96,19 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
 
         text_ScreenName.setOnClickListener {
             try {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=${user.screenName}")))
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("twitter://user?screen_name=${user.screenName}")
+                    )
+                )
             } catch (e: Exception) {
-                startActivity(Intent(Intent.ACTION_VIEW,Uri.parse("https://twitter.com/#!/${user.screenName}")))
+                startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://twitter.com/#!/${user.screenName}")
+                    )
+                )
             }
         }
         button_next2.setOnClickListener {
@@ -106,19 +128,137 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         }
     }
 
+    // 팔로잉 체인블락 단계
     private fun phase3(user: User) {
         layout_first.visibility = View.GONE
         layout_second.visibility = View.GONE
+
+        pd = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        pd?.contentText = getString(R.string.FriendPulling)
+        pd?.setCancelable(false)
+        pd?.show()
+
+        Thread(Runnable {
+            val twitter = SharedTwitterProperties.instance()
+            val list = ArrayList<Long>()
+            var cursor: Long = -1
+            try {
+                while (true) {
+                    val users = twitter.getFriendsIDs(user.id, cursor, 5000)
+                    list.addAll(users.iDs.toList())
+                    if (users.hasNext()) cursor = users.nextCursor
+                    else break
+                }
+
+                runOnUiThread {
+                    pd?.dismissWithAnimation()
+                    blockUsers(list) {
+                        phase4(user)
+                    }
+                }
+            } catch (te: TwitterException) {
+                te.printStackTrace()
+                val d2 = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText(getString(R.string.Error))
+                    .setContentText(getString(R.string.NotCompletely))
+                d2.setOnDismissListener {
+                    runOnUiThread {
+                        pd?.dismissWithAnimation()
+                        blockUsers(list) {
+                            phase4(user)
+                        }
+                    }
+                }
+                d2.show()
+
+            }
+        }).start()
     }
 
-    fun lookup(screenName: String, callback: (User) -> Unit) {
+    // 팔로워 체인블락 단계
+    private fun phase4(user: User) {
+        runOnUiThread {
+            pd = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+            pd?.contentText = getString(R.string.FollowerPulling)
+            pd?.setCancelable(false)
+            pd?.show()
+        }
+
+        Thread(Runnable {
+            val list = ArrayList<Long>()
+            var cursor: Long = -1
+            try {
+                while (true) {
+                    val users = SharedTwitterProperties.instance().getFollowersIDs(user.id, cursor, 5000)
+                    list.addAll(users.iDs.toList())
+                    if (users.hasNext()) cursor = users.nextCursor
+                    else break
+                }
+
+                runOnUiThread {
+                    pd?.dismissWithAnimation()
+                    blockUsers(list) {
+                        phase5()
+                    }
+                }
+            } catch (te: TwitterException) {
+                te.printStackTrace()
+                val d2 = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText(getString(R.string.Error))
+                    .setContentText(getString(R.string.NotCompletely))
+                d2.setOnDismissListener {
+                    runOnUiThread {
+                        pd?.dismissWithAnimation()
+                        blockUsers(list) {
+                            phase5()
+                        }
+                    }
+                }
+                d2.show()
+
+            }
+        }).start()
+    }
+
+    // 마무리 단계
+    private fun phase5() {
+        runOnUiThread {
+            val d = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
+                .setTitleText(getString(R.string.Done))
+                .setContentText(getString(R.string.ChainBlockDone))
+            d.setOnDismissListener {
+                finish()
+            }
+            d.show()
+        }
+    }
+
+    private fun blockUsers(list: ArrayList<Long>, callback: () -> Unit) {
+        val d = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
+        d.contentText = getString(R.string.ChainBlockProcessing)
+        d.setCancelable(false)
+        d.show()
+
+        Thread(Runnable {
+            val twitter = SharedTwitterProperties.instance()
+            for (u in list) {
+                twitter.createBlock(u)
+            }
+            runOnUiThread {
+                d.dismissWithAnimation()
+            }
+            callback()
+        }).start()
+    }
+
+    private fun lookup(screenName: String, callback: (User) -> Unit) {
         Thread(Runnable {
             try {
                 val user = SharedTwitterProperties.instance().showUser(screenName)
                 callback(user)
             } catch (te: TwitterException) {
                 te.printStackTrace()
-                when(te.errorCode) {
+                when (te.errorCode) {
                     50 -> { // User not found.
                         runOnUiThread {
                             input_ScreenName.text = null
@@ -129,7 +269,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                                 .show()
                         }
                     }
-                    else ->{
+                    else -> {
                         onRateLimit("show/user/me")
                     }
                 }

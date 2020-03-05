@@ -58,7 +58,7 @@ class SharedTwitterProperties private constructor() {
                 getMe(ai) { me ->
                     try {
                         while (true) {
-                            val users = twitter.getFriendsList(me.id, cursor, 100, true, true)
+                            val users = twitter.getFriendsList(me.id, cursor, 200, true, true)
                             list.addAll(users)
                             if (users.hasNext()) cursor = users.nextCursor
                             else break
@@ -88,7 +88,7 @@ class SharedTwitterProperties private constructor() {
                 getMe(ai) { me ->
                     try {
                         while (true) {
-                            val users = twitter.getFollowersList(me.id, cursor, 100, true, true)
+                            val users = twitter.getFollowersList(me.id, cursor, 200, true, true)
                             list.addAll(users)
                             if (users.hasNext()) cursor = users.nextCursor
                             else break

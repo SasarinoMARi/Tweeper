@@ -96,7 +96,7 @@
                 app:layout_constraintTop_toBottomOf="@id/image_profilePicture">
 
 
-                <com.sasarinomari.tweetcleaner.DashboardCard
+                <com.sasarinomari.tweeper.DashboardCard
                     android:id="@+id/button_erase"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -107,7 +107,7 @@
                     app:ovalColor="#00CF91"
                     app:text="@string/TweetCleaner" />
 
-                <com.sasarinomari.tweetcleaner.DashboardCard
+                <com.sasarinomari.tweeper.DashboardCard
                     android:id="@+id/button_tweetReport"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -118,7 +118,7 @@
                     app:ovalColor="#64b5f6"
                     app:text="@string/TweetReport" />
 
-                <com.sasarinomari.tweetcleaner.DashboardCard
+                <com.sasarinomari.tweeper.DashboardCard
                     android:id="@+id/button_followerManagement"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -129,7 +129,7 @@
                     app:ovalColor="#ba68c8"
                     app:text="@string/FollowerManagement" />
 
-                <com.sasarinomari.tweetcleaner.DashboardCard
+                <com.sasarinomari.tweeper.DashboardCard
                     android:id="@+id/button_removeFriends"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -140,7 +140,7 @@
                     app:ovalColor="#e53935"
                     app:text="@string/Chainblock" />
 
-                <com.sasarinomari.tweetcleaner.DashboardCard
+                <com.sasarinomari.tweeper.DashboardCard
                     android:id="@+id/button_blockClear"
                     android:layout_width="0dp"
                     android:layout_height="128dp"

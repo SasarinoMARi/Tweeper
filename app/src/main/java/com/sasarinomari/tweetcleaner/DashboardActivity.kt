@@ -16,6 +16,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.gson.Gson
 import com.sasarinomari.tweetcleaner.auth.AuthData
 import com.sasarinomari.tweetcleaner.auth.TokenManagementActivity
+import com.sasarinomari.tweetcleaner.chainb.BlockClearActivity
 import com.sasarinomari.tweetcleaner.chainb.ChainBlockActivity
 import com.sasarinomari.tweetcleaner.fwmanage.FollowerManagement
 import com.sasarinomari.tweetcleaner.tweetreport.TweetReportActivity
@@ -40,6 +41,9 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         }
         button_removeFriends.setOnClickListener {
             startActivity(Intent(this, ChainBlockActivity::class.java))
+        }
+        button_blockClear.setOnClickListener {
+            startActivity(Intent(this, BlockClearActivity::class.java))
         }
 
         image_profilePicture.background = ShapeDrawable(OvalShape())

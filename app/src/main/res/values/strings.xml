@@ -85,4 +85,10 @@
     <string name="ChainBlockDone">체인블락을 완료했습니다.</string>
     <string name="UserProtected">프로텍트 설정된 유저를 대상으로 사용할 수 없습니다.</string>
     <string name="ChainBlockProcessing">해당 유저들을 블락하는 중입니다.</string>
+    <string name="BlockClear">블락 일괄 해제</string>
+    <string name="BlockClearDescriptipn">내가 블락한 유저들을 전부 블락 해제합니다.</string>
+    <string name="Run">실행하기</string>
+    <string name="FetchBlockedUsers">블락한 유저 정보를 가져오는 중입니다.</string>
+    <string name="ClearBlockedUsers">블락을 해제하는 중입니다.\n(%1$d / %2$d)</string>
+    <string name="BlockCleared">모든 블락을 해제했습니다.</string>
 </resources>

@@ -27,14 +27,17 @@ class TweetReportActivity : Adam() {
             SharedTwitterProperties.reportWritten = true
             runOnUiThread {
                 dProcessing.dismissWithAnimation()
-                dDone = SweetAlertDialog(this@TweetReportActivity, SweetAlertDialog.SUCCESS_TYPE)
-                dDone.setTitleText(getString(R.string.Done))
+                val dDone = SweetAlertDialog(this@TweetReportActivity, SweetAlertDialog.SUCCESS_TYPE)
+                    .setTitleText(getString(R.string.Done))
                     .setContentText(getString(R.string.TweetReportDone))
-                    .setOnDismissListener {
+
+                dDone.setOnDismissListener {
                         runOnUiThread {
                             updateReportRecordList()
                         }
                     }
+
+                dDone.show()
             }
         }
     })
@@ -42,7 +45,6 @@ class TweetReportActivity : Adam() {
     private var adapter = TweetReportItem()
 
     private lateinit var dProcessing: SweetAlertDialog
-    private lateinit var dDone: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

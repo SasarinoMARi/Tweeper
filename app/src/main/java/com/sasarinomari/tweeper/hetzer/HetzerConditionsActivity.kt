@@ -46,6 +46,7 @@ class HetzerConditionsActivity : Adam() {
                 .setContentText(getString(R.string.TweetCannotRestore))
                 .setConfirmText(getString(R.string.YesDeleteIt))
                 .setConfirmClickListener {
+                    it.dismissWithAnimation()
                     HetzerConditions.Recorder(this).set(conditions)
                     val i = Intent()
                     i.putExtra(Results.Conditions.name, conditions)

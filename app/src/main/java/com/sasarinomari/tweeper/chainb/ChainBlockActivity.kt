@@ -129,6 +129,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     }
 
     // 팔로잉 체인블락 단계
+    // 1,345 명까지 한 번에 처리하는것을 확인
     private fun phase3(user: User) {
         layout_first.visibility = View.GONE
         layout_second.visibility = View.GONE

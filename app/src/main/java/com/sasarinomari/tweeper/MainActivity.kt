@@ -14,7 +14,7 @@ class MainActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        NotificationChannels().declaration(this)
         SharedTwitterProperties.clear(TwitterFactory().instance)
         SharedTwitterProperties.setOAuthConsumer(this, SharedTwitterProperties.instance())
         when (val loggedUser = AuthData.Recorder(this).getFocusedUser()) {
@@ -33,8 +33,15 @@ class MainActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                 }
             }
         }
+
+        checkNotiPremission()
     }
 
+    private fun checkNotiPremission() {
+        // TODO
+        // 백그라운드 스레드 실행을 위해 알림을 띄울 수 있는 권한이 있는지 검사.
+        // 권한이 없다면 안내 문구와 함께 설정 창으로 연결, 또는 앱 종료료
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             0 -> {

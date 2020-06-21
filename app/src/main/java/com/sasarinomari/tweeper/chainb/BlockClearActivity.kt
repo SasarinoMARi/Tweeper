@@ -1,6 +1,7 @@
 package com.sasarinomari.tweeper.chainb
 
 import android.os.Bundle
+import android.util.Log
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
@@ -58,6 +59,7 @@ class BlockClearActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                     if (result.hasNext()) cursor = result.nextCursor
                     else break
                 }
+                Log.i(this.localClassName, "불러온 유저 수 : ${list.count()}")
                 runOnUiThread {
                     unblockUsers(list)
                 }
@@ -69,6 +71,7 @@ class BlockClearActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         }).start()
     }
 
+    // 1,345 명까지 한 번에 처리하는것을 확인
     private fun unblockUsers(list: java.util.ArrayList<Long>) {
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()

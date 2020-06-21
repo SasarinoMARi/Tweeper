@@ -28,7 +28,7 @@ class HetzerConditions() : Parcelable {
         avoidRecentMinute = parcel.readInt()
         val size = parcel.readInt()
         for(i in 0 until size) {
-            avoidKeywords.add(parcel.readString())
+            avoidKeywords.add(parcel.readString()!!)
         }
         avoidMedia = parcel.readByte().toInt() != 0
         avoidNoMedia = parcel.readByte().toInt() != 0

@@ -50,6 +50,13 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         image_profilePicture.clipToOutline = true
 
         initAds()
+        showTips()
+    }
+
+    private fun showTips() {
+        // TODO
+        // 사용 가이드 팝업 띄워주기.
+        // 다시 보지 않기 설정했다면 설정에서 값을 바꾸기 전까지 띄우지 않음.
     }
 
     private fun initAds() {

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
@@ -15,30 +14,29 @@ import twitter4j.TwitterException
 import twitter4j.User
 
 class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
-    private lateinit var pDialog: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_follower_management)
 
-        pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-            .setTitleText(getString(R.string.FriendPulling))
-
-        pDialog.progressHelper.barColor = ContextCompat.getColor(this, R.color.colorSecondary)
-        pDialog.setCancelable(false)
-        pDialog.show()
+        var dialog = da.progress(null, getString(R.string.FriendPulling))
+        dialog.show()
 
         SharedTwitterProperties.getFriends(this) { fs ->
             runOnUiThread {
-                pDialog.titleText = getString(R.string.FollowerPulling)
+                dialog.dismissWithAnimation()
+                dialog = da.progress(null, getString(R.string.FollowerPulling))
+                dialog.show()
             }
             SharedTwitterProperties.getFollowers(this) { fw ->
                 runOnUiThread {
-                    pDialog.titleText = getString(R.string.CompareFsFw)
+                    dialog.dismissWithAnimation()
+                    dialog = da.progress(null, getString(R.string.CompareFsFw))
+                    dialog.show()
                 }
                 val uf = comLists(fs, fw)
                 runOnUiThread {
-                    pDialog.dismissWithAnimation()
+                    dialog.dismissWithAnimation()
                     initializeUi(uf)
                 }
             }
@@ -53,32 +51,21 @@ class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
         }
         list.adapter = UserUnfollowItem(uf, object : UserUnfollowItem.ActivityInterface {
             override fun onClickUnfollow(userId: Long, doneCallback: Runnable) {
-                val d1 = SweetAlertDialog(this@FollowerManagement, SweetAlertDialog.WARNING_TYPE)
-                    .setTitleText((R.string.AreYouSure))
-                    .setContentText(getString(R.string.ActionDoNotRestore))
+                da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
                     .setConfirmText(getString(R.string.Yes))
-
-                d1.setConfirmClickListener {
-                    d1.dismissWithAnimation()
-                    Thread(Runnable {
-                        val twitter = SharedTwitterProperties.instance()
-                        twitter.destroyFriendship(userId)
-                        runOnUiThread {
-                            val d2 = SweetAlertDialog(
-                                this@FollowerManagement,
-                                SweetAlertDialog.SUCCESS_TYPE
-                            )
-                                .setTitleText(getString(R.string.Done))
-                                .setContentText(getString(R.string.JobDone))
-                            d2.setConfirmClickListener {
-                                d2.dismissWithAnimation()
-                                doneCallback.run()
+                    .setConfirmClickListener {
+                        it.dismissWithAnimation()
+                        Thread(Runnable {
+                            val twitter = SharedTwitterProperties.instance()
+                            twitter.destroyFriendship(userId)
+                            runOnUiThread {
+                                da.success(getString(R.string.Done), getString(R.string.JobDone)) {
+                                    it.dismissWithAnimation()
+                                    doneCallback.run()
+                                }.show()
                             }
-                            d2.show()
-                        }
-                    }).start()
-                }
-                d1.show()
+                        }).start()
+                    }.show()
             }
 
             override fun onclickDetail(screenName: String) {
@@ -111,14 +98,7 @@ class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
 
     override fun onRateLimit(apiPoint: String) {
         runOnUiThread {
-            pDialog.dismissWithAnimation()
-            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.Error))
-                .setContentText(getString(R.string.RateLimitError, apiPoint))
-                .setConfirmClickListener {
-                    finish()
-                }
-                .show()
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)) { finish() }.show()
         }
     }
 }

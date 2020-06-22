@@ -15,6 +15,12 @@ abstract class Adam : AppCompatActivity() {
 
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
+    protected lateinit var da: DialogAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        da = DialogAdapter(this)
+    }
 
     fun backPressJail(warningText: String): Boolean {
         val tempTime = System.currentTimeMillis()

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
@@ -14,36 +13,23 @@ class TweetReportActivity : Adam() {
     private val engine = TweetReport(this, object : TweetReport.ActivityInterface {
         override fun onRateLimit(apiPoint: String) {
             runOnUiThread {
-                dProcessing.dismissWithAnimation()
-                SweetAlertDialog(this@TweetReportActivity, SweetAlertDialog.ERROR_TYPE)
-                    .setTitleText(getString(R.string.Error))
-                    .setContentText(getString(R.string.RateLimitError, apiPoint))
-                    .show()
+                da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint))
             }
         }
 
         override fun onFinished() {
             SharedTwitterProperties.reportWritten = true
             runOnUiThread {
-                dProcessing.dismissWithAnimation()
-                val dDone = SweetAlertDialog(this@TweetReportActivity, SweetAlertDialog.SUCCESS_TYPE)
-                    .setTitleText(getString(R.string.Done))
-                    .setContentText(getString(R.string.TweetReportDone))
-
-                dDone.setOnDismissListener {
-                        runOnUiThread {
-                            updateReportRecordList()
-                        }
+                da.success(getString(R.string.Done), getString(R.string.TweetReportDone)) {
+                    runOnUiThread {
+                        updateReportRecordList()
                     }
-
-                dDone.show()
+                }.show()
             }
         }
     })
 
     private var adapter = TweetReportItem()
-
-    private lateinit var dProcessing: SweetAlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,15 +61,10 @@ class TweetReportActivity : Adam() {
     private fun initUpdateButton() {
         button_update.setOnClickListener {
             if (!SharedTwitterProperties.reportWritten) {
-                dProcessing = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-                dProcessing.contentText = getString(R.string.TweetReportProcessing)
-                dProcessing.setCancelable(false)
-                dProcessing.show()
+                da.progress(null, getString(R.string.TweetReportProcessing)).show()
                 engine.start()
             } else {
-                SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-                    .setContentText(getString(R.string.TweetReportCant))
-                    .show()
+                da.warning(null, getString(R.string.TweetReportCant)).show()
             }
         }
     }

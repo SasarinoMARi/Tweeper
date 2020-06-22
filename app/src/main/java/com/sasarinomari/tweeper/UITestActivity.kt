@@ -14,7 +14,6 @@ import su.levenetc.android.textsurface.contants.Pivot
 import su.levenetc.android.textsurface.contants.Align.*
 import su.levenetc.android.textsurface.contants.Direction
 import kotlin.random.Random
-import cn.pedant.SweetAlert.SweetAlertDialog
 
 
 class UITestActivity : AppCompatActivity() {
@@ -25,19 +24,6 @@ class UITestActivity : AppCompatActivity() {
 
         // testTextSufrace()
         //testSweetDialog()
-    }
-
-    private fun testSweetDialog() {
-        val pDialog = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-        pDialog.progressHelper.barColor = Color.parseColor("#A5DC86")
-        pDialog.titleText = "Loading"
-        pDialog.setCancelable(false)
-        pDialog.show()
-
-        Thread(Runnable { Thread.sleep(5000)
-            runOnUiThread{
-                pDialog.titleText="Changed Text"
-            }}).start()
     }
 
     // region TextSurface

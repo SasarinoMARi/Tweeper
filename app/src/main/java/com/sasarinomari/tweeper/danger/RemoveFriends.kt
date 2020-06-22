@@ -3,7 +3,6 @@ package com.sasarinomari.tweeper.danger
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties

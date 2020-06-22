@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
@@ -21,7 +20,6 @@ import twitter4j.api.FriendsFollowersResources
 import java.text.DecimalFormat
 
 class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
-    private var pd: SweetAlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,18 +55,12 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         button_next.setOnClickListener {
             val screenN = input_ScreenName.text.toString()
 
-            pd = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-            pd?.setCancelable(false)
-            pd?.show()
+            da.progress(null, getString(R.string.FriendPulling)).show()
             lookup(screenN) { user ->
                 runOnUiThread {
-                    pd?.dismissWithAnimation()
                     if (user.isProtected) {
                         input_ScreenName.text = null
-                        SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                            .setTitleText(getString(R.string.Error))
-                            .setContentText(getString(R.string.UserProtected))
-                            .show()
+                        da.error(getString(R.string.Error), getString(R.string.UserProtected)).show()
                     } else {
                         phase2(user)
                     }
@@ -112,19 +104,12 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             }
         }
         button_next2.setOnClickListener {
-            val d = SweetAlertDialog(this@ChainBlockActivity, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText((R.string.AreYouSure))
-                .setContentText(getString(R.string.ActionDoNotRestore))
+            da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
                 .setConfirmText(getString(R.string.Yes))
-
-            d.setConfirmClickListener {
-                runOnUiThread {
-                    d.dismissWithAnimation()
-                    phase3(user)
-                }
-            }
-
-            d.show()
+                .setConfirmClickListener {
+                    it.dismissWithAnimation()
+                    runOnUiThread { phase3(user) }
+            }.show()
         }
     }
 
@@ -133,11 +118,6 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     private fun phase3(user: User) {
         layout_first.visibility = View.GONE
         layout_second.visibility = View.GONE
-
-        pd = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-        pd?.contentText = getString(R.string.FriendPulling)
-        pd?.setCancelable(false)
-        pd?.show()
 
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
@@ -158,30 +138,26 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                 }
             } catch (te: TwitterException) {
                 te.printStackTrace()
-                runOnUiThread {
-                    pd?.dismissWithAnimation()
-                    val d2 = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText(getString(R.string.Error))
-                        .setContentText(getString(R.string.NotCompletely))
-                    d2.setOnDismissListener {
-                        runOnUiThread {
-                            pd?.show()
-                            blockUsers(list) {
-                                phase4(user)
-                            }
-                        }
-                    }
-                    d2.show()
-                }
+//                runOnUiThread {
+//                    da.warning(getString(R.string.Error), getString(R.string.NotCompletely)) {
+//                        runOnUiThread {
+                            // TODO: 이곳에 다이얼로그 출력
+                            // 하지만 서비스 형식으로 바꿀 꺼기 때문에 필요없음 ㅋㅋ
+//                            blockUsers(list) {
+//                                phase4(user)
+//                            }
+//                        }
+//                    }.show()
+//                }
             }
         }).start()
     }
 
     // 팔로워 체인블락 단계
     private fun phase4(user: User) {
-        runOnUiThread {
-            pd?.contentText = getString(R.string.FollowerPulling)
-        }
+//        runOnUiThread {
+//            pd?.contentText = getString(R.string.FollowerPulling)
+//        }
 
         Thread(Runnable {
             val list = ArrayList<Long>()
@@ -203,19 +179,18 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                 // 88 : Rate limit exceeded
                 te.printStackTrace()
                 runOnUiThread {
-                    pd?.dismissWithAnimation()
-                    val d2 = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText(getString(R.string.Error))
-                        .setContentText(getString(R.string.NotCompletely))
-                    d2.setOnDismissListener {
-                        runOnUiThread {
-                            pd?.show()
-                            blockUsers(list) {
-                                phase5()
-                            }
-                        }
-                    }
-                    d2.show()
+//                    val d2 = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+//                        .setTitleText(getString(R.string.Error))
+//                        .setContentText(getString(R.string.NotCompletely))
+//                    d2.setOnDismissListener {
+//                        runOnUiThread {
+//                            pd?.show()
+//                            blockUsers(list) {
+//                                phase5()
+//                            }
+//                        }
+//                    }
+//                    d2.show()
                 }
             }
         }).start()
@@ -224,14 +199,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     // 마무리 단계
     private fun phase5() {
         runOnUiThread {
-            pd?.dismissWithAnimation()
-            val d = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText(getString(R.string.Done))
-                .setContentText(getString(R.string.ChainBlockDone))
-            d.setOnDismissListener {
-                finish()
-            }
-            d.show()
+            da.success(getString(R.string.Done), getString(R.string.ChainBlockDone)) { finish() }.show()
         }
     }
 
@@ -240,7 +208,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             val twitter = SharedTwitterProperties.instance()
             for (u in 0 until list.size) {
                 runOnUiThread {
-                    pd?.contentText = getString(R.string.ChainBlockProcessing, u, list.size)
+                    //pd?.contentText = getString(R.string.ChainBlockProcessing, u, list.size)
                 }
                 twitter.createBlock(list[u])
             }
@@ -259,11 +227,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                     50 -> { // User not found.
                         runOnUiThread {
                             input_ScreenName.text = null
-                            pd?.dismissWithAnimation()
-                            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText(getString(R.string.Error))
-                                .setContentText(getString(R.string.UserNotFoundError))
-                                .show()
+                            da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
                         }
                     }
                     else -> {
@@ -276,11 +240,7 @@ class ChainBlockActivity : Adam(), SharedTwitterProperties.ActivityInterface {
 
     override fun onRateLimit(apiPoint: String) {
         runOnUiThread {
-            val d = SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.Error))
-                .setContentText(getString(R.string.RateLimitError, apiPoint))
-            d.setOnDismissListener { finish() }
-            d.show()
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)) { finish() }.show()
         }
     }
 }

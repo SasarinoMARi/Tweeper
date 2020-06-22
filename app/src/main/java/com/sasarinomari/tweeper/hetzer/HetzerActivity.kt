@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Adam
@@ -36,21 +35,15 @@ class HetzerActivity : Adam() {
                     return
                 }
                 val intent = Intent(this, HetzerService::class.java)
-                val json = data!!.getStringExtra(HetzerService.Companion.Parameters.HetzerConditions.name)
-                intent.putExtra(HetzerService.Companion.Parameters.HetzerConditions.name, json)
+                val json = data!!.getStringExtra(HetzerService.Parameters.HetzerConditions.name)
+                intent.putExtra(HetzerService.Parameters.HetzerConditions.name, json)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 }
                 else {
                     startService(intent)
                 }
-
-                val d = SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
-                    .setContentText("백그라운드에서 트윗 청소기가 실행됩니다..")
-                d.setOnDismissListener {
-                    finish()
-                }
-                d.show()
+                finish()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }

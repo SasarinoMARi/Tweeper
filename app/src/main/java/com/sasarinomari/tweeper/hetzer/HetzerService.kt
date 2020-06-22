@@ -17,12 +17,12 @@ import twitter4j.TwitterException
 import java.lang.reflect.Parameter
 
 class HetzerService : Service() {
+    enum class Parameters{
+        HetzerConditions
+    }
+
     companion object {
         val ChannelName = "Hetzer"
-
-        enum class Parameters{
-            HetzerConditions
-        }
     }
 
     private val notificationId = 4425

@@ -3,7 +3,6 @@ package com.sasarinomari.tweeper.auth
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.booms.webview.BoomWebView
@@ -103,10 +102,7 @@ class AuthenticationActivity : Adam(), SharedTwitterProperties.ActivityInterface
 
     override fun onRateLimit(apiPoint: String) {
         runOnUiThread {
-            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.Error))
-                .setContentText(getString(R.string.RateLimitError, apiPoint))
-                .show()
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)).show()
         }
     }
 }

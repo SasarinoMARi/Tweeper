@@ -3,7 +3,6 @@ package com.sasarinomari.tweeper
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.auth.AuthData
 import com.sasarinomari.tweeper.auth.TokenManagementActivity
 import twitter4j.TwitterFactory
@@ -64,10 +63,7 @@ class MainActivity : Adam(), SharedTwitterProperties.ActivityInterface {
 
     override fun onRateLimit(apiPoint: String) {
         runOnUiThread {
-            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.Error))
-                .setContentText(getString(R.string.RateLimitError, apiPoint))
-                .show()
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)).show()
         }
     }
 }

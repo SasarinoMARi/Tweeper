@@ -11,7 +11,7 @@ import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
 import android.util.Log
 import android.widget.LinearLayout
-import cn.pedant.SweetAlert.SweetAlertDialog
+import android.widget.Switch
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -27,26 +27,26 @@ import com.sasarinomari.tweeper.tweetreport.TweetReportActivity
 import twitter4j.TwitterFactory
 
 class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
+    enum class Requests {
+        Switch, Hetzer
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
         loadUserInformation()
         image_profilePicture.setOnClickListener {
-            startActivityForResult(Intent(this, TokenManagementActivity::class.java), 0)
+            startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
         }
         button_erase.setOnClickListener {
             val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (service in manager.getRunningServices(Integer.MAX_VALUE)) { // TODO : 이것 때문에 릴리즈 안될 수도..
                 if (HetzerService::class.java.name == service.service.className) {
                     Log.i("Hetzer", "Hetzer 서비스가 이미 실행중입니다.")
-                    SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("잠시만요!")
-                        .setContentText("트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.")
-                        .show()
+                    da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
                     return@setOnClickListener
                 }
             }
-            startActivity(Intent(this, HetzerActivity::class.java))
+            startActivityForResult(Intent(this, HetzerActivity::class.java), Requests.Hetzer.ordinal)
         }
         button_followerManagement.setOnClickListener {
             startActivity(Intent(this, FollowerManagement::class.java))
@@ -106,7 +106,7 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
-            0 -> {
+            Requests.Switch.ordinal -> {
                 if (resultCode == RESULT_OK) {
                     if(data!=null) {
                         if(data.hasExtra(TokenManagementActivity.RESULT_AUTH_DATA)) {
@@ -124,6 +124,9 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                     loadUserInformation()
                 }
             }
+            Requests.Hetzer.ordinal -> {
+                da.message(getString(R.string.Done), "트윗 청소기가 백그라운드에서 실행됩니다..").show()
+            }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -140,10 +143,7 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
 
     override fun onRateLimit(apiPoint: String) {
         runOnUiThread {
-            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.Error))
-                .setContentText(getString(R.string.RateLimitError, apiPoint))
-                .show()
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)).show()
         }
     }
 }

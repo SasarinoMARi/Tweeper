@@ -10,14 +10,11 @@ import kotlinx.android.synthetic.main.activity_block_clear.*
 import twitter4j.TwitterException
 
 class BlockClearActivity : Adam(), SharedTwitterProperties.ActivityInterface {
-    private var dp: SweetAlertDialog? = null
+    private lateinit var progress: SweetAlertDialog
 
     override fun onRateLimit(apiPoint: String) {
         runOnUiThread {
-            SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
-                .setTitleText(getString(R.string.Error))
-                .setContentText(getString(R.string.RateLimitError, apiPoint))
-                .show()
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)).show()
         }
     }
 
@@ -26,27 +23,18 @@ class BlockClearActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         setContentView(R.layout.activity_block_clear)
 
         button_ok.setOnClickListener {
-            val d = SweetAlertDialog(this@BlockClearActivity, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText((R.string.AreYouSure))
-                .setContentText(getString(R.string.ActionDoNotRestore))
+            da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
                 .setConfirmText(getString(R.string.Yes))
-
-            d.setConfirmClickListener {
-                runOnUiThread {
-                    d.dismissWithAnimation()
-                    fetchBlockedUsers()
-                }
-            }
-
-            d.show()
+                .setConfirmClickListener {
+                    it.dismissWithAnimation()
+                    runOnUiThread { fetchBlockedUsers() }
+                }.show()
         }
     }
 
     private fun fetchBlockedUsers() {
-        dp = SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE)
-            .setContentText(getString(R.string.FetchBlockedUsers))
-        dp?.setCancelable(false)
-        dp?.show()
+        progress = da.progress(null, getString(R.string.FetchBlockedUsers))
+        progress.show()
 
         Thread(Runnable {
             val list = ArrayList<Long>()
@@ -77,12 +65,12 @@ class BlockClearActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             val twitter = SharedTwitterProperties.instance()
             for(u in 0 until list.count()) {
                 runOnUiThread {
-                    dp?.contentText = getString(R.string.ClearBlockedUsers, u + 1, list.count())
+                    progress.contentText = getString(R.string.ClearBlockedUsers, u + 1, list.count())
                 }
                 twitter.destroyBlock(list[u])
             }
             runOnUiThread {
-                dp?.dismissWithAnimation()
+                progress.dismissWithAnimation()
                 finished()
             }
         }).start()
@@ -90,14 +78,6 @@ class BlockClearActivity : Adam(), SharedTwitterProperties.ActivityInterface {
     }
 
     private fun finished() {
-        dp?.dismissWithAnimation()
-
-        val d = SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-            .setTitleText(getString(R.string.Done))
-            .setContentText(getString(R.string.BlockCleared))
-        d.setOnDismissListener {
-            finish()
-        }
-        d.show()
+        da.success(getString(R.string.Done), getString(R.string.BlockCleared)) { finish() }.show()
     }
 }

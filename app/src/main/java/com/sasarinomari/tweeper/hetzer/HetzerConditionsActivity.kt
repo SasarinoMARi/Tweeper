@@ -3,10 +3,14 @@ package com.sasarinomari.tweeper.hetzer
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.TextView
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -19,7 +23,6 @@ import com.google.gson.Gson
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.SharedTwitterProperties
 
@@ -44,19 +47,29 @@ class HetzerConditionsActivity : Adam() {
             }
         }
         button_ok.setOnClickListener {
-            SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(getString(R.string.AreYouSure))
-                .setContentText(getString(R.string.TweetCannotRestore))
+            val d = da.warning(getString(R.string.AreYouSure), getString(R.string.TweetCannotRestore))
                 .setConfirmText(getString(R.string.YesDeleteIt))
+                .setCancelText(getString(R.string.Wait))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
                     Recorder(this).set(conditions)
                     val i = Intent()
-                    i.putExtra(HetzerService.Companion.Parameters.HetzerConditions.name, Gson().toJson(conditions))
+                    i.putExtra(HetzerService.Parameters.HetzerConditions.name, Gson().toJson(conditions))
                     setResult(RESULT_OK, i)
                     finish()
                 }
-                .show()
+            d.setOnShowListener { dialog ->
+                dialog as SweetAlertDialog
+                val titleView: TextView = dialog.findViewById(R.id.title_text) as TextView
+                titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 19f)
+                val contentView: TextView = dialog.findViewById(R.id.content_text) as TextView
+                contentView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                val confirmView: TextView = dialog.findViewById(R.id.confirm_button) as TextView
+                confirmView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+                val cancelView: TextView = dialog.findViewById(R.id.cancel_button) as TextView
+                cancelView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10f)
+            }
+            d.show()
         }
     }
     @Suppress("UNCHECKED_CAST")
@@ -345,7 +358,12 @@ class HetzerConditionsActivity : Adam() {
             true
         }
         menu.inflate(R.menu.hetzer_contition_item_menu)
-        menu.gravity = Gravity.END
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            menu.gravity = Gravity.END
+        }
+        else {
+            // TODO
+        }
         menu.show()
     }
 

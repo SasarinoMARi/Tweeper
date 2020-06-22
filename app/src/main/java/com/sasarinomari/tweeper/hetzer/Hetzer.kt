@@ -2,111 +2,141 @@ package com.sasarinomari.tweeper.hetzer
 import android.util.Log
 import twitter4j.Status
 
-public class Hetzer(private val conditions: HetzerConditions) {
-    private  fun excludeMyFavorite(status: Status): Boolean {
-        if (!conditions.avoidMyFav) return false
-        if (status.isRetweet) return false
+public class Hetzer(private val conditions: HashMap<Int, Any>) {
+    /*
+        01. 내가 마음에 들어한 트윗
+        02. 내가 마음에 들어하지 않은 트윗
+        03. 내가 리트윗한 트윗
+        04. 내가 리트윗하지 않은 트윗
+        05. N회 이상 마음 받은 트윗 (Int)
+        06. N회 이하 마음 받은 트윗 (Int)
+        07. N회 이상 리트윗 받은 트윗 (Int)
+        08. N회 이하 리트윗 받은 트윗 (Int)
+        09. 미디어를 포함한 트윗
+        10. 미디어를 포함하지 않은 트윗
+        11. 키워드를 포함한 트윗 (ArrayList<Sring>) // TODO: 동작 체크
+        12. 키워드를 포함하지 않은 트윗 (ArrayList<Sring>) // TODO: 동작 체크
+        13. 위치 정보를 포함한 트윗 // TODO: 동작 체크
+        14. 위치 정보를 포함하지 않은 트윗 // TODO: 동작 체크
+        15. 최근 N개 까지의 트윗 (Int) // TODO: 동작 체크
+        16. 최근 N분 이내의 트윗 (Int) // TODO: 동작 체크
+     */
+    fun filter(status: Status, i: Int): Boolean {
+        return when {
+            내가마음에들어한트윗(status) -> { log("내가마음에들어한트윗", status); true}
+            내가마음에들어하지않은트윗(status) -> { log("내가마음에들어하지않은트윗", status); true}
+            내가리트윗한트윗(status)  -> { log("내가리트윗한트윗", status); true}
+            내가리트윗하지않은트윗(status)  -> { log("내가리트윗하지않은트윗", status); true}
+            N회이상마음받은트윗(status)  -> { log("N회이상마음받은트윗", status); true}
+            N회이하마음받은트윗(status) -> { log("N회이하마음받은트윗", status); true}
+            N회이상리트윗받은트윗(status)  -> { log("N회이상리트윗받은트윗", status); true}
+            N회이하리트윗받은트윗(status) -> { log("N회이하리트윗받은트윗", status); true}
+            미디어를포함한트윗(status) -> { log("미디어를포함한트윗", status); true}
+            미디어를포함하지않은트윗(status) -> { log("미디어를포함하지않은트윗", status); true}
+            키워드를포함한트윗(status) -> { log("키워드를포함한트윗", status); true}
+            키워드를포함하지않은트윗(status) -> { log("키워드를포함하지않은트윗", status); true}
+            위치정보를포함한트윗(status) -> { log("위치정보를포함한트윗", status); true}
+            위치정보를포함하지않은트윗(status) -> { log("위치정보를포함하지않은트윗", status); true}
+            최근N개까지의트윗(i) -> { log("최근N개까지의트윗", status); true}
+            최근N분이내의트윗(status) -> { log("최근N분이내의트윗", status); true}
+            else -> false
+        }
+    }
+
+    private fun log(text: String, status: Status) {
+        val cut = if (status.text.length > 25) "${status.text.substring(0, 23)}.." else status.text
+        Log.i("Hetzer", "$text: $cut")
+    }
+
+    private fun 내가마음에들어한트윗(status: Status): Boolean {
+        if (!conditions.containsKey(1)) return false
         return status.isFavorited
     }
 
-    private  fun excludeRetweetCount(status: Status): Boolean {
-        if (conditions.avoidRetweetCount == 0) return false
-        if (status.isRetweet) return false
-        return status.retweetCount >= conditions.avoidRetweetCount
+    private fun 내가마음에들어하지않은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(2)) return false
+        return !status.isFavorited
     }
 
-    private  fun excludeFavoriteCount(status: Status): Boolean {
-        if (conditions.avoidFavCount == 0) return false
-        if (status.isRetweet) return false
-        return status.favoriteCount >= conditions.avoidFavCount
+    private fun 내가리트윗한트윗(status: Status): Boolean {
+        if (!conditions.containsKey(3)) return false
+        return status.isRetweeted
     }
 
-    private fun excludeMinimumCount(status: Status, index: Int): Boolean {
-        return when {
-            conditions.avoidRecentCount == 0 -> false
-            else -> index < conditions.avoidRecentCount
-        }
+    private fun 내가리트윗하지않은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(4)) return false
+        return !status.isRetweeted
     }
 
-    private  fun excludeMinimumTick(status: Status): Boolean {
-        val divider = 1000 / 60
-        val tweetMinuteStamp = status.createdAt.time / divider + conditions.avoidRecentMinute
-        val safeMinuteStamp = System.currentTimeMillis() / divider
-        return when {
-            conditions.avoidRecentMinute == 0 -> false
-            else -> tweetMinuteStamp >= safeMinuteStamp
-        }
+    private fun N회이상마음받은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(5)) return false
+        return status.favoriteCount >= (conditions[5] as Double).toInt()
     }
 
-    private  fun excludeMedia(status: Status): Boolean {
-        if (!conditions.avoidMedia) return false
-        if (status.isRetweet) return false
+    private fun N회이하마음받은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(6)) return false
+        return status.favoriteCount <= (conditions[6] as Double).toInt()
+    }
+
+    private fun N회이상리트윗받은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(7)) return false
+        return status.retweetCount >= (conditions[7] as Double).toInt()
+    }
+
+    private fun N회이하리트윗받은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(8)) return false
+        return status.retweetCount <= (conditions[8] as Double).toInt()
+    }
+
+    private fun 미디어를포함한트윗(status: Status): Boolean {
+        if (!conditions.containsKey(9)) return false
         return status.mediaEntities.isNotEmpty()
     }
 
-    private fun excludeNoMedia(status: Status): Boolean {
-        if (!conditions.avoidNoMedia) return false
-        if (status.isRetweet) return false
+    private fun 미디어를포함하지않은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(10)) return false
         return status.mediaEntities.isEmpty()
     }
 
-    private fun excludeNoGeo(status: Status): Boolean {
-        if (!conditions.avoidNoGeo) return false
-        if (status.isRetweet) return false
-        return status.geoLocation != null
-    }
-
-     private fun excludeKeyword(status: Status): Boolean {
-        for (item in conditions.avoidKeywords) {
-            if (status.text.contains(item)) return true
+    @Suppress("UNCHECKED_CAST")
+    private fun 키워드를포함한트윗(status: Status): Boolean {
+        if (!conditions.containsKey(11)) return false
+        for (word in conditions[11] as ArrayList<String>) {
+            if (status.text.contains(word)) return true
         }
         return false
     }
 
-    private fun log(text: String, status: Status) {
-        val cut = if (text.length > 25) "${text.substring(0, 23)}.." else text
-        Log.i("Hetzer", "${text}${cut}")
+    @Suppress("UNCHECKED_CAST")
+    private fun 키워드를포함하지않은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(12)) return false
+        for (word in conditions[12] as ArrayList<String>) {
+            if (status.text.contains(word)) return false
+        }
+        return true
     }
 
-    fun filter(status: Status, i: Int): Boolean {
-        when {
-            excludeMyFavorite(status) -> {
-                log("[제외] 내가 마음에 들어한 트윗\n", status)
-                return true
-            }
-            excludeRetweetCount(status) -> {
-                log("[제외] 많은 리트윗을 받은 트윗\n", status)
-                return true
-            }
-            excludeFavoriteCount(status) -> {
-                log("[제외] 많은 사람이 마음에 들어한 트윗\n", status)
-                return true
-            }
-            excludeMinimumCount(status, i) -> {
-                log("[제외] 최근에 한 트윗(개수)\n", status)
-                return true
-            }
-            excludeMinimumTick(status) -> {
-                log("[제외] 너무 최근에 한 트윗(시간)\n", status)
-                return true
-            }
-            excludeMedia(status) -> {
-                log("[제외됨] 미디어를 포함한 트윗\n", status)
-                return true
-            }
-            excludeKeyword(status) -> {
-                log("[제외됨] 키워드를 포함한 트윗\n", status)
-                return true
-            }
-            excludeNoMedia(status) -> {
-                log("[제외됨] 미디어를 포함하지 않은 트윗\n", status)
-                return true
-            }
-            excludeNoGeo(status) -> {
-                log("[제외됨] 위치 정보를 포함하지 않은 트윗\n", status)
-                return true
-            }
-            else -> return false
-        }
+    private fun 위치정보를포함한트윗(status: Status): Boolean {
+        if (!conditions.containsKey(13)) return false
+        return status.geoLocation != null
+    }
+
+    private fun 위치정보를포함하지않은트윗(status: Status): Boolean {
+        if (!conditions.containsKey(14)) return false
+        return status.geoLocation == null
+    }
+    
+    private fun 최근N개까지의트윗(index: Int): Boolean {
+        if (!conditions.containsKey(15)) return false
+        return index < (conditions[15] as Double).toInt()
+    }
+
+    private fun 최근N분이내의트윗(status: Status): Boolean {
+        if (!conditions.containsKey(16)) return false
+        val min = (conditions[16] as Double).toInt()
+        val divider = 1000 / 60
+        val tweetMinuteStamp = status.createdAt.time / divider + min
+        val safeMinuteStamp = System.currentTimeMillis() / divider
+        return tweetMinuteStamp >= safeMinuteStamp
     }
 }

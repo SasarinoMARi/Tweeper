@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import twitter4j.Paging
@@ -55,18 +57,16 @@ class HetzerService : Service() {
     }
 
     private fun hetzerLogic(intent: Intent) {
-        val hetzer = Hetzer(
-            intent.getParcelableExtra(
-                HetzerConditionsActivity.Results.Conditions.name
-            ) as HetzerConditions
-        )
+        val json = intent.getStringExtra(HetzerConditionsActivity.Results.Conditions.name)
+        val typeToken = object : TypeToken<HashMap<Int, Any>>() {}.type
+        val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
+        val hetzer = Hetzer(conditions)
 
         getTweets { tweets ->
             if (tweets.isNotEmpty())
                 for (i in 0 until tweets.count()) {
                     val item = tweets[i]
                     val text = item.text
-                    Log.i("Hetzer", text)
                     if (hetzer.filter(item, i)) {
                         sendNotification(
                             getString(R.string.Hetzer_TweetRemovingTitle),

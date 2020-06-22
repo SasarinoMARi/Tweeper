@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
@@ -33,12 +35,9 @@ class HetzerActivity : Adam() {
                     finish()
                     return
                 }
-
-                val conditions = data!!.getParcelableExtra(
-                    HetzerConditionsActivity.Results.Conditions.name
-                ) as HetzerConditions
                 val intent = Intent(this, HetzerService::class.java)
-                intent.putExtra(HetzerConditionsActivity.Results.Conditions.name, conditions)
+                val json = data!!.getStringExtra(HetzerConditionsActivity.Results.Conditions.name)
+                intent.putExtra(HetzerConditionsActivity.Results.Conditions.name, json)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 }

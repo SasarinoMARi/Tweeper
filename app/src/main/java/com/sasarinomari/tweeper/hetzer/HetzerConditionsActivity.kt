@@ -20,14 +20,21 @@ import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.SharedTwitterProperties
 
+/*
+    이 코드를 들여다보는 자여..
+    심연에 온 것을 환영합니다.
 
+    2020년 3월 22일 - 우사긔
+ */
 class HetzerConditionsActivity : Adam() {
     enum class Results {
         Conditions
     }
 
-    private var conditions = HetzerConditions()
+    private var conditions = HashMap<Int, Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,29 +54,143 @@ class HetzerConditionsActivity : Adam() {
                 .setConfirmText(getString(R.string.YesDeleteIt))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
-                    HetzerConditions.Recorder(this).set(conditions)
+                    Recorder(this).set(conditions)
                     val i = Intent()
-                    i.putExtra(Results.Conditions.name, conditions)
+                    i.putExtra(Results.Conditions.name, Gson().toJson(conditions))
                     setResult(RESULT_OK, i)
                     finish()
                 }
                 .show()
         }
     }
-
+    @Suppress("UNCHECKED_CAST")
     private fun initializeWithHetzerConditions() {
-        conditions = HetzerConditions.Recorder(this).get() ?:return
-        if (conditions.avoidMyFav) addCondition_FavMySelf()
-        if (conditions.avoidRetweetCount > 0) addCondition_RetweetCount(conditions.avoidRetweetCount)
-        if (conditions.avoidFavCount > 0) addCondition_FavCount(conditions.avoidFavCount)
-        if (conditions.avoidRecentCount > 0) addCondition_RecentCount(conditions.avoidRecentCount)
-        if (conditions.avoidRecentMinute > 0) addCondition_RecentMinute(conditions.avoidRecentMinute)
-        if (conditions.avoidMedia) addCondition_IncludedMedia()
-        if (conditions.avoidNoMedia) addCondition_ExcludedMedia()
-        if (conditions.avoidNoGeo) addCondition_IncludedGeo()
-        for (i in conditions.avoidKeywords) {
-            addCondition_IncludedKeyword(i)
+        conditions = Recorder(this).get() ?:return
+        if (conditions.containsKey(1)) addCondition1()
+        if (conditions.containsKey(2)) addCondition2()
+        if (conditions.containsKey(3)) addCondition3()
+        if (conditions.containsKey(4)) addCondition4()
+        if (conditions.containsKey(5)) addCondition5((conditions[5] as Double).toInt())
+        if (conditions.containsKey(6)) addCondition6((conditions[6] as Double).toInt())
+        if (conditions.containsKey(7)) addCondition7((conditions[7] as Double).toInt())
+        if (conditions.containsKey(8)) addCondition8((conditions[8] as Double).toInt())
+        if (conditions.containsKey(9)) addCondition9()
+        if (conditions.containsKey(10)) addCondition10()
+        if (conditions.containsKey(11)) addCondition11(conditions[11] as ArrayList<String>)
+        if (conditions.containsKey(12)) addCondition12(conditions[12] as ArrayList<String>)
+        if (conditions.containsKey(13)) addCondition13()
+        if (conditions.containsKey(14)) addCondition14()
+        if (conditions.containsKey(15)) addCondition15((conditions[15] as Double).toInt())
+        if (conditions.containsKey(16)) addCondition16((conditions[16] as Double).toInt())
+    }
+
+    private fun addView(text: String, callback: ()-> Unit){
+        val newConditionView = HetzerConditionView(this)
+        newConditionView.setText(text)
+        newConditionView.setMoreButtonCallback {
+            createHetzerConditionPopupMenu(
+                this@HetzerConditionsActivity,
+                newConditionView,
+                callback
+            )
         }
+        layout_scrollContent.addView(newConditionView, 0)
+    }
+
+    // 내가 마음에 들어한 트윗
+    private fun addCondition1() {
+        conditions[1] = true
+        addView(getString(R.string.HetzerConditions_1)){conditions.remove(1)}
+    }
+
+    // 내가 마음에 들어하지 않은 트윗
+    private fun addCondition2() {
+        conditions[2] = true
+        addView(getString(R.string.HetzerConditions_2)){conditions.remove(2)}
+    }
+
+    // 내가 리트윗한 트윗
+    private fun addCondition3() {
+        conditions[3] = true
+        addView(getString(R.string.HetzerConditions_3)){conditions.remove(3)}
+    }
+
+    // 내가 리트윗하지 않은 트윗
+    private fun addCondition4() {
+        conditions[4] = true
+        addView(getString(R.string.HetzerConditions_4)){conditions.remove(4)}
+    }
+
+    // N회 이상 마음 받은 트윗 (Int)
+    private fun addCondition5(number: Int) {
+        conditions[5] = number
+        addView(getString(R.string.HetzerConditions_5, number.toString())){conditions.remove(5)}
+    }
+
+    // N회 이하 마음 받은 트윗 (Int)
+    private fun addCondition6(number: Int) {
+        conditions[6] = number
+        addView(getString(R.string.HetzerConditions_6, number.toString())){conditions.remove(6)}
+    }
+
+    // N회 이상 리트윗 받은 트윗 (Int)
+    private fun addCondition7(number: Int) {
+        conditions[7] = number
+        addView(getString(R.string.HetzerConditions_7, number.toString())){conditions.remove(7)}
+    }
+
+    // N회 이하 리트윗 받은 트윗 (Int)
+    private fun addCondition8(number: Int) {
+        conditions[8] = number
+        addView(getString(R.string.HetzerConditions_8, number.toString())){conditions.remove(8)}
+    }
+
+    // 미디어를 포함한 트윗
+    private fun addCondition9() {
+        conditions[9] = true
+        addView(getString(R.string.HetzerConditions_9)){conditions.remove(9)}
+    }
+
+    // 미디어를 포함하지 않은 트윗
+    private fun addCondition10() {
+        conditions[10] = true
+        addView(getString(R.string.HetzerConditions_10)){conditions.remove(10)}
+    }
+
+    // 키워드를 포함한 트윗 (ArrayList<Sring>)
+    private fun addCondition11(keywords: ArrayList<String>) {
+        conditions[11] = keywords
+        addView(getString(R.string.HetzerConditions_11)){conditions.remove(11)}
+    }
+
+    // 키워드를 포함하지 않은 트윗 (ArrayList<Sring>)
+    private fun addCondition12(keywords: ArrayList<String>) {
+        conditions[12] = keywords
+        addView(getString(R.string.HetzerConditions_12)){conditions.remove(12)}
+    }
+
+    // 위치 정보를 포함한 트윗
+    private fun addCondition13() {
+        conditions[13] = true
+        addView(getString(R.string.HetzerConditions_13)){conditions.remove(13)}
+    }
+
+    // 위치 정보를 포함하지 않은 트윗
+    private fun addCondition14() {
+        conditions[14] = true
+        addView(getString(R.string.HetzerConditions_14)){conditions.remove(14)}
+    }
+
+    // 최근 N개 까지의 트윗 (Int)
+    private fun addCondition15(number: Int) {
+        conditions[15] = number
+        addView(getString(R.string.HetzerConditions_15, number.toString())){conditions.remove(15)}
+    }
+
+    // 최근 N분 이내의 트윗 (Int)
+    private fun addCondition16(minute: Int) {
+        conditions[16] = minute
+        addView(getString(R.string.HetzerConditions_16, minute.toString())){conditions.remove(16)}
     }
 
     private fun createAddConditionDialog(): MaterialDialog {
@@ -81,269 +202,135 @@ class HetzerConditionsActivity : Adam() {
         return addDialog
     }
 
+    private fun inputNumber(dialogText: String, callback: (Int)->Unit){
+        MaterialDialog(this).show {
+            input(waitForPositiveButton = false) { dialog, text ->
+                val inputField = dialog.getInputField()
+                val number = text.toString().toIntOrNull()
+                val isInteger = number != null
+                inputField.error =
+                    if (isInteger) null else getString(R.string.OnlyNumberAllowed)
+                dialog.setActionButtonEnabled(WhichButton.POSITIVE, isInteger)
+            }
+            title(text = dialogText)
+            message(R.string.Condition_Description_RetweetCount)
+            positiveButton(R.string.OK) { dialog ->
+                val text = dialog.getInputField().text.toString()
+                val number = text.toIntOrNull()
+                if (number != null) {
+                    callback(number)
+                }
+            }
+        }
+    }
+
+    private fun inputString(dialogText: String, callback: (String)-> Unit){
+        MaterialDialog(this).show {
+            title(text = dialogText)
+            message(R.string.Condition_Description_IncludedKeyword)
+            positiveButton(R.string.OK) { dialog ->
+                val text = dialog.getInputField().text.toString()
+                callback(text)
+            }
+        }
+    }
+
     @SuppressLint("CheckResult")
     private fun attachItemLists(dialog: MaterialDialog) {
         val listItems = ArrayList<String>()
-        if (!conditions.avoidMyFav) listItems.add(getString(R.string.Condition_FavMyself))
-        if (conditions.avoidRetweetCount == 0) listItems.add(getString(R.string.Condition_RetweetCount))
-        if (conditions.avoidFavCount == 0) listItems.add(getString(R.string.Condition_FavCount))
-        if (conditions.avoidRecentCount == 0) listItems.add(getString(R.string.Condition_RecentCount))
-        if (conditions.avoidRecentMinute == 0) listItems.add(getString(R.string.Condition_RecentMinute))
-        listItems.add(getString(R.string.Condition_IncludedKeyword))
-        if (!conditions.avoidMedia && !conditions.avoidNoMedia){
-            listItems.add(getString(R.string.Condition_IncludedMedia))
-            listItems.add(getString(R.string.Condition_ExcludedMedia))
+        if (!conditions.containsKey(1) && !conditions.containsKey(2)) {
+            listItems.add(getString(R.string.HetzerConditions_1))
+            listItems.add(getString(R.string.HetzerConditions_2))
         }
-        if (!conditions.avoidNoGeo) listItems.add(getString(R.string.Condition_IncludedGEO))
+        if (!conditions.containsKey(3) && !conditions.containsKey(4)) {
+            listItems.add(getString(R.string.HetzerConditions_3))
+            listItems.add(getString(R.string.HetzerConditions_4))
+        }
+        if (!conditions.containsKey(5)) {
+            listItems.add(getString(R.string.HetzerConditions_5, "N"))
+        }
+        if (!conditions.containsKey(6)) {
+            listItems.add(getString(R.string.HetzerConditions_6, "N"))
+        }
+        if (!conditions.containsKey(7)) {
+            listItems.add(getString(R.string.HetzerConditions_7, "N"))
+        }
+        if (!conditions.containsKey(8)) {
+            listItems.add(getString(R.string.HetzerConditions_8, "N"))
+        }
+        if (!conditions.containsKey(9) && !conditions.containsKey(10)) {
+            listItems.add(getString(R.string.HetzerConditions_9))
+            listItems.add(getString(R.string.HetzerConditions_10))
+        }
+        if (!conditions.containsKey(11)) {
+            listItems.add(getString(R.string.HetzerConditions_11))
+            // TODO
+        }
+        if (!conditions.containsKey(12)) {
+            listItems.add(getString(R.string.HetzerConditions_12))
+            // TODO
+        }
+        if (!conditions.containsKey(13) && !conditions.containsKey(14)) {
+            listItems.add(getString(R.string.HetzerConditions_13))
+            listItems.add(getString(R.string.HetzerConditions_14))
+        }
+        if (!conditions.containsKey(15)) {
+            listItems.add(getString(R.string.HetzerConditions_15, "N"))
+        }
+        if (!conditions.containsKey(16)) {
+            listItems.add(getString(R.string.HetzerConditions_16, "N"))
+        }
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
             when (val text = textSeq.toString()) {
-                getString(R.string.Condition_FavMyself) -> {
-                    addCondition_FavMySelf()
-                }
-                getString(R.string.Condition_RetweetCount) -> {
-                    MaterialDialog(this@HetzerConditionsActivity).show {
-                        input(waitForPositiveButton = false) { dialog, text ->
-                            val inputField = dialog.getInputField()
-                            val number = text.toString().toIntOrNull()
-                            val isInteger = number != null
-                            inputField.error =
-                                if (isInteger) null else getString(R.string.OnlyNumberAllowed)
-                            dialog.setActionButtonEnabled(WhichButton.POSITIVE, isInteger)
-                        }
-                        title(text = text)
-                        message(R.string.Condition_Description_RetweetCount)
-                        positiveButton(R.string.OK) { dialog ->
-                            val text = dialog.getInputField().text.toString()
-                            val number = text.toIntOrNull()
-                            if (number != null) {
-                                addCondition_RetweetCount(number)
-                            }
-                        }
+                getString(R.string.HetzerConditions_1) -> addCondition1()
+                getString(R.string.HetzerConditions_2) -> addCondition2()
+                getString(R.string.HetzerConditions_3) -> addCondition3()
+                getString(R.string.HetzerConditions_4) -> addCondition4()
+                getString(R.string.HetzerConditions_5, "N") -> {
+                    // TODO: 문구 변경 필요
+                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                        addCondition5(number)
                     }
                 }
-                getString(R.string.Condition_FavCount) -> {
-                    MaterialDialog(this@HetzerConditionsActivity).show {
-                        input(waitForPositiveButton = false) { dialog, text ->
-                            val inputField = dialog.getInputField()
-                            val number = text.toString().toIntOrNull()
-                            val isInteger = number != null
-                            inputField.error =
-                                if (isInteger) null else getString(R.string.OnlyNumberAllowed)
-                            dialog.setActionButtonEnabled(WhichButton.POSITIVE, isInteger)
-                        }
-                        title(text = text)
-                        message(R.string.Condition_Description_FavCount)
-                        positiveButton(R.string.OK) { dialog ->
-                            val text = dialog.getInputField().text.toString()
-                            val number = text.toIntOrNull()
-                            if (number != null) {
-                                addCondition_FavCount(number)
-                            }
-                        }
+                getString(R.string.HetzerConditions_6, "N") -> {
+                    // TODO: 문구 변경 필요
+                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                        addCondition6(number)
                     }
                 }
-                getString(R.string.Condition_RecentCount) -> {
-                    MaterialDialog(this@HetzerConditionsActivity).show {
-                        input(waitForPositiveButton = false) { dialog, text ->
-                            val inputField = dialog.getInputField()
-                            val number = text.toString().toIntOrNull()
-                            val isInteger = number != null
-                            inputField.error =
-                                if (isInteger) null else getString(R.string.OnlyNumberAllowed)
-                            dialog.setActionButtonEnabled(WhichButton.POSITIVE, isInteger)
-                        }
-                        title(text = text)
-                        message(R.string.Condition_Description_RecentCount)
-                        positiveButton(R.string.OK) { dialog ->
-                            val text = dialog.getInputField().text.toString()
-                            val number = text.toIntOrNull()
-                            if (number != null) {
-                                addCondition_RecentCount(number)
-                            }
-                        }
+                getString(R.string.HetzerConditions_7, "N") -> {
+                    // TODO: 문구 변경 필요
+                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                        addCondition7(number)
                     }
                 }
-                getString(R.string.Condition_RecentMinute) -> {
-                    MaterialDialog(this@HetzerConditionsActivity).show {
-                        input(
-                            waitForPositiveButton = false,
-                            allowEmpty = false
-                        ) { dialog, text ->
-                            val inputField = dialog.getInputField()
-                            val number = text.toString().toIntOrNull()
-                            val isInteger = number != null
-                            inputField.error =
-                                if (isInteger) null else getString(R.string.OnlyNumberAllowed)
-                            dialog.setActionButtonEnabled(WhichButton.POSITIVE, isInteger)
-                        }
-                        title(text = text)
-                        message(R.string.Condition_Description_RecentMinute)
-                        positiveButton(R.string.OK) { dialog ->
-                            val text = dialog.getInputField().text.toString()
-                            val number = text.toIntOrNull()
-                            if (number != null) {
-                                addCondition_RecentMinute(number)
-                            }
-                        }
+                getString(R.string.HetzerConditions_8, "N") -> {
+                    // TODO: 문구 변경 필요
+                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                        addCondition8(number)
                     }
                 }
-                getString(R.string.Condition_IncludedKeyword) -> {
-                    MaterialDialog(this@HetzerConditionsActivity).show {
-                        title(text = text)
-                        message(R.string.Condition_Description_IncludedKeyword)
-                        positiveButton(R.string.OK) { dialog ->
-                            val text = dialog.getInputField().text.toString()
-                            addCondition_IncludedKeyword(text)
-                        }
+                getString(R.string.HetzerConditions_9) -> addCondition9()
+                getString(R.string.HetzerConditions_10) -> addCondition10()
+                // TODO: 키워드 짜기
+//                getString(R.string.HetzerConditions_11) -> addCondition11()
+//                getString(R.string.HetzerConditions_12) -> addCondition12()
+                getString(R.string.HetzerConditions_13) -> addCondition13()
+                getString(R.string.HetzerConditions_14) -> addCondition14()
+                getString(R.string.HetzerConditions_15, "N") -> {
+                    // TODO: 문구 변경 필요
+                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                        addCondition15(number)
                     }
                 }
-                getString(R.string.Condition_IncludedMedia)-> {
-                    addCondition_IncludedMedia()
-                }
-                getString(R.string.Condition_ExcludedMedia)-> {
-                    addCondition_ExcludedMedia()
-                }
-                getString(R.string.Condition_IncludedGEO)-> {
-                    addCondition_IncludedGeo()
+                getString(R.string.HetzerConditions_16, "N") -> {
+                    // TODO: 문구 변경 필요
+                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                        addCondition16(number)
+                    }
                 }
             }
         }
-    }
-
-    private fun addCondition_RetweetCount(number: Int) {
-        conditions.avoidRetweetCount = number
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_Display_RetweetCount, number))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidRetweetCount = 0
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_FavCount(number: Int) {
-        conditions.avoidFavCount = number
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_Display_FavCount, number))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidFavCount = 0
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_RecentCount(number: Int) {
-        conditions.avoidRecentCount = number
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_Display_RecentCount, number))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidRecentCount = 0
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_RecentMinute(number: Int) {
-        conditions.avoidRecentMinute = number
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_Display_RecentDate, number))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidRecentMinute = 0
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_FavMySelf() {
-        conditions.avoidMyFav = true
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_FavMyself))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidMyFav = false
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_IncludedKeyword(keyword: String) {
-        if(conditions.avoidKeywords.contains(keyword)) return
-        conditions.avoidKeywords.add(keyword)
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_Display_IncludedKeyword, keyword))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidKeywords.remove(keyword)
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_IncludedMedia() {
-        conditions.avoidMedia = true
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_IncludedMedia))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidMedia = false
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_ExcludedMedia() {
-        conditions.avoidNoMedia = true
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_ExcludedMedia))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidNoMedia = false
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
-    }
-
-    private fun addCondition_IncludedGeo() {
-        conditions.avoidNoGeo = true
-        val newConditionView = HetzerConditionView(this)
-        newConditionView.setText(getString(R.string.Condition_IncludedGEO))
-        newConditionView.setMoreButtonCallback {
-            createHetzerConditionPopupMenu(
-                this@HetzerConditionsActivity,
-                newConditionView
-            ) {
-                conditions.avoidNoGeo = false
-            }
-        }
-        layout_scrollContent.addView(newConditionView, 0)
     }
 
     private fun createHetzerConditionPopupMenu(
@@ -366,4 +353,31 @@ class HetzerConditionsActivity : Adam() {
         menu.show()
     }
 
+
+    internal class Recorder(private val context: Context) {
+        private var prefId = "record"
+
+        @SuppressLint("CommitPrefEdits")
+        fun set(con: HashMap<Int, Any>) {
+            val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE).edit()
+            val json = Gson().toJson(con)
+            prefs.putString(getKey(), json)
+            prefs.apply()
+        }
+
+        fun get(): HashMap<Int, Any>? {
+            val prefs = context.getSharedPreferences(prefId, Context.MODE_PRIVATE)
+            val json = prefs.getString(getKey(), null) ?: return null
+            val type = object : TypeToken<HashMap<Int, Any>>() {}.type
+            return try{
+                Gson().fromJson(json, type)
+            } catch(e: Exception) {
+                null
+            }
+        }
+
+        private fun getKey() : String {
+            return "hCon" + SharedTwitterProperties.instance().id
+        }
+    }
 }

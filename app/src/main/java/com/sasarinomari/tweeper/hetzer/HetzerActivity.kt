@@ -36,8 +36,8 @@ class HetzerActivity : Adam() {
                     return
                 }
                 val intent = Intent(this, HetzerService::class.java)
-                val json = data!!.getStringExtra(HetzerConditionsActivity.Results.Conditions.name)
-                intent.putExtra(HetzerConditionsActivity.Results.Conditions.name, json)
+                val json = data!!.getStringExtra(HetzerService.Companion.Parameters.HetzerConditions.name)
+                intent.putExtra(HetzerService.Companion.Parameters.HetzerConditions.name, json)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 }

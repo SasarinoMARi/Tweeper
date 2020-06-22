@@ -14,10 +14,15 @@ import com.sasarinomari.tweeper.SharedTwitterProperties
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
+import java.lang.reflect.Parameter
 
 class HetzerService : Service() {
     companion object {
         val ChannelName = "Hetzer"
+
+        enum class Parameters{
+            HetzerConditions
+        }
     }
 
     private val notificationId = 4425
@@ -25,8 +30,6 @@ class HetzerService : Service() {
     private lateinit var defaultChannelBuilder: NotificationCompat.Builder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // TODO : 같은 유저에 의해 여러번 수행되는 경우 조치해야 함!
-
         silentChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
             NotificationCompat.Builder(this, ChannelName)
         } else {
@@ -43,7 +46,7 @@ class HetzerService : Service() {
 
         hetzerLogic(intent!!)
 
-        return START_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun onDestroy() {
@@ -57,7 +60,7 @@ class HetzerService : Service() {
     }
 
     private fun hetzerLogic(intent: Intent) {
-        val json = intent.getStringExtra(HetzerConditionsActivity.Results.Conditions.name)
+        val json = intent.getStringExtra(Parameters.HetzerConditions.name)
         val typeToken = object : TypeToken<HashMap<Int, Any>>() {}.type
         val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
         val hetzer = Hetzer(conditions)
@@ -117,7 +120,7 @@ class HetzerService : Service() {
                 // gets Twitter instance with default credentials
                 val twitter = SharedTwitterProperties.instance()
                 for (i in startIndex..Int.MAX_VALUE) {
-                    sendNotification(
+                    sendNotification( // TODO: API 리밋 후? 또는 액티비티 종료 후 여기서 오류
                         getString(R.string.Hetzer_TweetPullingTitle),
                         getString(R.string.Hetzer_TweetPullingContent, list.count())
                     )

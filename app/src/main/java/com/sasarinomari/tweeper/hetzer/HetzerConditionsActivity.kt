@@ -30,10 +30,6 @@ import com.sasarinomari.tweeper.SharedTwitterProperties
     2020년 3월 22일 - 우사긔
  */
 class HetzerConditionsActivity : Adam() {
-    enum class Results {
-        Conditions
-    }
-
     private var conditions = HashMap<Int, Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +52,7 @@ class HetzerConditionsActivity : Adam() {
                     it.dismissWithAnimation()
                     Recorder(this).set(conditions)
                     val i = Intent()
-                    i.putExtra(Results.Conditions.name, Gson().toJson(conditions))
+                    i.putExtra(HetzerService.Companion.Parameters.HetzerConditions.name, Gson().toJson(conditions))
                     setResult(RESULT_OK, i)
                     finish()
                 }

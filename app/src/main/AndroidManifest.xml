@@ -16,7 +16,7 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning"
             tools:replace="android:icon">
-        <service android:name="com.sasarinomari.tweeper.hetzer.HetzerService"/>
+        <service android:name="com.sasarinomari.tweeper.hetzer.HetzerService" android:exported="true"/>
 
         <activity android:name=".auth.TokenManagementActivity"></activity>
         <activity android:name=".tweetreport.TweetReportActivity"></activity>

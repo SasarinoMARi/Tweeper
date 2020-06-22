@@ -1,5 +1,7 @@
 package com.sasarinomari.tweeper
 
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.sasarinomari.tweeper.hetzer.HetzerActivity
@@ -7,6 +9,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
+import android.util.Log
 import android.widget.LinearLayout
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.android.gms.ads.AdRequest
@@ -19,6 +22,7 @@ import com.sasarinomari.tweeper.auth.TokenManagementActivity
 import com.sasarinomari.tweeper.chainb.BlockClearActivity
 import com.sasarinomari.tweeper.chainb.ChainBlockActivity
 import com.sasarinomari.tweeper.fwmanage.FollowerManagement
+import com.sasarinomari.tweeper.hetzer.HetzerService
 import com.sasarinomari.tweeper.tweetreport.TweetReportActivity
 import twitter4j.TwitterFactory
 
@@ -31,6 +35,17 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             startActivityForResult(Intent(this, TokenManagementActivity::class.java), 0)
         }
         button_erase.setOnClickListener {
+            val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            for (service in manager.getRunningServices(Integer.MAX_VALUE)) { // TODO : 이것 때문에 릴리즈 안될 수도..
+                if (HetzerService::class.java.name == service.service.className) {
+                    Log.i("Hetzer", "Hetzer 서비스가 이미 실행중입니다.")
+                    SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("잠시만요!")
+                        .setContentText("트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.")
+                        .show()
+                    return@setOnClickListener
+                }
+            }
             startActivity(Intent(this, HetzerActivity::class.java))
         }
         button_followerManagement.setOnClickListener {

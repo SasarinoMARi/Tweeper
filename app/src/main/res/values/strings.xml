@@ -11,10 +11,6 @@
     <string name="OK">확인</string>
     <string name="OnlyNumberAllowed">숫자만 입력해주세요!</string>
     <string name="Cancel">취소</string>
-    <string name="Condition_Description_RetweetCount">리트윗이 몇 번을 넘겼을 때 트윗을 남길까요?</string>
-    <string name="Condition_Description_FavCount">몇 명의 사람이 마음에 들어 할 때 트윗을 남길까요?</string>
-    <string name="Condition_Description_RecentCount">마지막에 작성한 몇 개의 트윗을 남겨둘까요?</string>
-    <string name="Condition_Description_RecentMinute">최근 몇 분 까지의 트윗을 남겨둘까요?</string>
     <string name="Delete">삭제</string>
     <string name="Hetzer_TweetPullingTitle">내 트윗 목록을 불러오는 중입니다.</string>
     <string name="Hetzer_TweetPullingContent">현재 %1$d개의 트윗을 불러왔습니다.</string>
@@ -92,10 +88,18 @@
     <string name="HetzerConditions_8">%1$s회 이하 리트윗 받은 트윗</string>
     <string name="HetzerConditions_9">미디어를 포함한 트윗"</string>
     <string name="HetzerConditions_10">미디어를 포함하지 않은 트윗</string>
-    <string name="HetzerConditions_11">키워드를 포함한 트윗</string>
-    <string name="HetzerConditions_12">키워드를 포함하지 않은 트윗</string>
+    <string name="HetzerConditions_11">\'%1$s\'를 포함한 트윗</string>
+    <string name="HetzerConditions_12">\'%1$s\'를 포함하지 않은 트윗</string>
     <string name="HetzerConditions_13">위치 정보를 포함한 트윗</string>
     <string name="HetzerConditions_14">위치 정보를 포함하지 않은 트윗</string>
     <string name="HetzerConditions_15">최근 %1$s개 까지의 트윗</string>
     <string name="HetzerConditions_16">최근 %1$s분 이내의 트윗</string>
+    <string name="HetzerConditions_5_Desc">마음이 몇 개 이상일 때 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_6_Desc">마음이 몇 개 이상일 때 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_7_Desc">마음이 몇 개 이상일 때 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_8_Desc">마음이 몇 개 이상일 때 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_11_Desc">어떤 키워드가 포함되었을 때 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_12_Desc">어떤 키워드가 포함되지 않았을 때 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_15_Desc">최근 몇 개 까지의 트윗을 남겨둘까요?</string>
+    <string name="HetzerConditions_16_Desc">최근 몇 분 내에 작성한 트윗까지 남겨둘까요?</string>
 </resources>

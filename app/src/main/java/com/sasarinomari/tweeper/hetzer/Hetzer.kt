@@ -14,11 +14,11 @@ public class Hetzer(private val conditions: HashMap<Int, Any>) {
         08. N회 이하 리트윗 받은 트윗 (Int)
         09. 미디어를 포함한 트윗
         10. 미디어를 포함하지 않은 트윗
-        11. 키워드를 포함한 트윗 (ArrayList<Sring>) // TODO: 동작 체크
-        12. 키워드를 포함하지 않은 트윗 (ArrayList<Sring>) // TODO: 동작 체크
+        11. 키워드를 포함한 트윗 (ArrayList<Sring>)
+        12. 키워드를 포함하지 않은 트윗 (ArrayList<Sring>)
         13. 위치 정보를 포함한 트윗 // TODO: 동작 체크
         14. 위치 정보를 포함하지 않은 트윗 // TODO: 동작 체크
-        15. 최근 N개 까지의 트윗 (Int) // TODO: 동작 체크
+        15. 최근 N개 까지의 트윗 (Int)
         16. 최근 N분 이내의 트윗 (Int) // TODO: 동작 체크
      */
     fun filter(status: Status, i: Int): Boolean {
@@ -110,7 +110,9 @@ public class Hetzer(private val conditions: HashMap<Int, Any>) {
     @Suppress("UNCHECKED_CAST")
     private fun 키워드를포함하지않은트윗(status: Status): Boolean {
         if (!conditions.containsKey(12)) return false
-        for (word in conditions[12] as ArrayList<String>) {
+        val list =  conditions[12] as ArrayList<String>
+        if(list.count() == 0) return false
+        for (word in list) {
             if (status.text.contains(word)) return false
         }
         return true

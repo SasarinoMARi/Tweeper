@@ -85,8 +85,16 @@ class HetzerConditionsActivity : Adam() {
         if (conditions.containsKey(8)) addCondition8((conditions[8] as Double).toInt())
         if (conditions.containsKey(9)) addCondition9()
         if (conditions.containsKey(10)) addCondition10()
-        if (conditions.containsKey(11)) addCondition11(conditions[11] as ArrayList<String>)
-        if (conditions.containsKey(12)) addCondition12(conditions[12] as ArrayList<String>)
+        if (conditions.containsKey(11)) {
+            for (keyword in (conditions[11] as ArrayList<String>).toArray()) {
+                addCondition11(keyword as String)
+            }
+        }
+        if (conditions.containsKey(12)) {
+            for (keyword in (conditions[12] as ArrayList<String>).toArray()) {
+                addCondition12(keyword as String)
+            }
+        }
         if (conditions.containsKey(13)) addCondition13()
         if (conditions.containsKey(14)) addCondition14()
         if (conditions.containsKey(15)) addCondition15((conditions[15] as Double).toInt())
@@ -105,6 +113,8 @@ class HetzerConditionsActivity : Adam() {
         }
         layout_scrollContent.addView(newConditionView, 0)
     }
+
+    // region 조건 추가 코드
 
     // 내가 마음에 들어한 트윗
     private fun addCondition1() {
@@ -167,15 +177,21 @@ class HetzerConditionsActivity : Adam() {
     }
 
     // 키워드를 포함한 트윗 (ArrayList<Sring>)
-    private fun addCondition11(keywords: ArrayList<String>) {
-        conditions[11] = keywords
-        addView(getString(R.string.HetzerConditions_11)){conditions.remove(11)}
+    private fun addCondition11(keyword: String) {
+        if(!conditions.containsKey(11)){
+            conditions[11] = ArrayList<String>()
+        }
+        (conditions[11] as ArrayList<String>).add(keyword)
+        addView(getString(R.string.HetzerConditions_11, keyword)){(conditions[11] as ArrayList<String>).remove(keyword)}
     }
 
     // 키워드를 포함하지 않은 트윗 (ArrayList<Sring>)
-    private fun addCondition12(keywords: ArrayList<String>) {
-        conditions[12] = keywords
-        addView(getString(R.string.HetzerConditions_12)){conditions.remove(12)}
+    private fun addCondition12(keyword: String) {
+        if(!conditions.containsKey(12)){
+            conditions[12] = ArrayList<String>()
+        }
+        (conditions[12] as ArrayList<String>).add(keyword)
+        addView(getString(R.string.HetzerConditions_12, keyword)){(conditions[12] as ArrayList<String>).remove(keyword)}
     }
 
     // 위치 정보를 포함한 트윗
@@ -202,6 +218,8 @@ class HetzerConditionsActivity : Adam() {
         addView(getString(R.string.HetzerConditions_16, minute.toString())){conditions.remove(16)}
     }
 
+    // endregion
+
     private fun createAddConditionDialog(): MaterialDialog {
         val addDialog = MaterialDialog(this, BottomSheet(LayoutMode.WRAP_CONTENT))
         addDialog.title(R.string.AddCondition)
@@ -222,7 +240,7 @@ class HetzerConditionsActivity : Adam() {
                 dialog.setActionButtonEnabled(WhichButton.POSITIVE, isInteger)
             }
             title(text = dialogText)
-            message(R.string.Condition_Description_RetweetCount)
+            message(text = dialogText)
             positiveButton(R.string.OK) { dialog ->
                 val text = dialog.getInputField().text.toString()
                 val number = text.toIntOrNull()
@@ -235,8 +253,9 @@ class HetzerConditionsActivity : Adam() {
 
     private fun inputString(dialogText: String, callback: (String)-> Unit){
         MaterialDialog(this).show {
+            input(waitForPositiveButton = false)
             title(text = dialogText)
-            message(R.string.Condition_Description_IncludedKeyword)
+            message(text = dialogText)
             positiveButton(R.string.OK) { dialog ->
                 val text = dialog.getInputField().text.toString()
                 callback(text)
@@ -246,6 +265,7 @@ class HetzerConditionsActivity : Adam() {
 
     @SuppressLint("CheckResult")
     private fun attachItemLists(dialog: MaterialDialog) {
+        // region Define Listitems
         val listItems = ArrayList<String>()
         if (!conditions.containsKey(1) && !conditions.containsKey(2)) {
             listItems.add(getString(R.string.HetzerConditions_1))
@@ -271,14 +291,9 @@ class HetzerConditionsActivity : Adam() {
             listItems.add(getString(R.string.HetzerConditions_9))
             listItems.add(getString(R.string.HetzerConditions_10))
         }
-        if (!conditions.containsKey(11)) {
-            listItems.add(getString(R.string.HetzerConditions_11))
-            // TODO
-        }
-        if (!conditions.containsKey(12)) {
-            listItems.add(getString(R.string.HetzerConditions_12))
-            // TODO
-        }
+
+        listItems.add(getString(R.string.HetzerConditions_11, "특정 단어"))
+        listItems.add(getString(R.string.HetzerConditions_12, "특정 단어"))
         if (!conditions.containsKey(13) && !conditions.containsKey(14)) {
             listItems.add(getString(R.string.HetzerConditions_13))
             listItems.add(getString(R.string.HetzerConditions_14))
@@ -289,6 +304,8 @@ class HetzerConditionsActivity : Adam() {
         if (!conditions.containsKey(16)) {
             listItems.add(getString(R.string.HetzerConditions_16, "N"))
         }
+        // endregion
+        // region ListItem Choice Event
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
             when (val text = textSeq.toString()) {
                 getString(R.string.HetzerConditions_1) -> addCondition1()
@@ -296,50 +313,52 @@ class HetzerConditionsActivity : Adam() {
                 getString(R.string.HetzerConditions_3) -> addCondition3()
                 getString(R.string.HetzerConditions_4) -> addCondition4()
                 getString(R.string.HetzerConditions_5, "N") -> {
-                    // TODO: 문구 변경 필요
-                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                    inputNumber(getString(R.string.HetzerConditions_5_Desc)) { number ->
                         addCondition5(number)
                     }
                 }
                 getString(R.string.HetzerConditions_6, "N") -> {
-                    // TODO: 문구 변경 필요
-                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                    inputNumber(getString(R.string.HetzerConditions_6_Desc)) { number ->
                         addCondition6(number)
                     }
                 }
                 getString(R.string.HetzerConditions_7, "N") -> {
-                    // TODO: 문구 변경 필요
-                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                    inputNumber(getString(R.string.HetzerConditions_7_Desc)) { number ->
                         addCondition7(number)
                     }
                 }
                 getString(R.string.HetzerConditions_8, "N") -> {
-                    // TODO: 문구 변경 필요
-                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                    inputNumber(getString(R.string.HetzerConditions_8_Desc)) { number ->
                         addCondition8(number)
                     }
                 }
                 getString(R.string.HetzerConditions_9) -> addCondition9()
                 getString(R.string.HetzerConditions_10) -> addCondition10()
-                // TODO: 키워드 짜기
-//                getString(R.string.HetzerConditions_11) -> addCondition11()
-//                getString(R.string.HetzerConditions_12) -> addCondition12()
+                getString(R.string.HetzerConditions_11, "특정 단어") -> {
+                    inputString(getString(R.string.HetzerConditions_11_Desc)) { str ->
+                        addCondition11(str)
+                    }
+                }
+                getString(R.string.HetzerConditions_12, "특정 단어") -> {
+                    inputString(getString(R.string.HetzerConditions_12_Desc)) { str ->
+                        addCondition12(str)
+                    }
+                }
                 getString(R.string.HetzerConditions_13) -> addCondition13()
                 getString(R.string.HetzerConditions_14) -> addCondition14()
                 getString(R.string.HetzerConditions_15, "N") -> {
-                    // TODO: 문구 변경 필요
-                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                    inputNumber(getString(R.string.HetzerConditions_15_Desc)) { number ->
                         addCondition15(number)
                     }
                 }
                 getString(R.string.HetzerConditions_16, "N") -> {
-                    // TODO: 문구 변경 필요
-                    inputNumber(getString(R.string.Condition_Description_RetweetCount)) { number ->
+                    inputNumber(getString(R.string.HetzerConditions_16_Desc)) { number ->
                         addCondition16(number)
                     }
                 }
             }
         }
+        // endregion
     }
 
     private fun createHetzerConditionPopupMenu(

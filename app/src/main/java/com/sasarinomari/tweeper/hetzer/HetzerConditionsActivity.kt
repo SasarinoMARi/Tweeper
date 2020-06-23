@@ -178,19 +178,17 @@ class HetzerConditionsActivity : Adam() {
 
     // 키워드를 포함한 트윗 (ArrayList<Sring>)
     private fun addCondition11(keyword: String) {
-        if(!conditions.containsKey(11)){
-            conditions[11] = ArrayList<String>()
-        }
-        (conditions[11] as ArrayList<String>).add(keyword)
+        val temp = if(conditions.containsKey(11)) conditions[11] as ArrayList<String> else ArrayList<String>()
+        if(!temp.contains(keyword)) temp.add(keyword)
+        conditions[11] = temp
         addView(getString(R.string.HetzerConditions_11, keyword)){(conditions[11] as ArrayList<String>).remove(keyword)}
     }
 
     // 키워드를 포함하지 않은 트윗 (ArrayList<Sring>)
     private fun addCondition12(keyword: String) {
-        if(!conditions.containsKey(12)){
-            conditions[12] = ArrayList<String>()
-        }
-        (conditions[12] as ArrayList<String>).add(keyword)
+        val temp = if(conditions.containsKey(12)) conditions[12] as ArrayList<String> else ArrayList<String>()
+        if(!temp.contains(keyword)) temp.add(keyword)
+        conditions[12] = temp
         addView(getString(R.string.HetzerConditions_12, keyword)){(conditions[12] as ArrayList<String>).remove(keyword)}
     }
 

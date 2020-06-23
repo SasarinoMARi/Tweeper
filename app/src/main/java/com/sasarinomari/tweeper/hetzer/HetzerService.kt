@@ -23,6 +23,24 @@ class HetzerService : Service() {
 
     companion object {
         val ChannelName = "Hetzer"
+        var _innerRunningFlag = false
+
+        fun chechServiceRunning(context: Context): Boolean {
+            var flag1 = false
+            val flag2 = _innerRunningFlag
+
+            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            for (service in manager.getRunningServices(Integer.MAX_VALUE)) { // TODO : 이것 때문에 릴리즈 안될 수도..
+                if (HetzerService::class.java.name == service.service.className) {
+                    Log.i("Hetzer", "Hetzer 서비스가 이미 실행중입니다.")
+                    flag1 = true
+                    break
+                }
+            }
+
+            return flag1 and flag2
+        }
+
     }
 
     private val notificationId = 4425
@@ -30,6 +48,7 @@ class HetzerService : Service() {
     private lateinit var defaultChannelBuilder: NotificationCompat.Builder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Companion._innerRunningFlag = true
         silentChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
             NotificationCompat.Builder(this, ChannelName)
         } else {
@@ -56,6 +75,7 @@ class HetzerService : Service() {
 
     override fun onBind(p0: Intent?): IBinder? {
         Log.i(HetzerService::class.java.name, "onBind")
+        Companion._innerRunningFlag = true
         return null
     }
 
@@ -83,6 +103,7 @@ class HetzerService : Service() {
 
             sendNotification(getString(R.string.Done), getString(R.string.Hetzer_Done), silent = false, cancelable = true, id = notificationId + 1)
             this.stopForeground(true)
+            this.stopSelf()
         }
     }
 

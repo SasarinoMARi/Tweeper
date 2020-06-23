@@ -35,17 +35,14 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         setContentView(R.layout.activity_dashboard)
         loadUserInformation()
         image_profilePicture.setOnClickListener {
-            startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
+            if(HetzerService.chechServiceRunning((this@DashboardActivity))) {
+                da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
+            }
+            else {
+                startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
+            }
         }
         button_erase.setOnClickListener {
-            val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            for (service in manager.getRunningServices(Integer.MAX_VALUE)) { // TODO : 이것 때문에 릴리즈 안될 수도..
-                if (HetzerService::class.java.name == service.service.className) {
-                    Log.i("Hetzer", "Hetzer 서비스가 이미 실행중입니다.")
-                    da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
-                    return@setOnClickListener
-                }
-            }
             startActivityForResult(Intent(this, HetzerActivity::class.java), Requests.Hetzer.ordinal)
         }
         button_followerManagement.setOnClickListener {
@@ -125,7 +122,9 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
                 }
             }
             Requests.Hetzer.ordinal -> {
-                da.message(getString(R.string.Done), "트윗 청소기가 백그라운드에서 실행됩니다..").show()
+                if(resultCode == RESULT_OK) {
+                    da.message(getString(R.string.Done), "트윗 청소기가 백그라운드에서 실행됩니다..").show()
+                }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }

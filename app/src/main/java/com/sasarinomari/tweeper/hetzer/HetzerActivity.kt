@@ -43,6 +43,7 @@ class HetzerActivity : Adam() {
                 else {
                     startService(intent)
                 }
+                setResult(RESULT_OK)
                 finish()
             }
             else -> super.onActivityResult(requestCode, resultCode, data)

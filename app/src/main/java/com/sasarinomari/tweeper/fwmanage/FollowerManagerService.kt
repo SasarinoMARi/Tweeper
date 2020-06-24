@@ -68,6 +68,8 @@ class FollowerManagerService : Service() {
                     Log.i(ChannelName, line.screenName)
                 }
 
+                // TODO: 완료 후 알림 누르면 결과 페이지로 가게
+                // TODO: 알림을 놓쳤을 경우를 대비해서 메뉴로도 진입할 수 있어야 함.
                 sendNotification(getString(R.string.Done), getString(R.string.FollowerManagementDone), silent = false, cancelable = true, id = notificationId + 1)
                 this.stopForeground(true)
                 this.stopSelf()
@@ -95,6 +97,7 @@ class FollowerManagerService : Service() {
         cancelable: Boolean = false,
         id: Int = notificationId
     ): Notification {
+        // Todo: 클릭해도 반응 없게 하기
         val clsIntent = Intent(this, FollowerManagement::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, clsIntent, 0)
         val builder = if (silent) silentChannelBuilder else defaultChannelBuilder

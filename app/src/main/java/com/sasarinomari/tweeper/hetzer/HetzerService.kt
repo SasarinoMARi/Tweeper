@@ -101,6 +101,7 @@ class HetzerService : Service() {
                     }
                 }
 
+            // Todo: 결과 페이지로 리다이렉트
             sendNotification(getString(R.string.Done), getString(R.string.Hetzer_Done), silent = false, cancelable = true, id = notificationId + 1)
             this.stopForeground(true)
             this.stopSelf()
@@ -114,6 +115,7 @@ class HetzerService : Service() {
         cancelable: Boolean = false,
         id: Int = notificationId
     ): Notification {
+        // Todo: 클릭해도 반응 없게 하기
         val clsIntent = Intent(this, HetzerActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, clsIntent, 0)
         val builder = if (silent) silentChannelBuilder else defaultChannelBuilder

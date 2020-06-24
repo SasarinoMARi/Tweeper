@@ -17,6 +17,7 @@
             tools:ignore="GoogleAppIndexingWarning"
             tools:replace="android:icon">
         <service android:name="com.sasarinomari.tweeper.hetzer.HetzerService" android:exported="true"/>
+        <service android:name="com.sasarinomari.tweeper.fwmanage.FollowerManagerService" android:exported="true"/>
 
         <activity android:name=".auth.TokenManagementActivity"></activity>
         <activity android:name=".tweetreport.TweetReportActivity"></activity>

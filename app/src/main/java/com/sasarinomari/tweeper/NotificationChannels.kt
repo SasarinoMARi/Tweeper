@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.sasarinomari.tweeper.fwmanage.FollowerManagerService
 import com.sasarinomari.tweeper.hetzer.HetzerService
 
 class NotificationChannels {
@@ -14,6 +15,7 @@ class NotificationChannels {
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             mNotificationManager.createNotificationChannel(generalChannel())
             mNotificationManager.createNotificationChannel(hetzerChannel())
+            mNotificationManager.createNotificationChannel(followerManagementChannel())
         }
     }
 
@@ -25,5 +27,11 @@ class NotificationChannels {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun hetzerChannel(): NotificationChannel {
         return NotificationChannel( HetzerService.ChannelName, "Tweet Cleaner", NotificationManager.IMPORTANCE_LOW)
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun followerManagementChannel(): NotificationChannel {
+        return NotificationChannel( FollowerManagerService.ChannelName, "Follower Management", NotificationManager.IMPORTANCE_LOW)
     }
 }

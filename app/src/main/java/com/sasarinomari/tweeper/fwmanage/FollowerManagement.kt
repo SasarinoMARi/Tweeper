@@ -2,13 +2,17 @@ package com.sasarinomari.tweeper.fwmanage
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.sasarinomari.tweeper.Adam
+import com.sasarinomari.tweeper.DashboardActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.auth.TokenManagementActivity
+import com.sasarinomari.tweeper.hetzer.HetzerService
 import kotlinx.android.synthetic.main.activity_follower_management.*
 import twitter4j.TwitterException
 import twitter4j.User
@@ -19,28 +23,42 @@ class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_follower_management)
 
-        var dialog = da.progress(null, getString(R.string.FriendPulling))
-        dialog.show()
 
-        SharedTwitterProperties.getFriends(this) { fs ->
-            runOnUiThread {
-                dialog.dismissWithAnimation()
-                dialog = da.progress(null, getString(R.string.FollowerPulling))
-                dialog.show()
+        if(FollowerManagerService.chechServiceRunning((this))) {
+            da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
+        }
+        else {
+            val intent = Intent(this, FollowerManagerService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
             }
-            SharedTwitterProperties.getFollowers(this) { fw ->
-                runOnUiThread {
-                    dialog.dismissWithAnimation()
-                    dialog = da.progress(null, getString(R.string.CompareFsFw))
-                    dialog.show()
-                }
-                val uf = comLists(fs, fw)
-                runOnUiThread {
-                    dialog.dismissWithAnimation()
-                    initializeUi(uf)
-                }
+            else {
+                startService(intent)
             }
         }
+
+//        var dialog = da.progress(null, getString(R.string.FriendPulling))
+//        dialog.show()
+//
+//        SharedTwitterProperties.getFriends(this) { fs ->
+//            runOnUiThread {
+//                dialog.dismissWithAnimation()
+//                dialog = da.progress(null, getString(R.string.FollowerPulling))
+//                dialog.show()
+//            }
+//            SharedTwitterProperties.getFollowers(this) { fw ->
+//                runOnUiThread {
+//                    dialog.dismissWithAnimation()
+//                    dialog = da.progress(null, getString(R.string.CompareFsFw))
+//                    dialog.show()
+//                }
+//                val uf = comLists(fs, fw)
+//                runOnUiThread {
+//                    dialog.dismissWithAnimation()
+//                    initializeUi(uf)
+//                }
+//            }
+//        }
     }
 
     private fun initializeUi(uf: ArrayList<User>) {

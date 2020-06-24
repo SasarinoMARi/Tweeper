@@ -77,7 +77,6 @@
     <string name="BlockCleared">모든 블락을 해제했습니다.</string>
     <string name="Tweeper">트윗지기</string>
     <string name="Hetzer_WaitingTitle">가져올 트윗이 너무 많아 API 한도를 초과했습니다.</string>
-    <string name="Hetzer_WaitingContent">잠시 후 자동으로 다시 시도합니다..</string>
     <string name="HetzerConditions_1">내가 마음에 들어한 트윗</string>
     <string name="HetzerConditions_2">내가 마음에 들어하지 않은 트윗</string>
     <string name="HetzerConditions_3">내가 리트윗한 트윗</string>
@@ -102,4 +101,11 @@
     <string name="HetzerConditions_12_Desc">어떤 키워드가 포함되지 않았을 때 트윗을 남겨둘까요?</string>
     <string name="HetzerConditions_15_Desc">최근 몇 개 까지의 트윗을 남겨둘까요?</string>
     <string name="HetzerConditions_16_Desc">최근 몇 분 내에 작성한 트윗까지 남겨둘까요?</string>
+    <string name="FriendFetch_WaitingTitle">팔로잉한 사람이 너무 많아 API 한도를 초과했습니다.</string>
+    <string name="FollowerFetch_WaitingTitle">팔로워가 너무 많아 API 한도를 초과했습니다.</string>
+    <string name="WaitingDesc">잠시 후 자동으로 다시 시도합니다..</string>
+    <string name="FriendFetch_PullingTile">팔로잉 목록을 불러오는 중입니다.</string>
+    <string name="FollowrFetch_PullingTile">팔로워 목록을 불러오는 중입니다..</string>
+    <string name="FriendFetch_PullingDesc">현재 %1$d명의 유저를 불러왔습니다.</string>
+    <string name="FollowerManagementDone">모든 팔로잉과 팔로워를 불러왔습니다.</string>
 </resources>

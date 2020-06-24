@@ -23,7 +23,8 @@ class MainActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             else -> {
                 SharedTwitterProperties.instance().oAuthAccessToken = loggedUser.token!!
                 try {
-                    SharedTwitterProperties.getMe(this) {
+                    SharedTwitterProperties.getMe(this) { me->
+                        SharedTwitterProperties.myId = me.id
                         openDashboard()
                         finish()
                     }

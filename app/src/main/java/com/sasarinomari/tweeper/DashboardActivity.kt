@@ -35,15 +35,15 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         setContentView(R.layout.activity_dashboard)
         loadUserInformation()
         image_profilePicture.setOnClickListener {
+            startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
+        }
+        button_erase.setOnClickListener {
             if(HetzerService.chechServiceRunning((this@DashboardActivity))) {
                 da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
             }
             else {
-                startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
+                startActivityForResult(Intent(this, HetzerActivity::class.java), Requests.Hetzer.ordinal)
             }
-        }
-        button_erase.setOnClickListener {
-            startActivityForResult(Intent(this, HetzerActivity::class.java), Requests.Hetzer.ordinal)
         }
         button_followerManagement.setOnClickListener {
             startActivity(Intent(this, FollowerManagement::class.java))

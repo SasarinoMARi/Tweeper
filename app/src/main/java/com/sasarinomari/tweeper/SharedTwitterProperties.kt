@@ -15,6 +15,7 @@ class SharedTwitterProperties private constructor() {
             )
         }
 
+        var myId: Long? = null
         private var twitter: Twitter = TwitterFactory().instance
 
         private var me: User? = null

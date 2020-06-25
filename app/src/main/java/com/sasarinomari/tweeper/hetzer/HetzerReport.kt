@@ -52,6 +52,10 @@ class HetzerReport(status: Status) {
             }
             return list
         }
+
+        fun getReporNames(context: Context): Array<String> { // TODO: 파일 명 말고 보고서 인덱스 및 작성 시간을 돌려주도록. (파일 메타데이터 알아서 읽으셈
+            return getPath(context).list()!!
+        }
     }
 
     val text: String = status.text

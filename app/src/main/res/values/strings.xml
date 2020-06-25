@@ -113,4 +113,5 @@
     <string name="DeleteReport">트윗 청소기 보고서</string>
     <string name="DeleteReportDesc">트윗 청소기가 삭제한 트윗들입니다.</string>
     <string name="DeleteReportCount">삭제한 트윗 수 : %1$d</string>
+    <string name="DeleteReportsDesc">조회할 보고서를 선택해주세요.</string>
 </resources>

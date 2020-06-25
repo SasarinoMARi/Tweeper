@@ -11,6 +11,7 @@ import su.levenetc.android.textsurface.contants.Side
 import androidx.core.content.res.ResourcesCompat
 import com.sasarinomari.tweeper.hetzer.HetzerReport
 import com.sasarinomari.tweeper.hetzer.HetzerReportActivity
+import com.sasarinomari.tweeper.hetzer.HetzerReportListActivity
 import com.sasarinomari.tweeper.hetzer.HetzerService
 import su.levenetc.android.textsurface.Text
 import su.levenetc.android.textsurface.animations.*
@@ -32,8 +33,7 @@ class UITestActivity : Adam() {
     }
 
     private fun testHetzerReport() {
-        val intent = Intent(this, HetzerReportActivity::class.java)
-        intent.putExtra(HetzerReportActivity.Parameters.ReportId.name, HetzerReport.getReportCount(this))
+        val intent = Intent(this, HetzerReportListActivity::class.java)
         startActivity(intent)
 
     }

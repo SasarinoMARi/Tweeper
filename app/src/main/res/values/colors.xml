@@ -9,5 +9,6 @@
     <color name="white">#FFFFFF</color>
     <color name="dialogBackground">#B5000000</color>
     <color name="colorWarning">#f44336</color>
+    <color name="semiwhite">#EEEEEE</color>
 
 </resources>

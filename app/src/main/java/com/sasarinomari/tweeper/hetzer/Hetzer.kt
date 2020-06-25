@@ -2,7 +2,7 @@ package com.sasarinomari.tweeper.hetzer
 import android.util.Log
 import twitter4j.Status
 
-public class Hetzer(private val conditions: HashMap<Int, Any>) {
+internal class Hetzer(private val conditions: HashMap<Int, Any>) {
     /*
         01. 내가 마음에 들어한 트윗
         02. 내가 마음에 들어하지 않은 트윗

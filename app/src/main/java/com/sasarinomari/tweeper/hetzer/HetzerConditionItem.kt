@@ -6,8 +6,7 @@ import android.widget.LinearLayout
 import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.item_hetzer_condition.view.*
 
-class HetzerConditionView(context: Context) : LinearLayout(context) {
-
+internal class HetzerConditionItem(context: Context) : LinearLayout(context) {
     fun setText(text: String) {
         this.text.text = text
     }

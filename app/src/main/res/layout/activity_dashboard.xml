@@ -150,6 +150,15 @@
                     app:icon="@drawable/link_variant"
                     app:ovalColor="#ffca28"
                     app:text="@string/BlockClear" />
+
+                <Button
+                    android:id="@+id/button_gotoTest"
+                    android:layout_width="0dp"
+                    android:layout_height="128dp"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:text="Test">
+                </Button>
             </GridLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

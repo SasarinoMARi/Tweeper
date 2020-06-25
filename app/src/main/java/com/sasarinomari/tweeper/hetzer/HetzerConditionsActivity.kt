@@ -102,7 +102,7 @@ class HetzerConditionsActivity : Adam() {
     }
 
     private fun addView(text: String, callback: ()-> Unit){
-        val newConditionView = HetzerConditionView(this)
+        val newConditionView = HetzerConditionItem(this)
         newConditionView.setText(text)
         newConditionView.setMoreButtonCallback {
             createHetzerConditionPopupMenu(

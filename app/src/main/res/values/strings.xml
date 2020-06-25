@@ -108,4 +108,9 @@
     <string name="FollowrFetch_PullingTile">팔로워 목록을 불러오는 중입니다..</string>
     <string name="FriendFetch_PullingDesc">현재 %1$d명의 유저를 불러왔습니다.</string>
     <string name="FollowerManagementDone">모든 팔로잉과 팔로워를 불러왔습니다.</string>
+    <string name="Error_NoParameter">인텐트 호출에 필요한 인자가 갖춰지지 않았습니다. 액티비티를 종료합니다.</string>
+    <string name="Error_WrongParameter">인텐트 호출에 필요한 인자가 잘못되었습니다. 액티비티를 종료합니다.</string>
+    <string name="DeleteReport">트윗 청소기 보고서</string>
+    <string name="DeleteReportDesc">트윗 청소기가 삭제한 트윗들입니다.</string>
+    <string name="DeleteReportCount">삭제한 트윗 수 : %1$d</string>
 </resources>

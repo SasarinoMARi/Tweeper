@@ -1,7 +1,5 @@
 package com.sasarinomari.tweeper
 
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.sasarinomari.tweeper.hetzer.HetzerActivity
@@ -9,9 +7,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
-import android.util.Log
 import android.widget.LinearLayout
-import android.widget.Switch
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -38,7 +34,7 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
         }
         button_erase.setOnClickListener {
-            if(HetzerService.chechServiceRunning((this@DashboardActivity))) {
+            if(HetzerService.checkServiceRunning((this@DashboardActivity))) {
                 da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
             }
             else {
@@ -56,6 +52,9 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
         }
         button_blockClear.setOnClickListener {
             startActivity(Intent(this, BlockClearActivity::class.java))
+        }
+        button_gotoTest.setOnClickListener {
+            startActivity(Intent(this, UITestActivity::class.java))
         }
 
         image_profilePicture.background = ShapeDrawable(OvalShape())

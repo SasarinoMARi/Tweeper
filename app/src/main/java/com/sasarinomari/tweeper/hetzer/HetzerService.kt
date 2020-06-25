@@ -14,18 +14,20 @@ import com.sasarinomari.tweeper.SharedTwitterProperties
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
-import java.lang.reflect.Parameter
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
 
 class HetzerService : Service() {
-    enum class Parameters{
+    enum class Parameters {
         HetzerConditions
     }
 
     companion object {
-        val ChannelName = "Hetzer"
-        var _innerRunningFlag = false
+        const val ChannelName = "Hetzer"
+        private var _innerRunningFlag = false
 
-        fun chechServiceRunning(context: Context): Boolean {
+        fun checkServiceRunning(context: Context): Boolean {
             var flag1 = false
             val flag2 = _innerRunningFlag
 
@@ -86,23 +88,37 @@ class HetzerService : Service() {
         val hetzer = Hetzer(conditions)
 
         getTweets { tweets ->
-            if (tweets.isNotEmpty())
+            sendNotification(getString(R.string.Hetzer_TweetRemovingTitle), "")
+            val savedStatuses = ArrayList<Status>()
+            val removedStatuses = ArrayList<Status>()
+            if (tweets.isNotEmpty()) {
                 for (i in 0 until tweets.count()) {
                     val item = tweets[i]
-                    val text = item.text
                     if (hetzer.filter(item, i)) {
-                        sendNotification(
-                            getString(R.string.Hetzer_TweetRemovingTitle),
-                            getString(R.string.Hetzer_TweetRemovingContent, tweets.count(), i + 1)
-                        )
-
+                        savedStatuses.add(item)
+                    }
+                    else {
+                        removedStatuses.add(item)
                         // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
                         // SharedTwitterProperties.instance().destroyStatus(item.id)
                     }
                 }
+            }
 
-            // Todo: 결과 페이지로 리다이렉트
-            sendNotification(getString(R.string.Done), getString(R.string.Hetzer_Done), silent = false, cancelable = true, id = notificationId + 1)
+            val reportIndex = HetzerReport.getReportCount(this)+1
+            HetzerReport.writeReport(this, reportIndex, removedStatuses)
+
+            val redirect = Intent(this, HetzerReportActivity::class.java)
+            redirect.putExtra(HetzerReportActivity.Parameters.ReportId.name, reportIndex)
+            sendNotification(
+                getString(R.string.Done),
+                getString(R.string.Hetzer_Done),
+                silent = false,
+                cancelable = true,
+                redirect = redirect,
+                id = notificationId + 1
+            )
+
             this.stopForeground(true)
             this.stopSelf()
         }
@@ -113,11 +129,9 @@ class HetzerService : Service() {
         text: String,
         silent: Boolean = true,
         cancelable: Boolean = false,
-        id: Int = notificationId
+        redirect: Intent = Intent()
     ): Notification {
-        // Todo: 클릭해도 반응 없게 하기
-        val clsIntent = Intent(this, HetzerActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, clsIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, redirect, PendingIntent.FLAG_UPDATE_CURRENT)
         val builder = if (silent) silentChannelBuilder else defaultChannelBuilder
 
         builder.setSmallIcon(R.mipmap.ic_launcher)
@@ -129,8 +143,15 @@ class HetzerService : Service() {
         return builder.build()!!
     }
 
-    private fun sendNotification(title: String, text: String, silent: Boolean = true, cancelable: Boolean = false, id: Int = notificationId) {
-        val notification = createNotification(title, text, silent, cancelable, id)
+    private fun sendNotification(
+        title: String,
+        text: String,
+        silent: Boolean = true,
+        cancelable: Boolean = false,
+        redirect: Intent = Intent(),
+        id: Int = notificationId
+    ) {
+        val notification = createNotification(title, text, silent, cancelable, redirect)
         val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mNotificationManager.notify(id, notification)
     }

@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.sasarinomari.tweeper">
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sasarinomari.tweeper">
 
     <application
-            android:allowBackup="true"
-            android:icon="@mipmap/ic_launcher"
-            android:label="@string/app_name"
-            android:supportsRtl="true"
-            android:theme="@style/AppTheme"
-            tools:ignore="GoogleAppIndexingWarning"
-            tools:replace="android:icon">
-        <service android:name="com.sasarinomari.tweeper.hetzer.HetzerService" android:exported="true"/>
-        <service android:name="com.sasarinomari.tweeper.fwmanage.FollowerManagerService" android:exported="true"/>
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:icon">
+        <activity android:name=".hetzer.HetzerReportActivity"></activity>
 
-        <activity android:name=".auth.TokenManagementActivity"></activity>
-        <activity android:name=".tweetreport.TweetReportActivity"></activity>
-        <activity android:name=".chainb.ChainBlockActivity"></activity>
+        <activity android:name=".auth.TokenManagementActivity" />
+        <activity android:name=".tweetreport.TweetReportActivity" />
+
+        <activity android:name=".chainb.ChainBlockActivity" />
         <activity android:name=".chainb.BlockClearActivity" />
         <activity android:name=".tweetreport.TweetReportDetail" />
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DashboardActivity"/>
-        <activity android:name=".hetzer.HetzerConditionsActivity"/>
-        <activity android:name=".hetzer.HetzerActivity"/>
-        <activity android:name=".fwmanage.FollowerManagement"/>
-        <activity android:name=".UITestActivity"/>
+        <activity android:name=".DashboardActivity" />
+        <activity android:name=".hetzer.HetzerConditionsActivity" />
+        <activity android:name=".hetzer.HetzerActivity" />
+        <activity android:name=".fwmanage.FollowerManagement" />
+        <activity android:name=".UITestActivity" />
         <activity android:name=".auth.AuthenticationActivity" />
-
         <meta-data
-                android:name="com.google.android.gms.ads.APPLICATION_ID"
-                android:value="@string/admob_app_id"/>
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+        <service
+            android:name=".hetzer.HetzerService"
+            android:exported="true" />
+
+        <service
+            android:name=".fwmanage.FollowerManagerService"
+            android:exported="true" />
     </application>
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

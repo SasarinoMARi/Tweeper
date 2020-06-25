@@ -22,7 +22,7 @@ class FollowerManagerService : Service() {
         val ChannelName = "FollowerManagement"
         var _innerRunningFlag = false
 
-        fun chechServiceRunning(context: Context): Boolean {
+        fun checkServiceRunning(context: Context): Boolean {
             var flag1 = false
             val flag2 = _innerRunningFlag
 
@@ -97,9 +97,7 @@ class FollowerManagerService : Service() {
         cancelable: Boolean = false,
         id: Int = notificationId
     ): Notification {
-        // Todo: 클릭해도 반응 없게 하기
-        val clsIntent = Intent(this, FollowerManagement::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, clsIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(this, 0, Intent(), 0)
         val builder = if (silent) silentChannelBuilder else defaultChannelBuilder
 
         builder.setSmallIcon(R.mipmap.ic_launcher)

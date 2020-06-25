@@ -1,5 +1,6 @@
 package com.sasarinomari.tweeper
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -8,6 +9,9 @@ import kotlinx.android.synthetic.main.activity_uitest.*
 import su.levenetc.android.textsurface.TextBuilder
 import su.levenetc.android.textsurface.contants.Side
 import androidx.core.content.res.ResourcesCompat
+import com.sasarinomari.tweeper.hetzer.HetzerReport
+import com.sasarinomari.tweeper.hetzer.HetzerReportActivity
+import com.sasarinomari.tweeper.hetzer.HetzerService
 import su.levenetc.android.textsurface.Text
 import su.levenetc.android.textsurface.animations.*
 import su.levenetc.android.textsurface.contants.Pivot
@@ -16,14 +20,22 @@ import su.levenetc.android.textsurface.contants.Direction
 import kotlin.random.Random
 
 
-class UITestActivity : AppCompatActivity() {
+class UITestActivity : Adam() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uitest)
 
         // testTextSufrace()
-        //testSweetDialog()
+        // testSweetDialog()
+        testHetzerReport()
+    }
+
+    private fun testHetzerReport() {
+        val intent = Intent(this, HetzerReportActivity::class.java)
+        intent.putExtra(HetzerReportActivity.Parameters.ReportId.name, HetzerReport.getReportCount(this))
+        startActivity(intent)
+
     }
 
     // region TextSurface

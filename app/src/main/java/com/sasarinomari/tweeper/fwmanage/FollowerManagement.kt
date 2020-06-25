@@ -3,18 +3,12 @@ package com.sasarinomari.tweeper.fwmanage
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.sasarinomari.tweeper.Adam
-import com.sasarinomari.tweeper.DashboardActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
-import com.sasarinomari.tweeper.auth.TokenManagementActivity
-import com.sasarinomari.tweeper.hetzer.HetzerService
 import kotlinx.android.synthetic.main.activity_follower_management.*
-import twitter4j.TwitterException
 import twitter4j.User
 
 class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
@@ -24,7 +18,7 @@ class FollowerManagement : Adam(), SharedTwitterProperties.ActivityInterface {
         setContentView(R.layout.activity_follower_management)
 
 
-        if(FollowerManagerService.chechServiceRunning((this))) {
+        if(FollowerManagerService.checkServiceRunning((this))) {
             da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
         }
         else {

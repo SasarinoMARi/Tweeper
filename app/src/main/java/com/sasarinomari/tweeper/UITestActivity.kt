@@ -29,13 +29,6 @@ class UITestActivity : Adam() {
 
         // testTextSufrace()
         // testSweetDialog()
-        testHetzerReport()
-    }
-
-    private fun testHetzerReport() {
-        val intent = Intent(this, HetzerReportListActivity::class.java)
-        startActivity(intent)
-
     }
 
     // region TextSurface

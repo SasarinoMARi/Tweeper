@@ -41,6 +41,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/button_update"
         android:layout_width="match_parent"
+        android:background="?attr/selectableItemBackground"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:cardCornerRadius="12dp"
@@ -62,14 +63,14 @@
 
                 <ImageView
                     android:id="@+id/oval"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
                     android:src="@drawable/oval" />
 
                 <ImageView
                     android:id="@+id/icon"
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/calendar_edit"
                     app:layout_constraintBottom_toBottomOf="@id/oval"

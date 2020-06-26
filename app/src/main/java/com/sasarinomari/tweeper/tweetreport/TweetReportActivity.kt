@@ -35,7 +35,7 @@ class TweetReportActivity : Adam() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tweet_report)
 
-        setOvalColor()
+        (oval.drawable as GradientDrawable).setColor(Color.parseColor("#64b5f6"))
         initListView()
         initUpdateButton()
         updateReportRecordList()
@@ -67,10 +67,5 @@ class TweetReportActivity : Adam() {
                 da.warning(null, getString(R.string.TweetReportCant)).show()
             }
         }
-    }
-
-    private fun setOvalColor() {
-        val shape = oval.drawable as GradientDrawable
-        shape.setColor(Color.RED)
     }
 }

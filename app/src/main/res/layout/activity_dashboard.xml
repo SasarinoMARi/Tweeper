@@ -151,14 +151,18 @@
                     app:ovalColor="#ffca28"
                     app:text="@string/BlockClear" />
 
-                <Button
+
+                <com.sasarinomari.tweeper.DashboardCard
                     android:id="@+id/button_gotoTest"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    android:text="Test">
-                </Button>
+                    app:description="테스트 메뉴로 진입합니다"
+                    app:icon="@mipmap/ic_launcher"
+                    app:ovalColor="#343434"
+                    app:text="테스트" />
+
             </GridLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

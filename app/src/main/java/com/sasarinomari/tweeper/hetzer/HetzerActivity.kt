@@ -1,18 +1,13 @@
 package com.sasarinomari.tweeper.hetzer
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import androidx.core.content.ContextCompat
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.SharedTwitterProperties
-import twitter4j.Paging
-import twitter4j.Status
-import twitter4j.TwitterException
+import kotlinx.android.synthetic.main.activity_hetzer.*
 
 class HetzerActivity : Adam() {
     enum class RequestCodes {
@@ -21,17 +16,25 @@ class HetzerActivity : Adam() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startActivityForResult(
-            Intent(this, HetzerConditionsActivity::class.java),
-            RequestCodes.GetConditions.ordinal
-        )
+        setContentView(R.layout.activity_hetzer)
+        (oval1.drawable as GradientDrawable).setColor(Color.parseColor("#00CF91"))
+        (oval2.drawable as GradientDrawable).setColor(Color.parseColor("#64b5f6"))
+        button_hetzer.setOnClickListener {
+            startActivityForResult(
+                Intent(this, HetzerConditionsActivity::class.java),
+                RequestCodes.GetConditions.ordinal
+            )
+        }
+        button_report.setOnClickListener {
+            val intent = Intent(this, HetzerReportListActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             RequestCodes.GetConditions.ordinal -> {
                 if (resultCode != RESULT_OK) {
-                    finish()
                     return
                 }
                 val intent = Intent(this, HetzerService::class.java)

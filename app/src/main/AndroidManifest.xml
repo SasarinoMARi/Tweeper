@@ -4,8 +4,6 @@
     package="com.sasarinomari.tweeper">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> -->
-    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,19 +21,25 @@
         <activity android:name=".DashboardActivity" />
         <activity android:name=".UITestActivity" />
         <activity android:name=".auth.TokenManagementActivity" />
+        <activity android:name=".auth.AuthenticationActivity" />
+        <activity android:name=".report.ReportListActivity"/>
 
         <!--Hetzer Activities-->
         <activity android:name=".hetzer.HetzerActivity" />
         <activity android:name=".hetzer.HetzerConditionsActivity" />
         <activity android:name=".hetzer.HetzerReportActivity" />
-        <activity android:name=".report.ReportListActivity"/>
-        <activity android:name=".fwmanage.FollowManagementActivity" />
-        <activity android:name=".auth.AuthenticationActivity" />
 
-        <activity android:name=".chainb.ChainBlockActivity" />
-        <activity android:name=".chainb.BlockClearActivity" />
+        <!--Follow Management Activities-->
+        <activity android:name=".fwmanage.FollowManagementActivity" />
+        <activity android:name=".fwmanage.FollowManagementReportActivity" />
+
+        <!--Tweet Report Activities-->
         <activity android:name=".tweetreport.TweetReportActivity" />
         <activity android:name=".tweetreport.TweetReportDetail" />
+
+        <!--Chain Block Activities-->
+        <activity android:name=".chainb.ChainBlockActivity" />
+        <activity android:name=".chainb.BlockClearActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

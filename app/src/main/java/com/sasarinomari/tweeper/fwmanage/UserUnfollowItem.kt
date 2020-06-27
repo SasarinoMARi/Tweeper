@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user_unfollow.view.*
 
 
-class UserUnfollowItem(private val users: ArrayList<User>,
+class UserUnfollowItem(private val users: ArrayList<FollowManagementReport.User>,
                        private val ai:ActivityInterface) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -32,10 +32,10 @@ class UserUnfollowItem(private val users: ArrayList<User>,
         convertView!!
         convertView.text_Name.text = user.name
         convertView.text_ScreenName.text = user.screenName
-        convertView.text_bio.text = user.description
+        convertView.text_bio.text = user.bio
 
         Picasso.get()
-            .load(user.profileImageURL.replace("normal.jpg", "200x200.jpg"))
+            .load(user.profileImageUrl.replace("normal.jpg", "200x200.jpg"))
             .into(convertView.image_profilePicture)
 
         convertView.button_detail.setOnClickListener {

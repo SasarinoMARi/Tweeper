@@ -30,7 +30,7 @@ class FollowManagementActivity : Adam() {
             @SuppressLint("SimpleDateFormat", "SetTextI18n")
             override fun drawListItem(item: Any, title: TextView, description: TextView) {
                 item as Pair<*, *>
-                title.text = getString(R.string.TweetCleanerReport) + ' ' + (item.first.toString().removePrefix(reportPrefix).toInt() + 1)
+                title.text = getString(R.string.FollowManagementReport) + ' ' + (item.first.toString().removePrefix(reportPrefix).toInt() + 1)
                 description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.second as Date)
             }
 

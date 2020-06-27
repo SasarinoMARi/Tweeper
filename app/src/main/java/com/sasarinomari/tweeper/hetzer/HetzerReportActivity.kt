@@ -10,6 +10,7 @@ import com.sasarinomari.tweeper.report.ReportInterface
 import kotlinx.android.synthetic.main.activity_hetzer_report.*
 import java.text.SimpleDateFormat
 
+// TODO: RecyclerView화
 class HetzerReportActivity : Adam() {
     enum class Parameters {
         ReportId

@@ -17,7 +17,7 @@ class FollowManagementReport {
     class User(src: twitter4j.User) {
         val name: String = src.name
         val screenName: String = src.screenName
-        val profileImageUrl: String = src.miniProfileImageURL
+        val profileImageUrl: String = src.profileImageURL
         val id: Long = src.id
         val bio: String = src.description
     }

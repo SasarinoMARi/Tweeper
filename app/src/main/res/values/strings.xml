@@ -127,4 +127,5 @@
     <string name="TouchToDetail">터치해서 자세히 볼 수 있어요!</string>
     <string name="TweetCleanerRun">트윗 청소기 실행하기</string>
     <string name="FollowManagementRun">팔로우 관리 실행하기</string>
+    <string name="FollowManagementReport">팔로우 관리 보고서</string>
 </resources>

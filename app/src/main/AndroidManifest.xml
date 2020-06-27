@@ -28,8 +28,8 @@
         <activity android:name=".hetzer.HetzerActivity" />
         <activity android:name=".hetzer.HetzerConditionsActivity" />
         <activity android:name=".hetzer.HetzerReportActivity" />
-        <activity android:name=".hetzer.HetzerReportListActivity"/>
-        <activity android:name=".fwmanage.FollowerManagement" />
+        <activity android:name=".report.ReportListActivity"/>
+        <activity android:name=".fwmanage.FollowManagementActivity" />
         <activity android:name=".auth.AuthenticationActivity" />
 
         <activity android:name=".chainb.ChainBlockActivity" />
@@ -45,7 +45,7 @@
             android:name=".hetzer.HetzerService"
             android:exported="true" />
         <service
-            android:name=".fwmanage.FollowerManagerService"
+            android:name=".fwmanage.FollowManagementService"
             android:exported="true" />
     </application>
 

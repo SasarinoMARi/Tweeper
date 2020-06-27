@@ -1,84 +1,38 @@
 package com.sasarinomari.tweeper.hetzer
 
-import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.os.IBinder
 import android.util.Log
-import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.report.ReportInterface
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
-import java.io.BufferedReader
-import java.io.File
-import java.io.InputStreamReader
 
-class HetzerService : Service() {
+class HetzerService : BaseService() {
+    companion object {
+        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
+    }
+    override val ChannelName= "Hetzer"
+    override val NotificationId = ChannelName.hashCode()
+
     enum class Parameters {
         HetzerConditions
     }
 
-    companion object {
-        const val ChannelName = "Hetzer"
-        private var _innerRunningFlag = false
-
-        fun checkServiceRunning(context: Context): Boolean {
-            var flag1 = false
-            val flag2 = _innerRunningFlag
-
-            val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            for (service in manager.getRunningServices(Integer.MAX_VALUE)) { // TODO : 이것 때문에 릴리즈 안될 수도..
-                if (HetzerService::class.java.name == service.service.className) {
-                    Log.i("Hetzer", "Hetzer 서비스가 이미 실행중입니다.")
-                    flag1 = true
-                    break
-                }
-            }
-
-            return flag1 and flag2
-        }
-
-    }
-
-    private val notificationId = 4425
-    private lateinit var silentChannelBuilder: NotificationCompat.Builder
-    private lateinit var defaultChannelBuilder: NotificationCompat.Builder
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Companion._innerRunningFlag = true
-        silentChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
-            NotificationCompat.Builder(this, ChannelName)
-        } else {
-            NotificationCompat.Builder(this)
-        }
-        silentChannelBuilder.setSound(null)
-        defaultChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
-            NotificationCompat.Builder(this, "General")
-        } else {
-            NotificationCompat.Builder(this)
-        }
+        super.onStartCommand(intent, flags, startId)
 
-        startForeground(notificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
+        startForeground(NotificationId,
+            createNotification(getString(R.string.app_name), "Initializing...", false))
 
         hetzerLogic(intent!!)
 
         return START_REDELIVER_INTENT
-    }
-
-    override fun onDestroy() {
-        Log.i(HetzerService::class.java.name, "onDestroy")
-        super.onDestroy()
-    }
-
-    override fun onBind(p0: Intent?): IBinder? {
-        Log.i(HetzerService::class.java.name, "onBind")
-        Companion._innerRunningFlag = true
-        return null
     }
 
     private fun hetzerLogic(intent: Intent) {
@@ -89,8 +43,8 @@ class HetzerService : Service() {
 
         getTweets { tweets ->
             sendNotification(getString(R.string.Hetzer_TweetRemovingTitle), "")
-            val savedStatuses = ArrayList<Status>()
-            val removedStatuses = ArrayList<Status>()
+            val savedStatuses = ArrayList<Status>() // 삭제되지 않은 트윗
+            val removedStatuses = ArrayList<Status>() // 삭제된 트윗
             if (tweets.isNotEmpty()) {
                 for (i in 0 until tweets.count()) {
                     val item = tweets[i]
@@ -105,9 +59,12 @@ class HetzerService : Service() {
                 }
             }
 
-            val reportIndex = HetzerReport.getReportCount(this)+1
-            HetzerReport.writeReport(this, reportIndex, removedStatuses)
+            // 리포트 작성
+            val ri = ReportInterface<HetzerReport>(HetzerReport.prefix)
+            val reportIndex = ri.getReportCount(this)+1
+            ri.writeReport(this, reportIndex, HetzerReport(removedStatuses, savedStatuses))
 
+            // 알림 송출
             val redirect = Intent(this, HetzerReportActivity::class.java)
             redirect.putExtra(HetzerReportActivity.Parameters.ReportId.name, reportIndex)
             sendNotification(
@@ -116,46 +73,16 @@ class HetzerService : Service() {
                 silent = false,
                 cancelable = true,
                 redirect = redirect,
-                id = notificationId + 1
+                id = NotificationId + 1
             )
 
+            // 서비스 종료
             this.stopForeground(true)
             this.stopSelf()
         }
     }
 
-    private fun createNotification(
-        title: String,
-        text: String,
-        silent: Boolean = true,
-        cancelable: Boolean = false,
-        redirect: Intent = Intent()
-    ): Notification {
-        val pendingIntent = PendingIntent.getActivity(this, 0, redirect, PendingIntent.FLAG_UPDATE_CURRENT)
-        val builder = if (silent) silentChannelBuilder else defaultChannelBuilder
-
-        builder.setSmallIcon(R.mipmap.ic_launcher)
-        builder.setContentTitle(title)
-        builder.setContentText(text)
-        builder.setContentIntent(pendingIntent)
-        builder.setAutoCancel(cancelable)
-
-        return builder.build()!!
-    }
-
-    private fun sendNotification(
-        title: String,
-        text: String,
-        silent: Boolean = true,
-        cancelable: Boolean = false,
-        redirect: Intent = Intent(),
-        id: Int = notificationId
-    ) {
-        val notification = createNotification(title, text, silent, cancelable, redirect)
-        val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        mNotificationManager.notify(id, notification)
-    }
-
+    // API 코드
     private fun getTweets(startIndex: Int, callback: (List<Status>) -> Unit) {
         Thread(Runnable {
             val list = ArrayList<Status>()
@@ -189,5 +116,6 @@ class HetzerService : Service() {
     private fun getTweets(callback: (List<Status>) -> Unit) {
         getTweets(1, callback)
     }
+    // endregion
 
 }

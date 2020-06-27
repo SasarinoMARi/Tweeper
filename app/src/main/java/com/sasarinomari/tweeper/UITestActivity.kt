@@ -1,18 +1,12 @@
 package com.sasarinomari.tweeper
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_uitest.*
 import su.levenetc.android.textsurface.TextBuilder
 import su.levenetc.android.textsurface.contants.Side
 import androidx.core.content.res.ResourcesCompat
-import com.sasarinomari.tweeper.hetzer.HetzerReport
-import com.sasarinomari.tweeper.hetzer.HetzerReportActivity
-import com.sasarinomari.tweeper.hetzer.HetzerReportListActivity
-import com.sasarinomari.tweeper.hetzer.HetzerService
 import su.levenetc.android.textsurface.Text
 import su.levenetc.android.textsurface.animations.*
 import su.levenetc.android.textsurface.contants.Pivot

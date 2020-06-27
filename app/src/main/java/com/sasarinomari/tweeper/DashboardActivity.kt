@@ -17,7 +17,7 @@ import com.sasarinomari.tweeper.auth.AuthData
 import com.sasarinomari.tweeper.auth.TokenManagementActivity
 import com.sasarinomari.tweeper.chainb.BlockClearActivity
 import com.sasarinomari.tweeper.chainb.ChainBlockActivity
-import com.sasarinomari.tweeper.fwmanage.FollowerManagement
+import com.sasarinomari.tweeper.fwmanage.FollowManagementActivity
 import com.sasarinomari.tweeper.hetzer.HetzerService
 import com.sasarinomari.tweeper.tweetreport.TweetReportActivity
 import twitter4j.TwitterFactory
@@ -42,7 +42,7 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             }
         }
         button_followerManagement.setOnClickListener {
-            startActivity(Intent(this, FollowerManagement::class.java))
+            startActivity(Intent(this, FollowManagementActivity::class.java))
         }
         button_tweetReport.setOnClickListener {
             startActivity(Intent(this, TweetReportActivity::class.java))

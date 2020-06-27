@@ -28,7 +28,7 @@
     <string name="AreYouSure">확실한가요?</string>
     <string name="TweetCannotRestore">삭제된 트윗은 되돌릴 수 없습니다.</string>
     <string name="YesDeleteIt">네, 삭제할게요!</string>
-    <string name="Wait">잠깐만요...</string>
+    <string name="Wait">잠깐만요!</string>
     <string name="FriendPulling">팔로우 목록을 가져오는 중입니다.</string>
     <string name="FollowerPulling">팔로워 목록을 가져오는 중입니다.</string>
     <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중입니다.</string>
@@ -114,4 +114,13 @@
     <string name="DeleteReportDesc">트윗 청소기가 삭제한 트윗들입니다.</string>
     <string name="DeleteReportCount">삭제한 트윗 수 : %1$d</string>
     <string name="DeleteReportsDesc">조회할 보고서를 선택해주세요.</string>
+    <string name="TweetCleanerNoReport">트윗 청소기를 실행한 이력이 없습니다.</string>
+    <string name="DateFormat">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
+    <string name="FollowManagement">팔로우 관리</string>
+    <string name="FollowManagementDesc">나와 맞팔이 아닌 팔로잉 / 팔로워를 봅니다.</string>
+    <string name="FollowManagementReports">실행 이력 보기</string>
+    <string name="duplicateService_Hetzer">트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행할 수 있습니다.</string>
+    <string name="duplicateService_FollowManager">팔로우 관리가 이미 실행중입니다.\n한 번에 하나만 실행할 수 있습니다.</string>
+    <string name="NoReport">실행 이력이 없습니다.</string>
+    <string name="General">기본</string>
 </resources>

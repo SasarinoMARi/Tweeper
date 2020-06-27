@@ -1,12 +1,14 @@
 package com.sasarinomari.tweeper.hetzer
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import android.widget.TextView
 import com.sasarinomari.tweeper.Adam
+import com.sasarinomari.tweeper.DefaultListItem
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.report.ReportInterface
 import kotlinx.android.synthetic.main.activity_hetzer_report.*
-import twitter4j.Status
+import java.text.SimpleDateFormat
 
 class HetzerReportActivity : Adam() {
     enum class Parameters {
@@ -31,8 +33,16 @@ class HetzerReportActivity : Adam() {
         val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
         if(reportIndex == -1)
             da.error(null, getString(R.string.Error_WrongParameter)) { finish() }.show()
-        val removedStatuses = HetzerReport.readReport(this,  reportIndex)
-        text_removedCount.text = getString(R.string.DeleteReportCount, removedStatuses.count())
-        listView.adapter = HetzerReportItem(removedStatuses)
+        val report = ReportInterface<HetzerReport>(HetzerReport.prefix)
+            .readReport(this,  reportIndex, HetzerReport()) as HetzerReport
+        text_removedCount.text = getString(R.string.DeleteReportCount, report.removedStatuses.count())
+        listView.adapter = object: DefaultListItem(report.removedStatuses) {
+            @SuppressLint("SimpleDateFormat")
+            override fun drawItem(item: Any, title: TextView, description: TextView) {
+                item as HetzerReport.Status
+                title.text = item.text
+                description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
+            }
+        }
     }
 }

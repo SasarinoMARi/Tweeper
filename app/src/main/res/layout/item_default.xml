@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorPrimary"
-    android:foreground="?attr/selectableItemBackground"
     android:orientation="vertical">
 
     <View
@@ -23,23 +22,23 @@
         android:paddingBottom="@dimen/listitem_vertical_padding">
 
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans_light"
-            android:text="Text"
+            android:text="Title"
             android:textColor="@color/white"
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/createAt"
-            android:layout_marginTop="6dp"
-            android:textSize="11sp"
+            android:id="@+id/desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:fontFamily="@font/noto_sans_light"
-            android:text="createAt "
+            android:text="Description"
             android:textColor="@color/semiwhite"
+            android:textSize="11sp"
             tools:ignore="HardcodedText" />
 
     </LinearLayout>

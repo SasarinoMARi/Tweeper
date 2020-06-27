@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.report.ReportListActivity
 import kotlinx.android.synthetic.main.activity_hetzer.*
 
 class HetzerActivity : Adam() {
@@ -26,7 +27,12 @@ class HetzerActivity : Adam() {
             )
         }
         button_report.setOnClickListener {
-            val intent = Intent(this, HetzerReportListActivity::class.java)
+            val intent = Intent(this, ReportListActivity::class.java)
+            intent.putExtra(ReportListActivity.Parameters.Title.name, getString(R.string.TweetCleaner))
+            intent.putExtra(ReportListActivity.Parameters.Description.name, getString(R.string.TweetCleanerDescription))
+            intent.putExtra(ReportListActivity.Parameters.NoReportDescription.name, getString(R.string.TweetCleanerNoReport))
+            intent.putExtra(ReportListActivity.Parameters.ReportPrefix.name, HetzerReport.prefix)
+            intent.putExtra(ReportListActivity.Parameters.ReportActivityName.name, HetzerReportActivity::class.java.name)
             startActivity(intent)
         }
     }

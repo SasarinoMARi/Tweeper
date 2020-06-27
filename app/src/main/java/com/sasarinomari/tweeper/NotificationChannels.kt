@@ -5,33 +5,32 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import com.sasarinomari.tweeper.fwmanage.FollowerManagerService
+import com.sasarinomari.tweeper.fwmanage.FollowManagementService
 import com.sasarinomari.tweeper.hetzer.HetzerService
 
 class NotificationChannels {
     fun declaration(context: Context) {
         if (Build.VERSION.SDK_INT >= 26) {
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            mNotificationManager.createNotificationChannel(generalChannel())
-            mNotificationManager.createNotificationChannel(hetzerChannel())
-            mNotificationManager.createNotificationChannel(followerManagementChannel())
+            mNotificationManager.createNotificationChannel(generalChannel(context))
+            mNotificationManager.createNotificationChannel(hetzerChannel(context))
+            mNotificationManager.createNotificationChannel(followerManagementChannel(context))
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun generalChannel(): NotificationChannel {
-        return NotificationChannel( "General", "General", NotificationManager.IMPORTANCE_DEFAULT)
+    private fun generalChannel(context: Context): NotificationChannel {
+        return NotificationChannel( "General", context.getString(R.string.General), NotificationManager.IMPORTANCE_DEFAULT)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun hetzerChannel(): NotificationChannel {
-        return NotificationChannel( HetzerService.ChannelName, "Tweet Cleaner", NotificationManager.IMPORTANCE_LOW)
+    private fun hetzerChannel(context: Context): NotificationChannel {
+        return NotificationChannel( HetzerService().ChannelName, context.getString(R.string.TweetCleaner), NotificationManager.IMPORTANCE_LOW)
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun followerManagementChannel(): NotificationChannel {
-        return NotificationChannel( FollowerManagerService.ChannelName, "Follower Management", NotificationManager.IMPORTANCE_LOW)
+    private fun followerManagementChannel(context: Context): NotificationChannel {
+        return NotificationChannel( FollowManagementService().ChannelName, context.getString(R.string.FollowManagement), NotificationManager.IMPORTANCE_LOW)
     }
 }

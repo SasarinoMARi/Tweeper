@@ -16,6 +16,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
+ * 안씀!
+ * 기술적인 문제는 없지만 이거 말고 DefualtRecycleAdapter나 쓰셈 ㅋ
+ * 사유: 촌티남
+ */
+/**
  * 트윗지기 서비스에서 생성된 리포트 조회용 공용 프래그먼트.
  * Parameters 전부가 인자로 와야 실행 가능.
  *
@@ -26,7 +31,9 @@ import java.util.*
  * 이 프래그먼트를 추가한 액티비티에서 스크롤이 내려가버림(?)(???)
  * 대체 왜이럼?? 전 몰겟구여 암튼 알아서 스크롤 올리는 코드 넣어 쓰세용ㅋㅋ
  */
-class ReportListFragment(private val intent: Intent, private val callback: () -> Unit) : Fragment() {
+@Deprecated("DefualtRecycleAdapter")
+class ReportListFragment(private val intent: Intent,
+                         private val callback: () -> Unit) : Fragment() {
     enum class Parameters {
         NoReportDescription,
         ReportPrefix, ReportActivityName

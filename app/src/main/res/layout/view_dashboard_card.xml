@@ -16,25 +16,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <ImageView
+        <com.sasarinomari.tweeper.OvalImageView
             android:id="@+id/oval"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/oval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
-
-        <ImageView
-            android:id="@+id/icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/oval"
-            app:layout_constraintLeft_toLeftOf="@id/oval"
-            app:layout_constraintRight_toRightOf="@id/oval"
-            app:layout_constraintTop_toTopOf="@id/oval" />
 
         <TextView
             android:id="@+id/text"

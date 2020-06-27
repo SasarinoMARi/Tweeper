@@ -110,7 +110,7 @@
     <string name="FollowerManagementDone">모든 팔로잉과 팔로워를 불러왔습니다.</string>
     <string name="Error_NoParameter">인텐트 호출에 필요한 인자가 갖춰지지 않았습니다. 액티비티를 종료합니다.</string>
     <string name="Error_WrongParameter">인텐트 호출에 필요한 인자가 잘못되었습니다. 액티비티를 종료합니다.</string>
-    <string name="DeleteReport">트윗 청소기 보고서</string>
+    <string name="TweetCleanerReport">트윗 청소기 보고서</string>
     <string name="DeleteReportDesc">트윗 청소기가 삭제한 트윗들입니다.</string>
     <string name="DeleteReportCount">삭제한 트윗 수 : %1$d</string>
     <string name="DeleteReportsDesc">조회할 보고서를 선택해주세요.</string>
@@ -118,7 +118,7 @@
     <string name="DateFormat">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
     <string name="FollowManagement">팔로우 관리</string>
     <string name="FollowManagementDesc">나와 맞팔이 아닌 팔로잉 / 팔로워를 봅니다.</string>
-    <string name="FollowManagementReports">실행 이력 보기</string>
+    <string name="FollowManagementReports">팔로우 관리 보고서들</string>
     <string name="duplicateService_Hetzer">트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행할 수 있습니다.</string>
     <string name="duplicateService_FollowManager">팔로우 관리가 이미 실행중입니다.\n한 번에 하나만 실행할 수 있습니다.</string>
     <string name="NoReport">실행 이력이 없습니다.</string>
@@ -126,4 +126,5 @@
     <string name="TweetCleanerReports">트윗 청소기 보고서들</string>
     <string name="TouchToDetail">터치해서 자세히 볼 수 있어요!</string>
     <string name="TweetCleanerRun">트윗 청소기 실행하기</string>
+    <string name="FollowManagementRun">팔로우 관리 실행하기</string>
 </resources>

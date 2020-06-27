@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DashboardCard">
-        <attr name="text" format="reference|string" />
-        <attr name="description" format="reference|string" />
-        <attr name="icon" format="reference" />
-        <attr name="ovalColor" format="color" />
+    <attr name="title" format="reference|string" />
+    <attr name="description" format="reference|string" />
+    <attr name="icon" format="reference" />
+    <attr name="ovalColor" format="color" />
+
+    <declare-styleable name="DashboardCardView">
+        <attr name="title" />
+        <attr name="description" />
+        <attr name="icon" />
+        <attr name="ovalColor" />
+    </declare-styleable>
+    <declare-styleable name="OvalImageView">
+        <attr name="icon" />
+        <attr name="ovalColor" />
     </declare-styleable>
 </resources>

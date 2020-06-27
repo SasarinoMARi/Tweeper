@@ -26,6 +26,7 @@ import java.util.*
  * ReportActivityName은 아이템 클릭 시 redirect할 class 이름임.
  * Class::class.java.name과 같이 써서 인자로 넣을 수 있음.
  */
+@Deprecated("Use ReportListFragment")
 class ReportListActivity : Adam() {
     enum class Parameters {
         Title, Description, NoReportDescription,

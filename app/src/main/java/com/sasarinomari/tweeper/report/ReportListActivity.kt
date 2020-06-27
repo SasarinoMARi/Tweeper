@@ -15,6 +15,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
+ * 안씀!
+ * 기술적인 문제는 없지만 이거 말고 ReportListFragment나 쓰셈 ㅋ
+ * 사유: 못생김
+ */
+/**
  * 트윗지기 서비스에서 생성된 리포트 조회용 공용 액티비티.
  * Parameters 전부가 인자로 와야 실행 가능.
  *

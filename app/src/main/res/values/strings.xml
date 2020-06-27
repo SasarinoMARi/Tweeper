@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">트윗지기</string>
-    <string name="TweetCleaner">트윗 삭제</string>
+    <string name="TweetCleaner">트윗 청소기</string>
     <string name="FollowerManagement">언팔매니저</string>
     <string name="FollowingManagement">팔로잉 관리</string>
     <string name="DeleteOption">삭제 옵션</string>
@@ -123,4 +123,7 @@
     <string name="duplicateService_FollowManager">팔로우 관리가 이미 실행중입니다.\n한 번에 하나만 실행할 수 있습니다.</string>
     <string name="NoReport">실행 이력이 없습니다.</string>
     <string name="General">기본</string>
+    <string name="TweetCleanerReports">트윗 청소기 보고서들</string>
+    <string name="TouchToDetail">터치해서 자세히 볼 수 있어요!</string>
+    <string name="TweetCleanerRun">트윗 청소기 실행하기</string>
 </resources>

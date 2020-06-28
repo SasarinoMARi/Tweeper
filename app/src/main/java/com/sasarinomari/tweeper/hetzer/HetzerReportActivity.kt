@@ -2,15 +2,19 @@ package com.sasarinomari.tweeper.hetzer
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.TextView
+import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Adam
-import com.sasarinomari.tweeper.DefaultListItem
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.report.ReportInterface
-import kotlinx.android.synthetic.main.activity_hetzer_report.*
+import kotlinx.android.synthetic.main.fragment_column_header.view.*
+import kotlinx.android.synthetic.main.fragment_no_item.view.*
+import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
+import kotlinx.android.synthetic.main.full_recycler_view.*
+import kotlinx.android.synthetic.main.item_default.view.*
 import java.text.SimpleDateFormat
 
-// TODO: RecyclerView화
 class HetzerReportActivity : Adam() {
     enum class Parameters {
         ReportId
@@ -28,7 +32,7 @@ class HetzerReportActivity : Adam() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hetzer_report)
+        setContentView(R.layout.full_recycler_view)
         if(!checkRequirement()) return
 
         val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
@@ -36,14 +40,76 @@ class HetzerReportActivity : Adam() {
             da.error(null, getString(R.string.Error_WrongParameter)) { finish() }.show()
         val report = ReportInterface<HetzerReport>(HetzerReport.prefix)
             .readReport(this,  reportIndex, HetzerReport()) as HetzerReport
-        text_removedCount.text = getString(R.string.DeleteReportCount, report.removedStatuses.count())
-        listView.adapter = object: DefaultListItem(report.removedStatuses) {
-            @SuppressLint("SimpleDateFormat")
-            override fun drawItem(item: Any, title: TextView, description: TextView) {
-                item as HetzerReport.Status
-                title.text = item.text
-                description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
+
+
+        // Recycler 어댑터 작성하는 코드
+        val adapter = RecyclerInjector()
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.title_text.text = getString(R.string.TweetCleanerReport)
+                view.title_description.text = getString(R.string.TweetCleanerReportDesc)
             }
-        }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.column_title.text = getString(R.string.RemovedTweets)
+                view.column_description.text = getString(R.string.DeletedTweetCount, report.removedStatuses.count())
+                view.setOnClickListener {
+                    val f = adapter.getFragment(viewType + 1)
+                    f.visible = !f.visible
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default, report.removedStatuses) {
+            @SuppressLint("SimpleDateFormat")
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                item as HetzerReport.Status
+                view.defaultitem_title.text = item.text
+                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
+            }
+        })
+        adapter.addSpace(5)
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                val f = adapter.getFragment(viewType - 1)
+                view.noitem_text.visibility = if(f.visible && f.count == 0) {
+                    view.noitem_text.text = getString(R.string.NoMatchedTweets)
+                    View.VISIBLE
+                } else View.GONE
+            }
+        })
+        adapter.addSpace(5)
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.column_title.text = getString(R.string.SavedTweets)
+                view.column_description.text = getString(R.string.SavedTweetCount, report.savedStatuses.count())
+                view.setOnClickListener {
+                    val f = adapter.getFragment(viewType + 1)
+                    f.visible = !f.visible
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default, report.savedStatuses) {
+                @SuppressLint("SimpleDateFormat")
+                override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                    item as HetzerReport.Status
+                    view.defaultitem_title.text = item.text
+                    view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
+                }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                val f = adapter.getFragment(viewType - 1)
+                view.noitem_text.visibility = if(f.visible && f.count == 0) {
+                    view.noitem_text.text = getString(R.string.NoMatchedUsers)
+                    View.VISIBLE
+                } else View.GONE
+            }
+        })
+
+        root.layoutManager = LinearLayoutManager(this)
+        root.adapter = adapter
     }
 }

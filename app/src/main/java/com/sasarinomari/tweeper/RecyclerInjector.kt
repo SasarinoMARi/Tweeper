@@ -1,6 +1,5 @@
 package com.sasarinomari.tweeper
 
-import android.app.ActionBar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,26 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
  */
 class RecyclerInjector : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     abstract class RecyclerFragment {
-        internal var layoutId: Int = 0
-        private var _list : ArrayList<*>? = null
         constructor(layoutId: Int) { this.layoutId = layoutId}
         constructor(layoutId: Int, list: ArrayList<*>): this(layoutId) { bindList(list) }
 
-        // region List Methods
-        fun bindList(list: ArrayList<*>) {
-            this._list = list
+        private var layoutId: Int = 0
+        private var _list : ArrayList<*>? = null
+        var visible: Boolean = true
+        val count: Int get() {
+            return if (!visible) 0 else if(isList) _list!!.size else 1
         }
-        val isList: Boolean get() { return _list != null }
-        val count: Int get() { return if (isList) _list!!.size else 1 }
-        fun getListItem(index: Int): Any? {
-            return if(isList) this._list!![index]
-            else null
-        }
-        fun removeListItem(listItemIndex: Int) {
-            if(!isList) return
-            this._list!!.removeAt(listItemIndex)
-        }
-        // endregion
 
         open fun createViewHolder(view: View) : RecyclerView.ViewHolder {
             return object: RecyclerView.ViewHolder(view) { }
@@ -47,6 +35,21 @@ class RecyclerInjector : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         open fun inflate(parent: ViewGroup): View {
             return LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
         }
+
+        // region List Methods
+        fun bindList(list: ArrayList<*>) {
+            this._list = list
+        }
+        val isList: Boolean get() { return _list != null }
+        fun getListItem(index: Int): Any? {
+            return if(isList) this._list!![index]
+            else null
+        }
+        fun removeListItem(listItemIndex: Int) {
+            if(!isList) return
+            this._list!!.removeAt(listItemIndex)
+        }
+        // endregion
     }
 
     private val fragments = ArrayList<RecyclerFragment>()
@@ -105,6 +108,7 @@ class RecyclerInjector : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val viewType = getItemViewType(position)
         val fragment = fragments[viewType]
+        if(!fragment.visible) return
         val listItemIndex = getItemListIndex(position)
         val item = fragment.getListItem(listItemIndex)
         fragment.draw(holder.itemView, item, viewType, listItemIndex)
@@ -126,5 +130,9 @@ class RecyclerInjector : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun removeListItem(viewType: Int, listItemIndex: Int) {
         val f = fragments[viewType]
         f.removeListItem(listItemIndex)
+    }
+
+    fun getFragment(viewType: Int) : RecyclerFragment {
+        return fragments[viewType]
     }
 }

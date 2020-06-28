@@ -111,8 +111,9 @@
     <string name="Error_NoParameter">인텐트 호출에 필요한 인자가 갖춰지지 않았습니다. 액티비티를 종료합니다.</string>
     <string name="Error_WrongParameter">인텐트 호출에 필요한 인자가 잘못되었습니다. 액티비티를 종료합니다.</string>
     <string name="TweetCleanerReport">트윗 청소기 보고서</string>
-    <string name="DeleteReportDesc">트윗 청소기가 삭제한 트윗들입니다.</string>
-    <string name="DeleteReportCount">삭제한 트윗 수 : %1$d</string>
+    <string name="TweetCleanerReportDesc">트윗 청소기가 삭제한 트윗들입니다.</string>
+    <string name="DeletedTweetCount">삭제한 트윗 수 : %1$d</string>
+    <string name="SavedTweetCount">남긴 트윗 수 : %1$d</string>
     <string name="DeleteReportsDesc">조회할 보고서를 선택해주세요.</string>
     <string name="TweetCleanerNoReport">트윗 청소기를 실행한 이력이 없습니다.</string>
     <string name="DateFormat">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
@@ -132,4 +133,8 @@
     <string name="Fans">나를 구독하는 사람들</string>
     <string name="NoMatchedUsers">더 이상 해당하는 유저가 없습니다.</string>
     <string name="BlockUnblock">블언블</string>
+    <string name="RemovedTweets">삭제된 트윗들</string>
+    <string name="NoMatchedTweets">더 이상 해당하는 트윗이 없습니다.</string>
+    <string name="SavedTweets">남겨진 트윗들</string>
+    <string name="TouchToExpend">여기를 터치해서 접고 펼 수 있어요!</string>
 </resources>

@@ -53,13 +53,18 @@ class FollowManagementReportActivity: Adam() {
                 view.title_description.text = getString(R.string.FollowManagementDesc)
             }
         })
+        adapter.addSpace(5)
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.column_title.text = getString(R.string.Traitors)
-                view.column_description.text = getString(R.string.TouchToDetail)
+                view.column_description.text = getString(R.string.TouchToExpend)
+                view.setOnClickListener {
+                    val f = adapter.getFragment(viewType + 1)
+                    f.visible = !f.visible
+                    adapter.notifyDataSetChanged()
+                }
             }
         })
-        adapter.addSpace(1)
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_user_unfollow, report.traitors) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 val user = item!! as FollowManagementReport.User
@@ -84,7 +89,8 @@ class FollowManagementReportActivity: Adam() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.visibility = if(adapter.getItemCount(viewType - 1) == 0) {
+                val f = adapter.getFragment(viewType - 1)
+                view.noitem_text.visibility = if(f.visible && f.count == 0) {
                     view.noitem_text.text = getString(R.string.NoMatchedUsers)
                     View.VISIBLE
                 } else View.GONE
@@ -94,10 +100,14 @@ class FollowManagementReportActivity: Adam() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.column_title.text = getString(R.string.Fans)
-                view.column_description.text = getString(R.string.TouchToDetail)
+                view.column_description.text = getString(R.string.TouchToExpend)
+                view.setOnClickListener {
+                    val f = adapter.getFragment(viewType + 1)
+                    f.visible = !f.visible
+                    adapter.notifyDataSetChanged()
+                }
             }
         })
-        adapter.addSpace(1)
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_user_unfollow, report.fans) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 val user = item!! as FollowManagementReport.User
@@ -123,7 +133,8 @@ class FollowManagementReportActivity: Adam() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.visibility = if(adapter.getItemCount(viewType - 1) == 0) {
+                val f = adapter.getFragment(viewType - 1)
+                view.noitem_text.visibility = if(f.visible && f.count == 0) {
                     view.noitem_text.text = getString(R.string.NoMatchedUsers)
                     View.VISIBLE
                 } else View.GONE

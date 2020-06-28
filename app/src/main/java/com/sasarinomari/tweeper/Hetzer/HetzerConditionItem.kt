@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.item_hetzer_condition.view.*
 
 internal class HetzerConditionItem(context: Context) : LinearLayout(context) {
     fun setText(text: String) {
-        this.text.text = text
+        this.card_title.text = text
     }
 
     fun setMoreButtonCallback(callback: () -> Unit) {

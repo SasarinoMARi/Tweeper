@@ -7,7 +7,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
@@ -19,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_simpleuser.view.*
 import kotlinx.android.synthetic.main.item_tweet_report.view.*
+import kotlinx.android.synthetic.main.view_dashboard_card.view.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import kotlin.math.abs
@@ -26,6 +30,10 @@ import kotlin.math.abs
 class AnalyticsReportActivity : BaseActivity() {
     enum class Parameters {
         ReportId
+    }
+
+    private enum class RequestCodes {
+        FollowManagement
     }
 
     private fun checkRequirements(): Boolean {
@@ -39,6 +47,11 @@ class AnalyticsReportActivity : BaseActivity() {
         return true
     }
 
+    private var report: AnalyticsReport? = null
+    private var previousReport: AnalyticsReport? = null
+
+    private var reportUpdated = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_recycler_view)
@@ -48,8 +61,8 @@ class AnalyticsReportActivity : BaseActivity() {
         val previousReportIndex = reportIndex - 1
         val ri = ReportInterface<AnalyticsReport>(AnalyticsReport.prefix)
         val _classTemp = AnalyticsReport()
-        val report = ri.readReport(this, reportIndex, _classTemp) as AnalyticsReport?
-        val previousReport = ri.readReport(this, previousReportIndex, _classTemp) as AnalyticsReport?
+        report = ri.readReport(this, reportIndex, _classTemp) as AnalyticsReport?
+        previousReport = ri.readReport(this, previousReportIndex, _classTemp) as AnalyticsReport?
 
         if(report == null) {
             da.error(getString(R.string.Error), getString(R.string.Error_WrongParameter)) { finish() }; return
@@ -68,17 +81,17 @@ class AnalyticsReportActivity : BaseActivity() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_tweet_report) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.text_date.text = SimpleDateFormat(getString(R.string.Format_Date)).format(report.date)
-                view.text_time.text = SimpleDateFormat(getString(R.string.Format_Time)).format(report.date)
+                view.text_date.text = SimpleDateFormat(getString(R.string.Format_Date)).format(report!!.date)
+                view.text_time.text = SimpleDateFormat(getString(R.string.Format_Time)).format(report!!.date)
 
                 setDiffrenceView(
-                    report.tweetCount, report.tweetCountVar,
+                    report!!.tweetCount, report!!.tweetCountVar,
                     view.text_tweetCount, view.image_tweetCount_Arrow, view.text_tweetCount_Value)
                 setDiffrenceView(
-                    report.followings.count(), report.followingsVar,
+                    report!!.followings.count(), report!!.followingsVar,
                     view.text_friendCount, view.image_friendCount_Arrow, view.text_friendCount_Value)
                 setDiffrenceView(
-                    report.followers.count(), report.followersVar,
+                    report!!.followers.count(), report!!.followersVar,
                     view.text_followerCount, view.image_followerCount_Arrow, view.text_FollowerCount_Value)
             }
 
@@ -110,14 +123,28 @@ class AnalyticsReportActivity : BaseActivity() {
             }
 
         })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.view_dashboard_card) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.card_title.text = getString(R.string.FollowManagement)
+                view.card_description.text = getString(R.string.FollowManagementDesc)
+                view.card_oval.setImageResource(R.drawable.account_multiple_remove)
+                view.card_oval.setOvalColor(ContextCompat.getColor(this@AnalyticsReportActivity, R.color.red))
+                view.setOnClickListener {
+                    val intent = Intent(this@AnalyticsReportActivity, FollowManagementActivity::class.java)
+                    intent.putExtra(FollowManagementActivity.Parameters.Followings.name, Gson().toJson(report!!.followings))
+                    intent.putExtra(FollowManagementActivity.Parameters.Followers.name, Gson().toJson(report!!.followers))
+                    startActivityForResult(intent, RequestCodes.FollowManagement.ordinal)
+                }
+            }
+        })
 
         if(previousReport != null) {
             adapter.addSpace(3)
 
-            val newFriends = getDiffrence(report.followings, previousReport.followings)
-            val noMoreFriends = getDiffrence(previousReport.followings, report.followings)
-            val newFollowers = getDiffrence(report.followers, previousReport.followers)
-            val noMoreFollowers = getDiffrence(previousReport.followers, report.followers)
+            val newFriends = getDiffrence(report!!.followings, previousReport!!.followings)
+            val noMoreFriends = getDiffrence(previousReport!!.followings, report!!.followings)
+            val newFollowers = getDiffrence(report!!.followers, previousReport!!.followers)
+            val noMoreFollowers = getDiffrence(previousReport!!.followers, report!!.followers)
 
             if(newFriends.isNotEmpty()) {
                 adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
@@ -166,6 +193,45 @@ class AnalyticsReportActivity : BaseActivity() {
 
         root.layoutManager = LinearLayoutManager(this)
         root.adapter = adapter
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            RequestCodes.FollowManagement.ordinal -> {
+                if(resultCode != RESULT_OK) return
+
+                // 결과 인텐트에서 처리할 유저 목록 추출
+                data!!
+                val type = object: TypeToken<ArrayList<Long>>(){}.type
+                val unfollowedUserIds = Gson().fromJson(data.getStringExtra(FollowManagementActivity.Results.UnfollowedUsers.name), type) as ArrayList<Long>
+                val bloackUnblockedUserIds = Gson().fromJson(data.getStringExtra(FollowManagementActivity.Results.BlockUnblockedUsers.name), type) as ArrayList<Long>
+
+                // 언팔, 블언블 한 유저를 report에 반영
+                val followings = report!!.followings
+                val followers = report!!.followers
+                for(id in unfollowedUserIds) {
+                    followings.removeAll { user -> user.id == id }
+                }
+                for(id in bloackUnblockedUserIds) {
+                    followings.removeAll { user -> user.id == id }
+                    followers.removeAll { user -> user.id == id }
+                }
+                report!!.followings = followings
+                report!!.followers = followers
+
+                // 반영한 report를 저장
+                val ri = ReportInterface<AnalyticsReport>(AnalyticsReport.prefix)
+                if(previousReport!=null) report!!.setDeffrence(previousReport!!)
+                ri.writeReport(this, report!!.id, report!!)
+                reportUpdated = true
+                recreate()
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onFinish() {
+        setResult(RESULT_OK)
     }
 
     private fun getDiffrence(list1: ArrayList<User>, list2: ArrayList<User>) : ArrayList<User> {

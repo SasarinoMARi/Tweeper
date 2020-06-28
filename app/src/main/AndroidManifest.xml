@@ -32,16 +32,10 @@
             android:name=".Hetzer.HetzerService"
             android:exported="true" />
 
-        <!--Follow Management-->
-        <activity android:name=".FollowManagement.FollowManagementActivity" />
-        <activity android:name=".FollowManagement.FollowManagementReportActivity" />
-        <service
-            android:name=".FollowManagement.FollowManagementService"
-            android:exported="true" />
-
         <!--Tweet Analytics-->
         <activity android:name=".Analytics.AnalyticsActivity" />
         <activity android:name=".Analytics.AnalyticsReportActivity" />
+        <activity android:name=".Analytics.FollowManagementActivity" />
         <service
             android:name=".Analytics.AnalyticsService"
             android:exported="true" />

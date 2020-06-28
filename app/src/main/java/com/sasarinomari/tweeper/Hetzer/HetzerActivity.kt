@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
@@ -41,7 +42,7 @@ class HetzerActivity : BaseActivity() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.cardbutton_image.setOvalColor(Color.BLUE)
+                view.cardbutton_image.setOvalColor(ContextCompat.getColor(this@HetzerActivity, R.color.mint))
                 view.cardbutton_image.setImageResource(R.drawable.comment_remove)
                 view.cardbutton_text.text = getString(R.string.TweetCleanerRun)
                 view.setOnClickListener {

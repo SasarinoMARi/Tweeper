@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.sasarinomari.tweeper.View.DefaultListItem
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Hetzer.HetzerReportActivity
 import kotlinx.android.synthetic.main.fragment_report_list.view.*
@@ -31,6 +30,7 @@ import java.util.*
  * 이 프래그먼트를 추가한 액티비티에서 스크롤이 내려가버림(?)(???)
  * 대체 왜이럼?? 전 몰겟구여 암튼 알아서 스크롤 올리는 코드 넣어 쓰세용ㅋㅋ
  */
+@Suppress("DEPRECATION")
 @Deprecated("DefualtRecycleAdapter")
 class ReportListFragment(private val intent: Intent,
                          private val callback: () -> Unit) : Fragment() {
@@ -61,7 +61,7 @@ class ReportListFragment(private val intent: Intent,
             rootView.layout_noReport.visibility = View.VISIBLE
             rootView.listView.visibility = View.GONE
         } else {
-            val adapter = object : DefaultListItem(reports) {
+            val adapter = object :  com.sasarinomari.tweeper.View.DefaultListItem(reports) {
                 @SuppressLint("SimpleDateFormat")
                 override fun drawItem(item: Any, title: TextView, description: TextView) {
                     item as Pair<*, *>

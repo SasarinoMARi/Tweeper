@@ -17,8 +17,6 @@ import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
 import com.sasarinomari.tweeper.ChainBlock.BlockClearActivity
 import com.sasarinomari.tweeper.ChainBlock.ChainBlockActivity
-import com.sasarinomari.tweeper.FollowManagement.FollowManagementActivity
-import com.sasarinomari.tweeper.Hetzer.HetzerService
 import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
 import twitter4j.TwitterFactory
@@ -35,15 +33,7 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
             startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
         }
         button_erase.setOnClickListener {
-            if(HetzerService.checkServiceRunning((this@DashboardActivity))) {
-                da.warning("잠시만요!", "트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행될 수 있습니다.").show()
-            }
-            else {
-                startActivityForResult(Intent(this, HetzerActivity::class.java), Requests.Hetzer.ordinal)
-            }
-        }
-        button_followerManagement.setOnClickListener {
-            startActivity(Intent(this, FollowManagementActivity::class.java))
+            startActivityForResult(Intent(this, HetzerActivity::class.java), Requests.Hetzer.ordinal)
         }
         button_tweetReport.setOnClickListener {
             startActivity(Intent(this, AnalyticsActivity::class.java))

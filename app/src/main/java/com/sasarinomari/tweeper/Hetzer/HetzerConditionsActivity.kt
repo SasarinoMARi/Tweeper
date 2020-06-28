@@ -305,7 +305,7 @@ internal class HetzerConditionsActivity : BaseActivity() {
         // endregion
         // region ListItem Choice Event
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
-            when (val text = textSeq.toString()) {
+            when (textSeq.toString()) {
                 getString(R.string.HetzerConditions_1) -> addCondition1()
                 getString(R.string.HetzerConditions_2) -> addCondition2()
                 getString(R.string.HetzerConditions_3) -> addCondition3()

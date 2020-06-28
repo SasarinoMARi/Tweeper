@@ -39,10 +39,10 @@ class DashboardCardView : CardView {
         val icon = typedArray.getResourceId(R.styleable.DashboardCardView_icon, 0)
         val ovalColor = typedArray.getColor(R.styleable.DashboardCardView_ovalColor, 0)
  
-        text.text = textAttr
-        description.text = descAttr
-        oval.setImageResource(icon)
-        oval.setOvalColor(ovalColor)
+        card_title.text = textAttr
+        card_description.text = descAttr
+        card_oval.setImageResource(icon)
+        card_oval.setOvalColor(ovalColor)
 
         /**
          * 이름 관련 해괴한 버그가 발견되어서 메모를 남긴다.

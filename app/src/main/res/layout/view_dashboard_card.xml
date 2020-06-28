@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="115dp"
     android:layout_margin="12dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="6dp">
@@ -17,7 +17,7 @@
         android:padding="16dp">
 
         <com.sasarinomari.tweeper.View.OvalImageView
-            android:id="@+id/oval"
+            android:id="@+id/card_oval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -26,7 +26,7 @@
             app:layout_constraintVertical_chainStyle="packed" />
 
         <TextView
-            android:id="@+id/text"
+            android:id="@+id/card_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -34,13 +34,13 @@
             android:text="Text"
             android:textSize="20sp"
             android:textColor="@color/black"
-            app:layout_constraintBottom_toTopOf="@id/description"
-            app:layout_constraintLeft_toRightOf="@id/oval"
-            app:layout_constraintTop_toTopOf="@id/oval"
+            app:layout_constraintBottom_toTopOf="@id/card_description"
+            app:layout_constraintLeft_toRightOf="@id/card_oval"
+            app:layout_constraintTop_toTopOf="@id/card_oval"
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/card_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -48,9 +48,9 @@
             android:text="Text"
             android:textSize="12sp"
             android:textColor="@color/gray"
-            app:layout_constraintBottom_toBottomOf="@id/oval"
-            app:layout_constraintLeft_toRightOf="@id/oval"
-            app:layout_constraintTop_toBottomOf="@id/text"
+            app:layout_constraintBottom_toBottomOf="@id/card_oval"
+            app:layout_constraintLeft_toRightOf="@id/card_oval"
+            app:layout_constraintTop_toBottomOf="@id/card_title"
             tools:ignore="HardcodedText" />
 
 

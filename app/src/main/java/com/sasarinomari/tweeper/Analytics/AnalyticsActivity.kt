@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
@@ -40,7 +41,7 @@ class AnalyticsActivity : BaseActivity() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.cardbutton_image.setOvalColor(Color.BLUE)
+                view.cardbutton_image.setOvalColor(ContextCompat.getColor(this@AnalyticsActivity, R.color.sky))
                 view.cardbutton_image.setImageResource(R.drawable.calendar_edit)
                 view.cardbutton_text.text = getString(R.string.TweetAnalyticsRun)
                 view.setOnClickListener {
@@ -113,11 +114,16 @@ class AnalyticsActivity : BaseActivity() {
                 val intent = Intent(this@AnalyticsActivity, AnalyticsReportActivity::class.java)
                 intent.putExtra(AnalyticsReportActivity.Parameters.ReportId.name, item.id)
                 // intent.putExtra(AnalyticsReportActivity.Parameters.PreviousReportId.name, item.id - 1)
-                startActivity(intent)
+                startActivityForResult(intent, 0)
             }
 
         })
         root.layoutManager = LinearLayoutManager(this)
         root.adapter = adapter
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == RESULT_OK) recreate()
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

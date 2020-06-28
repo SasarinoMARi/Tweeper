@@ -36,4 +36,10 @@ abstract class BaseActivity : AppCompatActivity() {
             }
         }
     }
+
+    open fun onFinish() { }
+    override fun finish() {
+        onFinish()
+        super.finish()
+    }
 }

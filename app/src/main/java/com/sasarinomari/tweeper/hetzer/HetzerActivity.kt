@@ -30,6 +30,7 @@ class HetzerActivity : Adam() {
 
         val reportPrefix = HetzerReport.prefix
         val reports = ReportInterface<Any>(reportPrefix).getReportsWithNameAndCreatedDate(this)
+        reports.reverse()
 
         val adapter = RecyclerInjector()
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {

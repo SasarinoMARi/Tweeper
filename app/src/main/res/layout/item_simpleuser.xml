@@ -15,7 +15,7 @@
         android:background="@color/colorPrimary">
 
         <ImageView
-            android:id="@+id/image_profilePicture"
+            android:id="@+id/simpleuser_profilePicture"
             android:layout_width="48dp"
             android:layout_height="48dp" />
 
@@ -26,7 +26,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_Name"
+                android:id="@+id/simpleuser_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/noto_sans_regular"
@@ -41,7 +41,7 @@
                 android:layout_gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/text_ScreenName"
+                    android:id="@+id/simpleuser_screenName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/noto_sans_light"
@@ -51,8 +51,7 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-
-                    android:id="@+id/text_Id"
+                    android:id="@+id/simpleuser_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"

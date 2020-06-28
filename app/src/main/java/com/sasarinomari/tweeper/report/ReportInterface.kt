@@ -33,14 +33,19 @@ class ReportInterface<T>(private val prefix: String) {
     }
 
     fun writeReport(context: Context, reportId: Int, statuses: T) {
-        File(getPath(context), "$prefix$reportId")
-            .writeText(Gson().toJson(statuses), Charsets.UTF_8)
+        File(getPath(context), "$prefix$reportId").writeText(Gson().toJson(statuses), Charsets.UTF_8)
     }
 
-    fun readReport(context: Context, reportId: Int): T {
-        val text = File(getPath(context), "$prefix$reportId")
-            .readText(Charsets.UTF_8)
-        return Gson().fromJson(text, object : TypeToken<T>() {}.type)
+    fun readReport(context: Context, reportId: Int): T? {
+        var report: T? = null
+        try{
+            val text = File(getPath(context), "$prefix$reportId").readText(Charsets.UTF_8)
+            report = Gson().fromJson(text, object : TypeToken<T>() {}.type)
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return report
     }
 
     /**
@@ -48,10 +53,16 @@ class ReportInterface<T>(private val prefix: String) {
         구글에 "LinkedTreeMap cannot be cast to" 로 검색하면 대충 나옴.
         더 좋은 해결책 알면 고치셈. 일단 저는 모르겟음 ^^7
      */
-    fun readReport(context: Context, reportId: Int, cls: Any): Any {
-        val text = File(getPath(context), "$prefix$reportId")
-            .readText(Charsets.UTF_8)
-        return Gson().fromJson(text, TypeToken.getParameterized(cls::class.java).type)
+    fun readReport(context: Context, reportId: Int, cls: Any): Any? {
+        var report: T? = null
+        try{
+            val text = File(getPath(context), "$prefix$reportId").readText(Charsets.UTF_8)
+            report = Gson().fromJson(text, TypeToken.getParameterized(cls::class.java).type)
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return report
     }
 
     /**
@@ -61,6 +72,26 @@ class ReportInterface<T>(private val prefix: String) {
         val list = ArrayList<Pair<String, Date>>()
         for (item in getPath(context).list()!!) {
             list.add(Pair(item, Date(File(item).lastModified())))
+        }
+        return list
+    }
+
+
+    fun getReports(context: Context): ArrayList<T> {
+        val list = ArrayList<T>()
+        val names = getReportsWithNameAndCreatedDate(context)
+        for(name in names) {
+            val report = readReport(context, name.first.removePrefix(prefix).toInt())
+            if(report != null) list.add(report)
+        }
+        return list
+    }
+    fun getReports(context: Context, cls: Any): ArrayList<Any> {
+        val list = ArrayList<Any>()
+        val names = getReportsWithNameAndCreatedDate(context)
+        for(name in names) {
+            val report = readReport(context, name.first.removePrefix(prefix).toInt(), cls)
+            if(report != null) list.add(report)
         }
         return list
     }

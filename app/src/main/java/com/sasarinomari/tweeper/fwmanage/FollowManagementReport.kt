@@ -1,5 +1,7 @@
 package com.sasarinomari.tweeper.fwmanage
 
+import com.sasarinomari.tweeper.SimplizatedClass.User
+
 class FollowManagementReport {
     constructor()
     constructor(traitors: List<twitter4j.User>, fans: List<twitter4j.User>) {
@@ -11,14 +13,7 @@ class FollowManagementReport {
         const val prefix = "fwReport"
     }
 
+    var id: Int = -1
     var traitors = ArrayList<User>()
     var fans = ArrayList<User>()
-
-    class User(src: twitter4j.User) {
-        val name: String = src.name
-        val screenName: String = src.screenName
-        val profileImageUrl: String = src.profileImageURL
-        val id: Long = src.id
-        val bio: String = src.description
-    }
 }

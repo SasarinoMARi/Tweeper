@@ -114,10 +114,10 @@
                     android:layout_height="128dp"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    app:description="@string/TweetReportDescription"
+                    app:description="@string/TweetAnalyticsDesc"
                     app:icon="@drawable/chart_areaspline"
                     app:ovalColor="#64b5f6"
-                    app:title="@string/TweetReport" />
+                    app:title="@string/TweetAnalytics" />
 
                 <com.sasarinomari.tweeper.DashboardCardView
                     android:id="@+id/button_followerManagement"

@@ -10,40 +10,48 @@ import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.sasarinomari.tweeper.report.ReportInterface
+import com.sasarinomari.tweeper.report.ReportListActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_user_unfollow.view.*
+import twitter4j.StreamController
 
 class FollowManagementReportActivity: Adam() {
     enum class Parameters {
         ReportId
     }
 
-    private fun checkRequirement(): Boolean{
-        if(!intent.hasExtra(Parameters.ReportId.name)) {
-            da.error(null, getString(R.string.Error_NoParameter)) {
-                finish()
-            }.show()
-            return false
-        }
+    private fun checkRequirements(): Boolean {
+        for(parameter in Parameters.values())
+            if(!intent.hasExtra(parameter.name)) {
+                da.error(getString(R.string.Error), getString(R.string.Error_NoParameter)) {
+                    finish()
+                }
+                return false
+            }
         return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_recycler_view)
-        if(!checkRequirement()) return
+        if(!checkRequirements()) return
 
         // Report 읽어오는 코드
         val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
         if(reportIndex == -1)
             da.error(null, getString(R.string.Error_WrongParameter)) { finish() }.show()
         val report = ReportInterface<FollowManagementReport>(FollowManagementReport.prefix)
-            .readReport(this, reportIndex, FollowManagementReport()) as FollowManagementReport
+            .readReport(this, reportIndex, FollowManagementReport()) as FollowManagementReport?
+
+        if(report == null) {
+            da.error(getString(R.string.Error), getString(R.string.Error_WrongParameter)) { finish() }; return
+        }
 
         // Recycler 어댑터 작성하는 코드
         val adapter = RecyclerInjector()
@@ -67,7 +75,7 @@ class FollowManagementReportActivity: Adam() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_user_unfollow, report.traitors) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                val user = item!! as FollowManagementReport.User
+                val user = item!! as User
                 view.text_Name.text = user.name
                 view.text_ScreenName.text = user.screenName
                 view.text_bio.text = user.bio
@@ -110,7 +118,7 @@ class FollowManagementReportActivity: Adam() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_user_unfollow, report.fans) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                val user = item!! as FollowManagementReport.User
+                val user = item!! as User
                 view.text_Name.text = user.name
                 view.text_ScreenName.text = user.screenName
                 view.text_bio.text = user.bio

@@ -32,8 +32,8 @@
     <string name="FriendPulling">팔로우 목록을 가져오는 중입니다.</string>
     <string name="FollowerPulling">팔로워 목록을 가져오는 중입니다.</string>
     <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중입니다.</string>
-    <string name="TweetReport">트윗 일지</string>
-    <string name="TweetReportDescription">트윗, 팔로우쉽 변화 추이를 봅니다.</string>
+    <string name="TweetAnalytics">트윗 일지</string>
+    <string name="TweetAnalyticsDesc">트윗, 팔로우쉽 변화 추이를 봅니다.</string>
     <string name="PermissionRequestTitle">권한이 필요합니다.</string>
     <string name="Yes">넵</string>
     <string name="No">아니요</string>
@@ -137,4 +137,10 @@
     <string name="NoMatchedTweets">더 이상 해당하는 트윗이 없습니다.</string>
     <string name="SavedTweets">남겨진 트윗들</string>
     <string name="TouchToExpend">여기를 터치해서 접고 펼 수 있어요!</string>
+    <string name="API_WaitingTitle">API 한도를 초과했습니다.</string>
+    <string name="AnalyticsDone">트윗 일지가 완성되었어요!</string>
+    <string name="TweetAnalyticsRun">일지 갱신하기</string>
+    <string name="AnalyticsReport">트윗 일지</string>
+    <string name="AnalyticsReports">지난 트윗 일지들</string>
+    <string name="duplicateService_Analytics">트윗 일지가 이미 작성중이에요! 한번에 하나의 일지만 작성할 수 있어요.</string>
 </resources>

@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Adam
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
+import com.sasarinomari.tweeper.SimplizatedClass.Status
 import com.sasarinomari.tweeper.report.ReportInterface
+import com.sasarinomari.tweeper.report.ReportListActivity
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -20,27 +22,31 @@ class HetzerReportActivity : Adam() {
         ReportId
     }
 
-    private fun checkRequirement(): Boolean{
-        if(!intent.hasExtra(Parameters.ReportId.name)) {
-            da.error(null, getString(R.string.Error_NoParameter)) {
-                finish()
-            }.show()
-            return false
-        }
+    private fun checkRequirements(): Boolean {
+        for(parameter in Parameters.values())
+            if(!intent.hasExtra(parameter.name)) {
+                da.error(getString(R.string.Error), getString(R.string.Error_NoParameter)) {
+                    finish()
+                }
+                return false
+            }
         return true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_recycler_view)
-        if(!checkRequirement()) return
+        if(!checkRequirements()) return
 
         val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
         if(reportIndex == -1)
             da.error(null, getString(R.string.Error_WrongParameter)) { finish() }.show()
         val report = ReportInterface<HetzerReport>(HetzerReport.prefix)
-            .readReport(this,  reportIndex, HetzerReport()) as HetzerReport
+            .readReport(this,  reportIndex, HetzerReport()) as HetzerReport?
 
+        if(report == null) {
+            da.error(getString(R.string.Error), getString(R.string.Error_WrongParameter)) { finish() }; return
+        }
 
         // Recycler 어댑터 작성하는 코드
         val adapter = RecyclerInjector()
@@ -64,7 +70,7 @@ class HetzerReportActivity : Adam() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default, report.removedStatuses) {
             @SuppressLint("SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                item as HetzerReport.Status
+                item as Status
                 view.defaultitem_title.text = item.text
                 view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
             }
@@ -94,7 +100,7 @@ class HetzerReportActivity : Adam() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default, report.savedStatuses) {
                 @SuppressLint("SimpleDateFormat")
                 override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                    item as HetzerReport.Status
+                    item as Status
                     view.defaultitem_title.text = item.text
                     view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
                 }

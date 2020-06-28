@@ -24,18 +24,27 @@
         <activity android:name=".auth.AuthenticationActivity" />
         <activity android:name=".report.ReportListActivity"/>
 
-        <!--Hetzer Activities-->
+        <!--Hetzer-->
         <activity android:name=".hetzer.HetzerActivity" />
         <activity android:name=".hetzer.HetzerConditionsActivity" />
         <activity android:name=".hetzer.HetzerReportActivity" />
+        <service
+            android:name=".hetzer.HetzerService"
+            android:exported="true" />
 
-        <!--Follow Management Activities-->
+        <!--Follow Management-->
         <activity android:name=".fwmanage.FollowManagementActivity" />
         <activity android:name=".fwmanage.FollowManagementReportActivity" />
+        <service
+            android:name=".fwmanage.FollowManagementService"
+            android:exported="true" />
 
-        <!--Tweet Report Activities-->
-        <activity android:name=".tweetreport.TweetReportActivity" />
-        <activity android:name=".tweetreport.TweetReportDetail" />
+        <!--Tweet Analytics-->
+        <activity android:name=".analytics.AnalyticsActivity" />
+        <activity android:name=".analytics.AnalyticsReportActivity" />
+        <service
+            android:name=".analytics.AnalyticsService"
+            android:exported="true" />
 
         <!--Chain Block Activities-->
         <activity android:name=".chainb.ChainBlockActivity" />
@@ -45,12 +54,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
 
-        <service
-            android:name=".hetzer.HetzerService"
-            android:exported="true" />
-        <service
-            android:name=".fwmanage.FollowManagementService"
-            android:exported="true" />
     </application>
 
 </manifest>

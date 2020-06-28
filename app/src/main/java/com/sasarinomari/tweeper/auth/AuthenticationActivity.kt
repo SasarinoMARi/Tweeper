@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.sasarinomari.tweeper.*
+import com.sasarinomari.tweeper.SimplizatedClass.User
 import kotlinx.android.synthetic.main.activity_main.*
 import kr.booms.webview.BoomWebView
 import kr.booms.webview.BoomWebViewClientInterface
@@ -88,7 +89,7 @@ class AuthenticationActivity : Adam(), SharedTwitterProperties.ActivityInterface
             val authData = AuthData()
             authData.token = accessToken
             authData.lastLogin = Date()
-            authData.user = SimpleUser.createFromUser(user)
+            authData.user = User(user)
 
             val recorder = AuthData.Recorder(this@AuthenticationActivity)
             if(!recorder.hasUser(authData)) {

@@ -39,7 +39,7 @@ internal class AuthDataAdapter(private val users: ArrayList<AuthData>,
         convertView.text_ScreenName.text = authData.user?.screenName
         convertView.text_Name.text = authData.user?.name
         Picasso.get()
-            .load(authData.user?.profilePicUrl)
+            .load(authData.user?.profileImageUrl)
             .into(convertView.image_profilePicture)
 
         convertView.button_more.setOnClickListener { v ->

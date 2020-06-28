@@ -74,8 +74,6 @@
                 android:id="@+id/image_tweetCount_Arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:src="@drawable/arrow_up_bold_box" />
 
             <TextView
@@ -114,8 +112,6 @@
                 android:id="@+id/image_friendCount_Arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:src="@drawable/arrow_up_bold_box" />
 
             <TextView
@@ -151,11 +147,9 @@
 
 
             <ImageView
-                android:id="@+id/image_followerCount_Image"
+                android:id="@+id/image_followerCount_Arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
                 android:src="@drawable/arrow_down_bold_box" />
 
             <TextView

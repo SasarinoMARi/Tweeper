@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.sasarinomari.tweeper.SimpleUser
+import com.sasarinomari.tweeper.SimplizatedClass.User
 import twitter4j.auth.AccessToken
 import java.util.*
 
 class AuthData {
     var token: AccessToken? = null
     var focused: Boolean = false
-    var user: SimpleUser? = null
+    var user: User? = null
     var lastLogin: Date? = null
 
     override operator fun equals(other: Any?): Boolean {

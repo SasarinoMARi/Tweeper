@@ -61,12 +61,13 @@ class HetzerService : BaseService() {
 
             // 리포트 작성
             val ri = ReportInterface<HetzerReport>(HetzerReport.prefix)
-            val reportIndex = ri.getReportCount(this)+1
-            ri.writeReport(this, reportIndex, HetzerReport(removedStatuses, savedStatuses))
+            val report = HetzerReport(removedStatuses, savedStatuses)
+            report.id = ri.getReportCount(this)+1
+            ri.writeReport(this, report.id, report )
 
             // 알림 송출
             val redirect = Intent(this, HetzerReportActivity::class.java)
-            redirect.putExtra(HetzerReportActivity.Parameters.ReportId.name, reportIndex)
+            redirect.putExtra(HetzerReportActivity.Parameters.ReportId.name, report.id)
             sendNotification(
                 getString(R.string.Done),
                 getString(R.string.Hetzer_Done),

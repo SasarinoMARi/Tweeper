@@ -19,7 +19,7 @@ import com.sasarinomari.tweeper.chainb.BlockClearActivity
 import com.sasarinomari.tweeper.chainb.ChainBlockActivity
 import com.sasarinomari.tweeper.fwmanage.FollowManagementActivity
 import com.sasarinomari.tweeper.hetzer.HetzerService
-import com.sasarinomari.tweeper.tweetreport.TweetReportActivity
+import com.sasarinomari.tweeper.analytics.AnalyticsActivity
 import twitter4j.TwitterFactory
 
 class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
@@ -45,7 +45,7 @@ class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
             startActivity(Intent(this, FollowManagementActivity::class.java))
         }
         button_tweetReport.setOnClickListener {
-            startActivity(Intent(this, TweetReportActivity::class.java))
+            startActivity(Intent(this, AnalyticsActivity::class.java))
         }
         button_removeFriends.setOnClickListener {
             startActivity(Intent(this, ChainBlockActivity::class.java))

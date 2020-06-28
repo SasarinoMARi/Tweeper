@@ -20,13 +20,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class FollowManagementActivity : Adam() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_recycler_view)
 
         val reportPrefix = FollowManagementReport.prefix
         val reports = ReportInterface<Any>(reportPrefix).getReportsWithNameAndCreatedDate(this)
+        reports.reverse()
 
         val adapter = RecyclerInjector()
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {

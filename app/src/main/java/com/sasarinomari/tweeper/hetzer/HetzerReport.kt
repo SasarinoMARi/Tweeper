@@ -1,7 +1,7 @@
 package com.sasarinomari.tweeper.hetzer
 
-import twitter4j.Status
 import java.util.*
+import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 class HetzerReport {
     constructor()
@@ -14,12 +14,7 @@ class HetzerReport {
         const val prefix = "hetzerReport"
     }
 
+    var id: Int = -1
     var removedStatuses = ArrayList<Status>()
     var savedStatuses = ArrayList<Status>()
-
-
-    class Status(src: twitter4j.Status) {
-        val text: String = src.text
-        val createdAt: Date = src.createdAt
-    }
 }

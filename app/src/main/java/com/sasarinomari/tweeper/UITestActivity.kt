@@ -9,7 +9,7 @@ import su.levenetc.android.textsurface.TextBuilder
 import su.levenetc.android.textsurface.contants.Side
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.sasarinomari.tweeper.Base.BaseActivity
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -22,7 +22,7 @@ import su.levenetc.android.textsurface.contants.Direction
 import kotlin.random.Random
 
 
-class UITestActivity : Adam() {
+class UITestActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +45,7 @@ class UITestActivity : Adam() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.cardbutton_image.setOvalColor(Color.RED)
-                view.cardbutton_image.setImageResource(R.drawable.ic_launcher_foreground)
+                view.cardbutton_image.setImageResource(R.mipmap.ic_launcher)
                 view.cardbutton_text.text = "테스트 버튼"
             }
         })

@@ -2,7 +2,7 @@ package com.sasarinomari.tweeper
 
 import android.content.Intent
 import android.os.Bundle
-import com.sasarinomari.tweeper.hetzer.HetzerActivity
+import com.sasarinomari.tweeper.Hetzer.HetzerActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
@@ -13,16 +13,17 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
 import com.google.gson.Gson
-import com.sasarinomari.tweeper.auth.AuthData
-import com.sasarinomari.tweeper.auth.TokenManagementActivity
-import com.sasarinomari.tweeper.chainb.BlockClearActivity
-import com.sasarinomari.tweeper.chainb.ChainBlockActivity
-import com.sasarinomari.tweeper.fwmanage.FollowManagementActivity
-import com.sasarinomari.tweeper.hetzer.HetzerService
-import com.sasarinomari.tweeper.analytics.AnalyticsActivity
+import com.sasarinomari.tweeper.Authenticate.AuthData
+import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
+import com.sasarinomari.tweeper.ChainBlock.BlockClearActivity
+import com.sasarinomari.tweeper.ChainBlock.ChainBlockActivity
+import com.sasarinomari.tweeper.FollowManagement.FollowManagementActivity
+import com.sasarinomari.tweeper.Hetzer.HetzerService
+import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
+import com.sasarinomari.tweeper.Base.BaseActivity
 import twitter4j.TwitterFactory
 
-class DashboardActivity : Adam(), SharedTwitterProperties.ActivityInterface {
+class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
     enum class Requests {
         Switch, Hetzer
     }

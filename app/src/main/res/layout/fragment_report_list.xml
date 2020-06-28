@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context=".report.ReportListFragment">
+    tools:context=".Report.ReportListFragment">
 
     <LinearLayout
         android:id="@+id/layout_noReport"

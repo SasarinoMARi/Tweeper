@@ -97,7 +97,7 @@
                 app:layout_constraintTop_toBottomOf="@id/image_profilePicture">
 
 
-                <com.sasarinomari.tweeper.DashboardCardView
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_erase"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -105,10 +105,10 @@
                     android:layout_columnWeight="1"
                     app:description="@string/TweetCleanerDescription"
                     app:icon="@drawable/comment_remove"
-                    app:ovalColor="#00CF91"
+                    app:ovalColor="@color/mint"
                     app:title="@string/TweetCleaner" />
 
-                <com.sasarinomari.tweeper.DashboardCardView
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_tweetReport"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -116,10 +116,10 @@
                     android:layout_columnWeight="1"
                     app:description="@string/TweetAnalyticsDesc"
                     app:icon="@drawable/chart_areaspline"
-                    app:ovalColor="#64b5f6"
+                    app:ovalColor="@color/sky"
                     app:title="@string/TweetAnalytics" />
 
-                <com.sasarinomari.tweeper.DashboardCardView
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_followerManagement"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -127,10 +127,10 @@
                     android:layout_columnWeight="1"
                     app:description="@string/FollowManagementDesc"
                     app:icon="@drawable/account_multiple_remove"
-                    app:ovalColor="#ba68c8"
+                    app:ovalColor="@color/purple"
                     app:title="@string/FollowManagement" />
 
-                <com.sasarinomari.tweeper.DashboardCardView
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_removeFriends"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -138,10 +138,10 @@
                     android:layout_columnWeight="1"
                     app:description="@string/ChainblockDescription"
                     app:icon="@drawable/link_variant_remove"
-                    app:ovalColor="#e53935"
+                    app:ovalColor="@color/red"
                     app:title="@string/Chainblock" />
 
-                <com.sasarinomari.tweeper.DashboardCardView
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_blockClear"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -149,11 +149,11 @@
                     android:layout_columnWeight="1"
                     app:description="@string/BlockClearDescriptipn"
                     app:icon="@drawable/link_variant"
-                    app:ovalColor="#ffca28"
+                    app:ovalColor="@color/yellow"
                     app:title="@string/BlockClear" />
 
 
-                <com.sasarinomari.tweeper.DashboardCardView
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_gotoTest"
                     android:layout_width="0dp"
                     android:layout_height="128dp"
@@ -161,7 +161,7 @@
                     android:layout_columnWeight="1"
                     app:description="테스트 메뉴로 진입합니다"
                     app:icon="@mipmap/ic_launcher"
-                    app:ovalColor="#343434"
+                    app:ovalColor="@color/gray"
                     app:title="테스트" />
 
             </GridLayout>

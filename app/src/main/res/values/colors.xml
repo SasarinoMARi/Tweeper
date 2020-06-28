@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#FFFFFF</color>
+    <color name="thinsky">#83D5ff</color>
     <color name="colorPrimary">#73c5f7</color>
     <color name="colorPrimaryDark">#5bbbf5</color>
-    <color name="colorAccent">#37FADC</color>
-    <color name="colorSecondary">#FFFFFF</color>
+    <color name="colorPrimaryDeepDark">#139df1</color>
     <color name="black">#000000</color>
-    <color name="grey">#808080</color>
-    <color name="white">#FFFFFF</color>
-    <color name="dialogBackground">#B5000000</color>
-    <color name="colorWarning">#f44336</color>
-    <color name="semiwhite">#EEEEEE</color>
-
+    <color name="colorAccent">#37FADC</color>
+    <color name="semiwhite">#cccccc</color>
+    <color name="gray">#808080</color>
+    <color name="warning">#f44336</color>
+    <color name="mint">#00CF91</color>
+    <color name="sky">#64b5f6</color>
+    <color name="purple">#ba68c8</color>
+    <color name="red">#e53935</color>
+    <color name="yellow">#ffca28</color>
 </resources>

@@ -61,7 +61,7 @@
                         android:layout_marginStart="10dp"
                         android:fontFamily="@font/noto_sans_light"
                         android:text="Text"
-                        android:textColor="@color/grey"
+                        android:textColor="@color/gray"
                         android:textSize="10sp"
                         tools:ignore="HardcodedText" />
 
@@ -84,7 +84,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:background="#eeeeee"
+                android:background="@color/semiwhite"
                 android:layout_marginTop="25dp"
                 android:layout_height="wrap_content">
 

@@ -20,35 +20,35 @@
         </activity>
         <activity android:name=".DashboardActivity" />
         <activity android:name=".UITestActivity" />
-        <activity android:name=".auth.TokenManagementActivity" />
-        <activity android:name=".auth.AuthenticationActivity" />
-        <activity android:name=".report.ReportListActivity"/>
+        <activity android:name=".Authenticate.TokenManagementActivity" />
+        <activity android:name=".Authenticate.AuthenticationActivity" />
+        <activity android:name=".Report.ReportListActivity"/>
 
         <!--Hetzer-->
-        <activity android:name=".hetzer.HetzerActivity" />
-        <activity android:name=".hetzer.HetzerConditionsActivity" />
-        <activity android:name=".hetzer.HetzerReportActivity" />
+        <activity android:name=".Hetzer.HetzerActivity" />
+        <activity android:name=".Hetzer.HetzerConditionsActivity" />
+        <activity android:name=".Hetzer.HetzerReportActivity" />
         <service
-            android:name=".hetzer.HetzerService"
+            android:name=".Hetzer.HetzerService"
             android:exported="true" />
 
         <!--Follow Management-->
-        <activity android:name=".fwmanage.FollowManagementActivity" />
-        <activity android:name=".fwmanage.FollowManagementReportActivity" />
+        <activity android:name=".FollowManagement.FollowManagementActivity" />
+        <activity android:name=".FollowManagement.FollowManagementReportActivity" />
         <service
-            android:name=".fwmanage.FollowManagementService"
+            android:name=".FollowManagement.FollowManagementService"
             android:exported="true" />
 
         <!--Tweet Analytics-->
-        <activity android:name=".analytics.AnalyticsActivity" />
-        <activity android:name=".analytics.AnalyticsReportActivity" />
+        <activity android:name=".Analytics.AnalyticsActivity" />
+        <activity android:name=".Analytics.AnalyticsReportActivity" />
         <service
-            android:name=".analytics.AnalyticsService"
+            android:name=".Analytics.AnalyticsService"
             android:exported="true" />
 
         <!--Chain Block Activities-->
-        <activity android:name=".chainb.ChainBlockActivity" />
-        <activity android:name=".chainb.BlockClearActivity" />
+        <activity android:name=".ChainBlock.ChainBlockActivity" />
+        <activity android:name=".ChainBlock.BlockClearActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

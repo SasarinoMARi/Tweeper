@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="64dp"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".OvalImageView"
+    tools:context=".View.OvalImageView"
     android:layout_height="64dp">
 
     <ImageView

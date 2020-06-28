@@ -1,15 +1,15 @@
 package com.sasarinomari.tweeper
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.content.Intent
-import com.sasarinomari.tweeper.auth.AuthData
-import com.sasarinomari.tweeper.auth.TokenManagementActivity
+import com.sasarinomari.tweeper.Authenticate.AuthData
+import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
+import com.sasarinomari.tweeper.Base.BaseActivity
 import twitter4j.TwitterFactory
 import java.lang.Exception
 
 
-class MainActivity : Adam(), SharedTwitterProperties.ActivityInterface {
+class MainActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWarning"
+    android:background="@color/warning"
     android:orientation="vertical"
-    tools:context=".chainb.ChainBlockActivity">
+    tools:context=".ChainBlock.ChainBlockActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -139,7 +139,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/noto_sans_light"
                         android:text="'@ScreenName"
-                        android:textColor="@color/grey"
+                        android:textColor="@color/gray"
                         android:textSize="10sp"
                         tools:ignore="HardcodedText" />
 
@@ -150,7 +150,7 @@
                         android:layout_marginTop="15dp"
                         android:fontFamily="@font/noto_sans_light"
                         android:text="User's self description text."
-                        android:textColor="@color/grey"
+                        android:textColor="@color/gray"
                         android:textSize="12sp"
                         tools:ignore="HardcodedText" />
 

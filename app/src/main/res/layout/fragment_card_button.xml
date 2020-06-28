@@ -21,12 +21,12 @@
         android:paddingRight="14dp"
         android:paddingBottom="16dp">
 
-        <com.sasarinomari.tweeper.OvalImageView
+        <com.sasarinomari.tweeper.View.OvalImageView
             android:id="@+id/cardbutton_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@null"
-            app:ovalColor="#000000" />
+            app:ovalColor="@color/black" />
 
         <TextView
             android:id="@+id/cardbutton_text"

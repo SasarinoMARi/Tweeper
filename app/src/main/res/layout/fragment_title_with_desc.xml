@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".fwmanage.FollowManagementActivity">
+    tools:context=".FollowManagement.FollowManagementActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

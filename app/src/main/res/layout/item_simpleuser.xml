@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#83D5ff"
+    android:background="@color/thinsky"
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
@@ -57,7 +57,7 @@
                     android:layout_marginStart="5dp"
                     android:fontFamily="@font/noto_sans_light"
                     android:text="(0000000000)"
-                    android:textColor="#cccccc"
+                    android:textColor="@color/semiwhite"
                     android:textSize="8sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>

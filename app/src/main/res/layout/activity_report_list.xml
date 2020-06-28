@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical"
-    tools:context=".report.ReportListActivity">
+    tools:context=".Report.ReportListActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

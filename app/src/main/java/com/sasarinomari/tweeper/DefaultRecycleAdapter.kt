@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.item_default.view.*
 
-
+@Deprecated("더 좋은 클래스 RecyclerInjector를 준비해왔어요 ㅎㅎ..")
 abstract class DefaultRecycleAdapter(private val items: List<*>,
                                      private val header: Int = 0,
                                      private val footer: Int = 0) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -54,7 +54,7 @@ abstract class DefaultRecycleAdapter(private val items: List<*>,
             is FooterViewHolder -> drawFooter(holder.itemView)
             is ListViewHolder -> {
                 val item = items[position - 1]!!
-                drawListItem(item, holder.itemView.title, holder.itemView.desc)
+                drawListItem(item, holder.itemView.defaultitem_title, holder.itemView.defaultitem_description)
                 holder.itemView.setOnClickListener{ onClickListItem(item) }
             }
         }

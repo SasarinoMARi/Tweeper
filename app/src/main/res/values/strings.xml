@@ -128,4 +128,8 @@
     <string name="TweetCleanerRun">트윗 청소기 실행하기</string>
     <string name="FollowManagementRun">팔로우 관리 실행하기</string>
     <string name="FollowManagementReport">팔로우 관리 보고서</string>
+    <string name="Traitors">나를 맞팔하지 않은 트친</string>
+    <string name="Fans">나를 구독하는 사람들</string>
+    <string name="NoMatchedUsers">더 이상 해당하는 유저가 없습니다.</string>
+    <string name="BlockUnblock">블언블</string>
 </resources>

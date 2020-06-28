@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".DashboardActivity">
 
@@ -124,10 +125,10 @@
                     android:layout_height="128dp"
                     android:layout_rowWeight="1"
                     android:layout_columnWeight="1"
-                    app:description="@string/FollowerManagementDescription"
+                    app:description="@string/FollowManagementDesc"
                     app:icon="@drawable/account_multiple_remove"
                     app:ovalColor="#ba68c8"
-                    app:title="@string/FollowerManagement" />
+                    app:title="@string/FollowManagement" />
 
                 <com.sasarinomari.tweeper.DashboardCardView
                     android:id="@+id/button_removeFriends"

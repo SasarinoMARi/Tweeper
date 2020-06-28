@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".fwmanage.FollowManagementActivity">
 
@@ -20,43 +19,26 @@
         android:paddingBottom="@dimen/activity_vertical_padding">
 
         <TextView
+            android:id="@+id/title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/noto_sans_bold"
-            android:text="@string/FollowManagement"
+            android:text="Title Text"
             android:textColor="@color/white"
-            android:textSize="26sp" />
+            android:textSize="26sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/title_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:fontFamily="@font/noto_sans_light"
-            android:text="@string/FollowManagementDesc"
+            android:text="Description"
             android:textColor="@color/white"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null" />
-
-    <LinearLayout
-        android:id="@+id/layout_noApplicable"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/noto_sans_light"
-            android:text="@string/NoApplicableUser"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
 </LinearLayout>

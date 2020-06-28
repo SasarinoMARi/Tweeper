@@ -3,10 +3,17 @@ package com.sasarinomari.tweeper
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.View
 import kotlinx.android.synthetic.main.activity_uitest.*
 import su.levenetc.android.textsurface.TextBuilder
 import su.levenetc.android.textsurface.contants.Side
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_card_button.view.*
+import kotlinx.android.synthetic.main.fragment_column_header.view.*
+import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
+import kotlinx.android.synthetic.main.full_recycler_view.*
 import su.levenetc.android.textsurface.Text
 import su.levenetc.android.textsurface.animations.*
 import su.levenetc.android.textsurface.contants.Pivot
@@ -21,8 +28,36 @@ class UITestActivity : Adam() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uitest)
 
-        // testTextSufrace()
-        // testSweetDialog()
+        if(false) testTextSufrace()
+        if(true) testRecyclerInjector()
+    }
+
+    private fun testRecyclerInjector() {
+        setContentView(R.layout.full_recycler_view)
+
+        val adapter = RecyclerInjector()
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.title_text.text = "테스트 제목"
+                view.title_description.text = "제목 설명"
+            }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.cardbutton_image.setOvalColor(Color.RED)
+                view.cardbutton_image.setImageResource(R.drawable.ic_launcher_foreground)
+                view.cardbutton_text.text = "테스트 버튼"
+            }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.column_title.text = "헤더 제목"
+                view.column_description.text = "헤더 설명"
+            }
+        })
+
+        root.layoutManager = LinearLayoutManager(this)
+        root.adapter = adapter
     }
 
     // region TextSurface

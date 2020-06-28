@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.item_default.view.*
 
+@Deprecated("User RecyclerInjector")
 abstract class DefaultListItem(private val items: List<*>) : BaseAdapter() {
     var clickEffectVisibility = false
 
@@ -29,7 +30,7 @@ abstract class DefaultListItem(private val items: List<*>) : BaseAdapter() {
         }
 
         convertView!!
-        drawItem(items[position]!!, convertView.title, convertView.desc)
+        drawItem(items[position]!!, convertView.defaultitem_title, convertView.defaultitem_description)
 
         if(clickEffectVisibility) { // 이거 없어도 클릭 이펙트 잘 나오는데 왜 씀? ㅋㅋ
             val outValue = TypedValue()

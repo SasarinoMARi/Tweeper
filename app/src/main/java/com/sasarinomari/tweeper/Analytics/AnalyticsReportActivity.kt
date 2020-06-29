@@ -16,6 +16,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.sasarinomari.tweeper.Report.ReportInterface
+import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -276,10 +277,6 @@ class AnalyticsReportActivity : BaseActivity() {
     }
 
     fun detail(screenName: String) {
-        try{
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=$screenName")))
-        } catch (e: Exception) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/#!/$screenName")))
-        }
+        SharedTwitterProperties.showProfile(this, screenName)
     }
 }

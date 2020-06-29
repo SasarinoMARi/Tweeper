@@ -1,6 +1,8 @@
 package com.sasarinomari.tweeper
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import twitter4j.Twitter
 import twitter4j.TwitterException
 import twitter4j.TwitterFactory
@@ -110,6 +112,24 @@ class SharedTwitterProperties private constructor() {
             friends = null
             followers = null
             reportWritten = false
+        }
+
+        fun showProfile(context: Context, screenName: String) {
+            try {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("twitter://user?screen_name=${screenName}")
+                    )
+                )
+            } catch (e: Exception) {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://twitter.com/#!/${screenName}")
+                    )
+                )
+            }
         }
     }
 

@@ -9,13 +9,13 @@ import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.Report.ReportInterface
 import twitter4j.TwitterException
 import twitter4j.User
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AnalyticsService : BaseService() {
     companion object {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
     }
-    override val ChannelName: String = "TAnalytics"
-    override val NotificationId: Int = ChannelName.hashCode()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)

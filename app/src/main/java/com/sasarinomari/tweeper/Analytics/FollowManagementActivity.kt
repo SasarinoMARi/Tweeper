@@ -196,11 +196,7 @@ class FollowManagementActivity: BaseActivity() {
 
     // region API 함수들
     fun detail(screenName: String) {
-        try{
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("twitter://user?screen_name=$screenName")))
-        } catch (e: Exception) {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/#!/$screenName")))
-        }
+        SharedTwitterProperties.showProfile(this, screenName)
     }
     fun unfollow(userId: Long, doneCallback: Runnable) {
         da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))

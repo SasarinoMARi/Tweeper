@@ -42,6 +42,9 @@
 
         <!--Chain Block Activities-->
         <activity android:name=".ChainBlock.ChainBlockActivity" />
+        <service
+            android:name=".ChainBlock.ChainBlockService"
+            android:exported="true" />
         <activity android:name=".ChainBlock.BlockClearActivity" />
 
         <meta-data

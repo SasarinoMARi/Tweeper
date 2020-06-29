@@ -28,7 +28,7 @@ class DialogAdapter(private val activity: Activity) {
     }
 
     fun progress(title: String?, content: String, callback: (()->Unit)? = null): SweetAlertDialog {
-        val d = SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
+        val d = SweetAlertDialog(activity, SweetAlertDialog.PROGRESS_TYPE)
         initialize(d, title, content, callback)
         d.setCancelable(false)
         return d

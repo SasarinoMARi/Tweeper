@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.sasarinomari.tweeper.R
+import java.util.*
 
 abstract class BaseService: Service() {
     companion object {
@@ -32,8 +33,8 @@ abstract class BaseService: Service() {
         }
     }
 
-    abstract val ChannelName: String
-    abstract val NotificationId: Int
+    protected val ChannelName: String = "Service"
+    protected val NotificationId:Int = Date().time.toInt()
 
     private lateinit var silentChannelBuilder: NotificationCompat.Builder
     private lateinit var defaultChannelBuilder: NotificationCompat.Builder

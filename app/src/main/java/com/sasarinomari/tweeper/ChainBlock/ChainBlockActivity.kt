@@ -2,12 +2,13 @@ package com.sasarinomari.tweeper.ChainBlock
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
@@ -51,11 +52,17 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
         button_next.drawable.alpha = 150
 
         button_next.setOnClickListener {
-            val screenN = input_ScreenName.text.toString()
+            if (ChainBlockService.checkServiceRunning((this@ChainBlockActivity))) {
+                da.warning(getString(R.string.Wait), getString(R.string.duplicateService_ChainBlock)).show()
+                return@setOnClickListener
+            }
 
-            da.progress(null, getString(R.string.FriendPulling)).show()
+            val screenN = input_ScreenName.text.toString()
+            val p = da.progress(null, getString(R.string.UserFetching))
+            p.show()
             lookup(screenN) { user ->
                 runOnUiThread {
+                    p.dismissWithAnimation()
                     if (user.isProtected) {
                         input_ScreenName.text = null
                         da.error(getString(R.string.Error), getString(R.string.UserProtected)).show()
@@ -85,133 +92,28 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
         text_FollowerCount.text = df.format(user.followersCount)
 
         text_ScreenName.setOnClickListener {
-            try {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("twitter://user?screen_name=${user.screenName}")
-                    )
-                )
-            } catch (e: Exception) {
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("https://twitter.com/#!/${user.screenName}")
-                    )
-                )
-            }
+            SharedTwitterProperties.showProfile(this@ChainBlockActivity, user.screenName)
         }
         button_next2.setOnClickListener {
             da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
                 .setConfirmText(getString(R.string.Yes))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
-                    runOnUiThread { phase3(user) }
-            }.show()
-        }
-    }
 
-    // 팔로잉 체인블락 단계
-    // 1,345 명까지 한 번에 처리하는것을 확인
-    private fun phase3(user: User) {
-        layout_first.visibility = View.GONE
-        layout_second.visibility = View.GONE
-
-        Thread(Runnable {
-            val twitter = SharedTwitterProperties.instance()
-            val list = ArrayList<Long>()
-            var cursor: Long = -1
-            try {
-                while (true) {
-                    val users = twitter.getFriendsIDs(user.id, cursor, 5000)
-                    list.addAll(users.iDs.toList())
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-
-                runOnUiThread {
-                    blockUsers(list) {
-                        phase4(user)
+                    val intent = Intent(this, ChainBlockService::class.java)
+                    intent.putExtra(ChainBlockService.Parameters.TargetId.name, user.id)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        startForegroundService(intent)
+                    } else {
+                        startService(intent)
                     }
-                }
-            } catch (te: TwitterException) {
-                te.printStackTrace()
-//                runOnUiThread {
-//                    da.warning(getString(R.string.Error), getString(R.string.NotCompletely)) {
-//                        runOnUiThread {
-                            // TODO: 이곳에 다이얼로그 출력
-                            // 하지만 서비스 형식으로 바꿀 꺼기 때문에 필요없음 ㅋㅋ
-//                            blockUsers(list) {
-//                                phase4(user)
-//                            }
-//                        }
-//                    }.show()
-//                }
-            }
-        }).start()
-    }
-
-    // 팔로워 체인블락 단계
-    private fun phase4(user: User) {
-//        runOnUiThread {
-//            pd?.contentText = getString(R.string.FollowerPulling)
-//        }
-
-        Thread(Runnable {
-            val list = ArrayList<Long>()
-            var cursor: Long = -1
-            try {
-                while (true) {
-                    val users = SharedTwitterProperties.instance().getFollowersIDs(user.id, cursor, 5000)
-                    list.addAll(users.iDs.toList())
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-
-                runOnUiThread {
-                    blockUsers(list) {
-                        phase5()
-                    }
-                }
-            } catch (te: TwitterException) {
-                // 88 : Rate limit exceeded
-                te.printStackTrace()
-                runOnUiThread {
-//                    val d2 = SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-//                        .setTitleText(getString(R.string.Error))
-//                        .setContentText(getString(R.string.NotCompletely))
-//                    d2.setOnDismissListener {
-//                        runOnUiThread {
-//                            pd?.show()
-//                            blockUsers(list) {
-//                                phase5()
-//                            }
-//                        }
-//                    }
-//                    d2.show()
-                }
-            }
-        }).start()
-    }
-
-    // 마무리 단계
-    private fun phase5() {
-        runOnUiThread {
-            da.success(getString(R.string.Done), getString(R.string.ChainBlockDone)) { finish() }.show()
+                    da.success(getString(R.string.Done), getString(R.string.ChainBlockRunning))
+                        .setConfirmClickListener { it2 ->
+                            it2.dismissWithAnimation()
+                            finish()
+                        }.show()
+                }.show()
         }
-    }
-
-    private fun blockUsers(list: ArrayList<Long>, callback: () -> Unit) {
-        Thread(Runnable {
-            val twitter = SharedTwitterProperties.instance()
-            for (u in 0 until list.size) {
-                runOnUiThread {
-                    //pd?.contentText = getString(R.string.ChainBlockProcessing, u, list.size)
-                }
-                twitter.createBlock(list[u])
-            }
-            callback()
-        }).start()
     }
 
     private fun lookup(screenName: String, callback: (User) -> Unit) {

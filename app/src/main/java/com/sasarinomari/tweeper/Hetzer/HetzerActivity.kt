@@ -47,7 +47,7 @@ class HetzerActivity : BaseActivity() {
                 view.cardbutton_text.text = getString(R.string.TweetCleanerRun)
                 view.setOnClickListener {
                     if(HetzerService.checkServiceRunning((this@HetzerActivity))) {
-                        da.warning(getString(R.string.Wait), getString(R.string.duplicateService_FollowManager)).show()
+                        da.warning(getString(R.string.Wait), getString(R.string.duplicateService_Hetzer)).show()
                     }
                     else {
                         startActivityForResult(

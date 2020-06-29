@@ -17,8 +17,6 @@ class HetzerService : BaseService() {
     companion object {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
     }
-    override val ChannelName= "Hetzer"
-    override val NotificationId = ChannelName.hashCode()
 
     enum class Parameters {
         HetzerConditions

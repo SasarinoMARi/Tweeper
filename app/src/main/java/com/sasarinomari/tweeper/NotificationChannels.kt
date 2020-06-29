@@ -5,16 +5,14 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.sasarinomari.tweeper.Analytics.AnalyticsService
-import com.sasarinomari.tweeper.Hetzer.HetzerService
+import com.sasarinomari.tweeper.Base.BaseService
 
 class NotificationChannels {
     fun declaration(context: Context) {
         if (Build.VERSION.SDK_INT >= 26) {
             val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             mNotificationManager.createNotificationChannel(generalChannel(context))
-            mNotificationManager.createNotificationChannel(hetzerChannel(context))
-            mNotificationManager.createNotificationChannel(analyticsChannel(context))
+            mNotificationManager.createNotificationChannel(serviceChannel(context))
         }
     }
 
@@ -24,12 +22,8 @@ class NotificationChannels {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun hetzerChannel(context: Context): NotificationChannel {
-        return NotificationChannel(HetzerService().ChannelName, context.getString(R.string.TweetCleaner), NotificationManager.IMPORTANCE_LOW)
+    private fun serviceChannel(context: Context): NotificationChannel {
+        return NotificationChannel("Service", context.getString(R.string.Service), NotificationManager.IMPORTANCE_LOW)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun analyticsChannel(context: Context): NotificationChannel {
-        return NotificationChannel(AnalyticsService().ChannelName, context.getString(R.string.TweetAnalytics), NotificationManager.IMPORTANCE_LOW)
-    }
 }

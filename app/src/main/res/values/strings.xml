@@ -29,7 +29,7 @@
     <string name="TweetCannotRestore">삭제된 트윗은 되돌릴 수 없어요.</string>
     <string name="YesDeleteIt">네, 삭제할게요!</string>
     <string name="Wait">잠깐만요!</string>
-    <string name="FriendPulling">팔로우 목록을 가져오는 중이에요.</string>
+    <string name="FriendPulling">팔로잉 목록을 가져오는 중이에요.</string>
     <string name="FollowerPulling">팔로워 목록을 가져오는 중이에요.</string>
     <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중이에요.</string>
     <string name="TweetAnalytics">트윗 일지</string>
@@ -68,7 +68,6 @@
     <string name="NotCompletely">API 리밋으로 인하여 일부 데이터를 불러오지 못했어요.</string>
     <string name="ChainBlockDone">체인블락을 완료했어요.</string>
     <string name="UserProtected">프로텍트 설정된 유저를 대상으로 사용할 수 없어요!</string>
-    <string name="ChainBlockProcessing">해당 유저들을 블락하는 중입니다.\n(%1$d / %2$d)</string>
     <string name="BlockClear">블락 일괄 해제</string>
     <string name="BlockClearDescriptipn">내가 블락한 유저들을 전부 블락 해제해요.</string>
     <string name="Run">실행하기</string>
@@ -101,8 +100,8 @@
     <string name="HetzerConditions_12_Desc">어떤 키워드가 포함되지 않았을 때 트윗을 남겨둘까요?</string>
     <string name="HetzerConditions_15_Desc">최근 몇 개 까지의 트윗을 남겨둘까요?</string>
     <string name="HetzerConditions_16_Desc">최근 몇 분 내에 작성한 트윗까지 남겨둘까요?</string>
-    <string name="FriendFetch_WaitingTitle">팔로잉한 사람이 너무 많아 API 한도를 초과했어요.</string>
-    <string name="FollowerFetch_WaitingTitle">팔로워가 너무 많아 API 한도를 초과했어요.</string>
+    <string name="FriendFetch_WaitingTitle">팔로잉이 너무 많아서 API 한도를 초과했어요…</string>
+    <string name="FollowerFetch_WaitingTitle">팔로워가 너무 많아서 API 한도를 초과했어요…</string>
     <string name="WaitingDesc">잠시 후 자동으로 다시 시도할게요…</string>
     <string name="FriendFetch_PullingTile">팔로잉 목록을 불러오는 중이에요.</string>
     <string name="FollowrFetch_PullingTile">팔로워 목록을 불러오는 중이에요.</string>
@@ -119,8 +118,8 @@
     <string name="DateFormat">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
     <string name="FollowManagement">언팔매니저</string>
     <string name="FollowManagementDesc">나와 맞팔이 아닌 팔로잉 / 팔로워를 보아요.</string>
-    <string name="duplicateService_Hetzer">트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행할 수 있어요.</string>
-    <string name="duplicateService_FollowManager">팔로우 관리가 이미 실행중입니다.\n한 번에 하나만 실행할 수 있어요.</string>
+    <string name="duplicateService_Hetzer">트윗 청소기가 이미 실행중이에요!\n한 번에 하나의 청소기만 실행할 수 있어요…</string>
+    <string name="duplicateService_ChainBlock">체인블락이 이미 실행중이에요!\n한 번에 하나만 실행할 수 있어요…</string>
     <string name="NoReport">실행 이력이 없습니다.</string>
     <string name="General">기본</string>
     <string name="TweetCleanerReports">트윗 청소기 보고서들</string>
@@ -140,6 +139,10 @@
     <string name="TweetAnalyticsRun">일지 갱신하기</string>
     <string name="AnalyticsReport">트윗 일지</string>
     <string name="AnalyticsReports">지난 트윗 일지들</string>
-    <string name="duplicateService_Analytics">트윗 일지가 이미 작성중이에요! 한번에 하나의 일지만 작성할 수 있어요.</string>
+    <string name="duplicateService_Analytics">트윗 일지가 이미 작성중이에요!\n한번에 하나의 일지만 작성할 수 있어요…</string>
     <string name="AnalyticsRunConfirm">정말 트윗일지를 기록할까요?</string>
+    <string name="UserFetching">대상의 정보를 불러오고 있어요…</string>
+    <string name="ChainBlockRunning">체인블락 작업을 시작할게요…</string>
+    <string name="Blocking">%1$d명의 유저를 블락하고 있어요…</string>
+    <string name="Service">트윗지기 서비스</string>
 </resources>

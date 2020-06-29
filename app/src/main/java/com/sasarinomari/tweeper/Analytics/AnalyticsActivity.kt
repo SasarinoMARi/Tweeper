@@ -10,7 +10,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.Hetzer.HetzerConditionsActivity
+import com.sasarinomari.tweeper.Hetzer.HetzerService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
@@ -41,7 +44,7 @@ class AnalyticsActivity : BaseActivity() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.cardbutton_image.setOvalColor(ContextCompat.getColor(this@AnalyticsActivity, R.color.sky))
+                view.cardbutton_image.setOvalColor(ContextCompat.getColor(this@AnalyticsActivity, R.color.purple))
                 view.cardbutton_image.setImageResource(R.drawable.calendar_edit)
                 view.cardbutton_text.text = getString(R.string.TweetAnalyticsRun)
                 view.setOnClickListener {
@@ -49,13 +52,19 @@ class AnalyticsActivity : BaseActivity() {
                         da.warning(getString(R.string.Wait), getString(R.string.duplicateService_Analytics)).show()
                     }
                     else {
-                        val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            startForegroundService(intent)
-                        }
-                        else {
-                            startService(intent)
-                        }
+                        da.warning(getString(R.string.AreYouSure), getString(R.string.AnalyticsRunConfirm))
+                            .setConfirmText(getString(R.string.Yes))
+                            .setCancelText(getString(R.string.Wait))
+                            .setConfirmClickListener {
+                                it.dismissWithAnimation()
+                                val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    startForegroundService(intent)
+                                }
+                                else {
+                                    startService(intent)
+                                }
+                            }.show()
                     }
                 }
             }

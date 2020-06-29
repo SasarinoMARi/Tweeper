@@ -123,12 +123,13 @@ class AnalyticsReportActivity : BaseActivity() {
             }
 
         })
+        adapter.addSpace(3)
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.view_dashboard_card) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.card_title.text = getString(R.string.FollowManagement)
+                view.card_title.text = getString(R.string.FollowManagementRun)
                 view.card_description.text = getString(R.string.FollowManagementDesc)
                 view.card_oval.setImageResource(R.drawable.account_multiple_remove)
-                view.card_oval.setOvalColor(ContextCompat.getColor(this@AnalyticsReportActivity, R.color.red))
+                view.card_oval.setOvalColor(ContextCompat.getColor(this@AnalyticsReportActivity, R.color.purple))
                 view.setOnClickListener {
                     val intent = Intent(this@AnalyticsReportActivity, FollowManagementActivity::class.java)
                     intent.putExtra(FollowManagementActivity.Parameters.Followings.name, Gson().toJson(report!!.followings))
@@ -139,14 +140,13 @@ class AnalyticsReportActivity : BaseActivity() {
         })
 
         if(previousReport != null) {
-            adapter.addSpace(3)
-
             val newFriends = getDiffrence(report!!.followings, previousReport!!.followings)
             val noMoreFriends = getDiffrence(previousReport!!.followings, report!!.followings)
             val newFollowers = getDiffrence(report!!.followers, previousReport!!.followers)
             val noMoreFollowers = getDiffrence(previousReport!!.followers, report!!.followers)
 
             if(newFriends.isNotEmpty()) {
+                adapter.addSpace(3)
                 adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
                     override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawHeader(view, getString(R.string.NewFriends), adapter, viewType) }
                 })
@@ -156,6 +156,7 @@ class AnalyticsReportActivity : BaseActivity() {
             })
             }
             if(noMoreFriends.isNotEmpty()) {
+                adapter.addSpace(3)
                 adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
                     override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawHeader(view, getString(R.string.NoMoreFriends), adapter, viewType) }
                 })
@@ -164,7 +165,9 @@ class AnalyticsReportActivity : BaseActivity() {
                     override fun onClickListItem(item: Any?) { onClickUserItem(item) }
                 })
             }
+            adapter.addSpace(3)
             if(newFollowers.isNotEmpty()) {
+                adapter.addSpace(3)
                 adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
                     override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawHeader(view, getString(R.string.NewFollowers), adapter, viewType) }
                 })
@@ -179,6 +182,7 @@ class AnalyticsReportActivity : BaseActivity() {
                 })
             }
             if(noMoreFollowers.isNotEmpty()) {
+                adapter.addSpace(3)
                 adapter.add(object : RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {
                     override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                         drawHeader(view, getString(R.string.NoMoreFollowers), adapter, viewType)
@@ -190,6 +194,7 @@ class AnalyticsReportActivity : BaseActivity() {
                 })
             }
         }
+        adapter.addSpace(4)
 
         root.layoutManager = LinearLayoutManager(this)
         root.adapter = adapter

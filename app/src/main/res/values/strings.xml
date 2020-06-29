@@ -35,7 +35,7 @@
     <string name="TweetAnalytics">트윗 일지</string>
     <string name="TweetAnalyticsDesc">트윗, 팔로우쉽 변화 추이를 봅니다.</string>
     <string name="PermissionRequestTitle">권한이 필요합니다.</string>
-    <string name="Yes">넵</string>
+    <string name="Yes">네</string>
     <string name="No">아니요</string>
     <string name="Unfollow">언팔로우</string>
     <string name="ShowProfile">프로필 보기</string>
@@ -119,7 +119,6 @@
     <string name="DateFormat">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
     <string name="FollowManagement">언팔매니저</string>
     <string name="FollowManagementDesc">나와 맞팔이 아닌 팔로잉 / 팔로워를 보아요.</string>
-    <string name="FollowManagementReports">팔로우 관리 보고서들</string>
     <string name="duplicateService_Hetzer">트윗 청소기가 이미 실행중입니다.\n한 번에 하나의 청소기만 실행할 수 있어요.</string>
     <string name="duplicateService_FollowManager">팔로우 관리가 이미 실행중입니다.\n한 번에 하나만 실행할 수 있어요.</string>
     <string name="NoReport">실행 이력이 없습니다.</string>
@@ -127,8 +126,7 @@
     <string name="TweetCleanerReports">트윗 청소기 보고서들</string>
     <string name="TouchToDetail">터치해서 자세히 볼 수 있어요!</string>
     <string name="TweetCleanerRun">트윗 청소기 실행하기</string>
-    <string name="FollowManagementRun">팔로우 관리 실행하기</string>
-    <string name="FollowManagementReport">팔로우 관리 보고서</string>
+    <string name="FollowManagementRun">언팔매니저 실행하기</string>
     <string name="Traitors">나를 맞팔하지 않은 트친</string>
     <string name="Fans">나를 구독하는 사람들</string>
     <string name="NoMatchedUsers">해당되는 유저가 없어요.</string>
@@ -143,4 +141,5 @@
     <string name="AnalyticsReport">트윗 일지</string>
     <string name="AnalyticsReports">지난 트윗 일지들</string>
     <string name="duplicateService_Analytics">트윗 일지가 이미 작성중이에요! 한번에 하나의 일지만 작성할 수 있어요.</string>
+    <string name="AnalyticsRunConfirm">정말 트윗일지를 기록할까요?</string>
 </resources>

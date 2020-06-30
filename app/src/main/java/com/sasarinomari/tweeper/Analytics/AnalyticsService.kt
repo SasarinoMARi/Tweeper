@@ -22,6 +22,7 @@ class AnalyticsService : BaseService() {
         UserId
     }
 
+    private var userId: Long = -1
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
@@ -30,7 +31,7 @@ class AnalyticsService : BaseService() {
         strServiceName = getString(R.string.TweetAnalytics)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
         if(!intent.hasExtra(Parameters.UserId.name)) throw Exception("User Id is undefined")
-        val loggedInUserId = intent.getLongExtra(Parameters.UserId.name, -1)
+        userId = intent.getLongExtra(Parameters.UserId.name, -1)
 
         startForeground(NotificationId,
             createNotification(getString(R.string.app_name), "Initializing...", false))
@@ -41,7 +42,7 @@ class AnalyticsService : BaseService() {
                     Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
 
                     // 리포트 기록
-                    val ri = ReportInterface<AnalyticsReport>(loggedInUserId, AnalyticsReport.prefix)
+                    val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
                     val lastReportIndex = ri.getReportCount(this)
                     val recentReport = if(lastReportIndex >= 0) ri.readReport(this, lastReportIndex, AnalyticsReport()) as AnalyticsReport else null
                     val report = AnalyticsReport(me, followings, followers, recentReport)
@@ -98,11 +99,10 @@ class AnalyticsService : BaseService() {
             // gets Twitter instance with default credentials
             var cursor: Long = startIndex
             val twitter = SharedTwitterProperties.instance()
-            val me = SharedTwitterProperties.myId!!
             try {
                 while (true) {
                     restrainedNotification(strServiceName, getString(R.string.FriendPulling, list.count()))
-                    val users = twitter.getFriendsList(me, cursor, 200, true, true)
+                    val users = twitter.getFriendsList(userId, cursor, 200, true, true)
                     list.addAll(users)
                     if (users.hasNext()) cursor = users.nextCursor
                     else break
@@ -133,11 +133,10 @@ class AnalyticsService : BaseService() {
             // gets Twitter instance with default credentials
             var cursor: Long = startIndex
             val twitter = SharedTwitterProperties.instance()
-            val me = SharedTwitterProperties.myId!!
             try {
                 while (true) {
                     restrainedNotification(strServiceName, getString(R.string.FollowerPulling, list.count()))
-                    val users = twitter.getFollowersList(me, cursor, 200, true, true)
+                    val users = twitter.getFollowersList(userId, cursor, 200, true, true)
                     list.addAll(users)
                     if (users.hasNext()) cursor = users.nextCursor
                     else break

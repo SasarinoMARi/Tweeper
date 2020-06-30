@@ -10,6 +10,7 @@ import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.TwitterException
 import twitter4j.User
+import java.lang.Exception
 import kotlin.collections.ArrayList
 
 class AnalyticsService : BaseService() {
@@ -17,13 +18,19 @@ class AnalyticsService : BaseService() {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
     }
 
+    enum class Parameters {
+        UserId
+    }
+
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
+        super.onStartCommand(intent!!, flags, startId)
         strServiceName = getString(R.string.TweetAnalytics)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
+        if(!intent.hasExtra(Parameters.UserId.name)) throw Exception("User Id is undefined")
+        val loggedInUserId = intent.getLongExtra(Parameters.UserId.name, -1)
 
         startForeground(NotificationId,
             createNotification(getString(R.string.app_name), "Initializing...", false))
@@ -34,7 +41,7 @@ class AnalyticsService : BaseService() {
                     Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
 
                     // 리포트 기록
-                    val ri = ReportInterface<AnalyticsReport>(AnalyticsReport.prefix)
+                    val ri = ReportInterface<AnalyticsReport>(loggedInUserId, AnalyticsReport.prefix)
                     val lastReportIndex = ri.getReportCount(this)
                     val recentReport = if(lastReportIndex >= 0) ri.readReport(this, lastReportIndex, AnalyticsReport()) as AnalyticsReport else null
                     val report = AnalyticsReport(me, followings, followers, recentReport)

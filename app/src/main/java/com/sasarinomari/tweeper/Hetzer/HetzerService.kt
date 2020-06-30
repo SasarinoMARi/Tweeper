@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
@@ -12,6 +13,7 @@ import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
+import java.lang.Exception
 
 class HetzerService : BaseService() {
     companion object {
@@ -19,14 +21,14 @@ class HetzerService : BaseService() {
     }
 
     enum class Parameters {
-        HetzerConditions
+        HetzerConditions, UserId
     }
 
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
+        super.onStartCommand(intent!!, flags, startId)
         strServiceName = getString(R.string.TweetCleaner)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
@@ -35,13 +37,15 @@ class HetzerService : BaseService() {
             createNotification(getString(R.string.app_name), "Initializing...", false)
         )
 
-        hetzerLogic(intent!!)
+        hetzerLogic(intent)
 
         return START_REDELIVER_INTENT
     }
 
     private fun hetzerLogic(intent: Intent) {
-        val json = intent.getStringExtra(Parameters.HetzerConditions.name)
+        if(!intent.hasExtra(Parameters.UserId.name)) throw Exception("User Id is undefined")
+        val loggedInUserId = intent.getLongExtra(Parameters.UserId.name, -1)
+        val json = intent.getStringExtra(Parameters.HetzerConditions.name)!!
         val typeToken = object : TypeToken<HashMap<Int, Any>>() {}.type
         val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
         val hetzer = Hetzer(conditions)
@@ -64,7 +68,7 @@ class HetzerService : BaseService() {
 
             destroyStatus(targetStatus) {
                 // 리포트 작성
-                val ri = ReportInterface<HetzerReport>(HetzerReport.prefix)
+                val ri = ReportInterface<HetzerReport>(loggedInUserId, HetzerReport.prefix)
                 val report = HetzerReport(targetStatus, passedStatuses)
                 report.id = ri.getReportCount(this) + 1
                 ri.writeReport(this, report.id, report)

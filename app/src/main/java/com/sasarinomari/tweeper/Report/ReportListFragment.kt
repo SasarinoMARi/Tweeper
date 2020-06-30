@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Hetzer.HetzerReportActivity
+import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.fragment_report_list.view.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,7 +58,8 @@ class ReportListFragment(private val intent: Intent,
         rootView.text_noReport.text = intent.getStringExtra(Parameters.NoReportDescription.name)
 
         val reportPrefix = intent.getStringExtra(Parameters.ReportPrefix.name)!!
-        val reports = ReportInterface<Any>(reportPrefix).getReportsWithNameAndCreatedDate(this.context!!)
+        val userId = AuthData.Recorder(context!!).getFocusedUser()!!.user!!.id
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithNameAndCreatedDate(this.context!!)
         if (reports.isEmpty()) {
             rootView.layout_noReport.visibility = View.VISIBLE
             rootView.listView.visibility = View.GONE

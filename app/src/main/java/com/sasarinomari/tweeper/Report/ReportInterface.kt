@@ -10,7 +10,7 @@ import kotlin.collections.ArrayList
 /**
  * 트윗지기 서비스에서 보고서 입출력에 사용하는 클래스.
  */
-class ReportInterface<T>(private val prefix: String) {
+class ReportInterface<T>(private val userId: Long, private val prefix: String) {
     fun getReportCount(context: Context): Int {
         val reports = getPath(context).list()!!
         var maxN = -1
@@ -24,9 +24,9 @@ class ReportInterface<T>(private val prefix: String) {
     }
 
     private fun getPath(context: Context): File {
-        val path = File(context.filesDir, prefix)
+        val path = File(context.filesDir, "$userId/$prefix")
         if (!path.exists()) {
-            val result = path.mkdir()
+            val result = path.mkdirs()
             if (!result) throw Exception("$prefix 내부 저장소 디렉터리 생성에 실패했습니다.")
         }
         return path

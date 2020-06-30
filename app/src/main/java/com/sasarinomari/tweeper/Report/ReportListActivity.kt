@@ -5,9 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Hetzer.HetzerReportActivity
+import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.activity_report_list.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,7 +52,8 @@ class ReportListActivity : BaseActivity() {
         text_noReport.text = intent.getStringExtra(Parameters.NoReportDescription.name)
 
         val reportPrefix = intent.getStringExtra(Parameters.ReportPrefix.name)!!
-        val reports = ReportInterface<Any>(reportPrefix).getReportsWithNameAndCreatedDate(this)
+        val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithNameAndCreatedDate(this)
         if (reports.isEmpty()) {
             layout_noReport.visibility = View.VISIBLE
             listView.visibility = View.GONE

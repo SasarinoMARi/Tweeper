@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SimplizatedClass.Status
 import com.sasarinomari.tweeper.Report.ReportInterface
+import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -40,7 +42,8 @@ class HetzerReportActivity : BaseActivity() {
         val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
         if(reportIndex == -1)
             da.error(null, getString(R.string.Error_WrongParameter)) { finish() }.show()
-        val report = ReportInterface<HetzerReport>(HetzerReport.prefix)
+        val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
+        val report = ReportInterface<HetzerReport>(userId, HetzerReport.prefix)
             .readReport(this,  reportIndex, HetzerReport()) as HetzerReport?
 
         if(report == null) {

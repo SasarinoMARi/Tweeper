@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
@@ -48,6 +49,7 @@ class AnalyticsReportActivity : BaseActivity() {
         return true
     }
 
+    private var userId: Long = -1
     private var report: AnalyticsReport? = null
     private var previousReport: AnalyticsReport? = null
 
@@ -60,7 +62,8 @@ class AnalyticsReportActivity : BaseActivity() {
 
         val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
         val previousReportIndex = reportIndex - 1
-        val ri = ReportInterface<AnalyticsReport>(AnalyticsReport.prefix)
+        userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
+        val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
         val _classTemp = AnalyticsReport()
         report = ri.readReport(this, reportIndex, _classTemp) as AnalyticsReport?
         previousReport = ri.readReport(this, previousReportIndex, _classTemp) as AnalyticsReport?
@@ -152,9 +155,9 @@ class AnalyticsReportActivity : BaseActivity() {
                     override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawHeader(view, getString(R.string.NewFriends), adapter, viewType) }
                 })
                 adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_simpleuser, newFriends) {
-                override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawUserItem(view, item) }
-                override fun onClickListItem(item: Any?) { onClickUserItem(item) }
-            })
+                    override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawUserItem(view, item) }
+                    override fun onClickListItem(item: Any?) { onClickUserItem(item) }
+                })
             }
             if(noMoreFriends.isNotEmpty()) {
                 adapter.addSpace(3)
@@ -226,7 +229,7 @@ class AnalyticsReportActivity : BaseActivity() {
                 report!!.followers = followers
 
                 // 반영한 report를 저장
-                val ri = ReportInterface<AnalyticsReport>(AnalyticsReport.prefix)
+                val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
                 if(previousReport!=null) report!!.setDeffrence(previousReport!!)
                 ri.writeReport(this, report!!.id, report!!)
                 reportUpdated = true

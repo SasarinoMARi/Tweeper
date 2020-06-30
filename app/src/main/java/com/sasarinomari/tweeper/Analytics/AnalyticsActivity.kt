@@ -2,7 +2,6 @@ package com.sasarinomari.tweeper.Analytics
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -10,10 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
-import com.sasarinomari.tweeper.Hetzer.HetzerConditionsActivity
-import com.sasarinomari.tweeper.Hetzer.HetzerService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
@@ -32,7 +29,8 @@ class AnalyticsActivity : BaseActivity() {
         setContentView(R.layout.full_recycler_view)
 
         val reportPrefix = AnalyticsReport.prefix
-        val reports = ReportInterface<Any>(reportPrefix).getReports(this, AnalyticsReport())
+        val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReports(this, AnalyticsReport())
         reports.reverse()
 
         val adapter = RecyclerInjector()
@@ -58,6 +56,7 @@ class AnalyticsActivity : BaseActivity() {
                             .setConfirmClickListener {
                                 it.dismissWithAnimation()
                                 val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
+                                intent.putExtra(AnalyticsService.Parameters.UserId.name, userId)
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     startForegroundService(intent)
                                 }

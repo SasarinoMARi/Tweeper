@@ -24,7 +24,6 @@ class MainActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
                 SharedTwitterProperties.instance().oAuthAccessToken = loggedUser.token!!
                 try {
                     SharedTwitterProperties.getMe(this) { me->
-                        SharedTwitterProperties.myId = me.id
                         openDashboard()
                         finish()
                     }

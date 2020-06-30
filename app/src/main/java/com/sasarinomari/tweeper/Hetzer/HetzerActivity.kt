@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
+import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -29,7 +31,8 @@ class HetzerActivity : BaseActivity() {
         setContentView(R.layout.full_recycler_view)
 
         val reportPrefix = HetzerReport.prefix
-        val reports = ReportInterface<Any>(reportPrefix).getReportsWithNameAndCreatedDate(this)
+        val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithNameAndCreatedDate(this)
         reports.reverse()
 
         val adapter = RecyclerInjector()
@@ -92,6 +95,7 @@ class HetzerActivity : BaseActivity() {
                 val intent = Intent(this, HetzerService::class.java)
                 val json = data!!.getStringExtra(HetzerService.Parameters.HetzerConditions.name)
                 intent.putExtra(HetzerService.Parameters.HetzerConditions.name, json)
+                intent.putExtra(HetzerService.Parameters.UserId.name, AuthData.Recorder(this).getFocusedUser()!!.user!!.id)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 } else {

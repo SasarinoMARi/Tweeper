@@ -101,15 +101,12 @@ abstract class BaseService: Service() {
         mNotificationManager.notify(id, notification)
     }
 
-    fun onTwitterException(exception: TwitterException, apiEndpoint: String, callback: () -> Unit) {
-        when (exception.errorCode) {
-            TwitterErrorCode.RateLlimitExceeded.code -> {
-                sendNotification(getString(R.string.API_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "Rate Limit Exceeded:\n\t[API] $apiEndpoint\n\tSeconds Until Reset: ${exception.rateLimitStatus.secondsUntilReset}")
-                Thread.sleep((1000 * exception.rateLimitStatus.secondsUntilReset).toLong())
-                callback()
-            }
-            else -> throw exception
+    private var _lastTick: Long = -1
+    protected fun restrainedNotification(title: String, desc: String){
+        val currentTick: Long = System.currentTimeMillis()
+        if (currentTick > _lastTick + (1000 * 3)) {
+            sendNotification(title, desc)
+            _lastTick = currentTick
         }
     }
 

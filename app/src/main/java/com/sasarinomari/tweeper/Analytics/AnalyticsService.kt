@@ -7,6 +7,7 @@ import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.Report.ReportInterface
+import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.TwitterException
 import twitter4j.User
 import kotlin.collections.ArrayList
@@ -16,8 +17,13 @@ class AnalyticsService : BaseService() {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
     }
 
+    lateinit var strServiceName: String
+    lateinit var strRateLimitWaiting: String
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        strServiceName = getString(R.string.TweetAnalytics)
+        strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
         startForeground(NotificationId,
             createNotification(getString(R.string.app_name), "Initializing...", false))
@@ -39,7 +45,7 @@ class AnalyticsService : BaseService() {
                     val redirect = Intent(this, AnalyticsReportActivity::class.java)
                     redirect.putExtra(AnalyticsReportActivity.Parameters.ReportId.name, report.id)
                     sendNotification(
-                        getString(R.string.Done),
+                        strServiceName,
                         getString(R.string.AnalyticsDone),
                         silent = false,
                         cancelable = true,
@@ -59,22 +65,27 @@ class AnalyticsService : BaseService() {
 
     // region API 코드
     private fun getMe(callback: (User)-> Unit) {
-        sendNotification(getString(R.string.TweetAnalytics), getString(R.string.PullingMe))
+        sendNotification(strServiceName, getString(R.string.PullingMe))
         Thread(Runnable {
             try {
                 val twitter = SharedTwitterProperties.instance()
                 val me = twitter.showUser(twitter.id)
                 callback(me)
             } catch (te: TwitterException) {
-                super.onTwitterException(te, "showUser") {
-                    getMe(callback)
-                }
+                object: TwitterExceptionHandler(te, "showUser") {
+                    override fun onRateLimitExceeded() {
+                        sendNotification("$strServiceName $strRateLimitWaiting", "")
+                    }
+
+                    override fun onRateLimitReset() {
+                        getMe(callback)
+                    }
+                }.catch()
             }
         }).start()
     }
 
     private fun getFriends(startIndex: Long, callback: (ArrayList<User>)-> Unit) {
-        sendNotification(getString(R.string.TweetAnalytics), getString(R.string.FriendPulling))
         Thread(Runnable {
             val list = ArrayList<User>()
             // gets Twitter instance with default credentials
@@ -83,6 +94,7 @@ class AnalyticsService : BaseService() {
             val me = SharedTwitterProperties.myId!!
             try {
                 while (true) {
+                    restrainedNotification(strServiceName, getString(R.string.FriendPulling, list.count()))
                     val users = twitter.getFriendsList(me, cursor, 200, true, true)
                     list.addAll(users)
                     if (users.hasNext()) cursor = users.nextCursor
@@ -90,9 +102,16 @@ class AnalyticsService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                super.onTwitterException(te, "getFriendsList") {
-                    getFriends(cursor, callback)
-                }
+                object: TwitterExceptionHandler(te, "getFriendsList") {
+                    override fun onRateLimitExceeded() {
+                        sendNotification("$strServiceName $strRateLimitWaiting",
+                            getString(R.string.FollowerPulling, list.count()))
+                    }
+
+                    override fun onRateLimitReset() {
+                        getFriends(cursor, callback)
+                    }
+                }.catch()
             }
         }).start()
     }
@@ -102,7 +121,6 @@ class AnalyticsService : BaseService() {
     }
 
     private fun getFollowers(startIndex: Long, callback: (ArrayList<User>)-> Unit) {
-        sendNotification(getString(R.string.TweetAnalytics), getString(R.string.FollowerPulling))
         Thread(Runnable {
             val list = ArrayList<User>()
             // gets Twitter instance with default credentials
@@ -111,6 +129,7 @@ class AnalyticsService : BaseService() {
             val me = SharedTwitterProperties.myId!!
             try {
                 while (true) {
+                    restrainedNotification(strServiceName, getString(R.string.FollowerPulling, list.count()))
                     val users = twitter.getFollowersList(me, cursor, 200, true, true)
                     list.addAll(users)
                     if (users.hasNext()) cursor = users.nextCursor
@@ -118,9 +137,16 @@ class AnalyticsService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                super.onTwitterException(te, "getFollowersList") {
-                    getFollowers(cursor, callback)
-                }
+                object: TwitterExceptionHandler(te, "getFollowersList") {
+                    override fun onRateLimitExceeded() {
+                        sendNotification("$strServiceName $strRateLimitWaiting",
+                            getString(R.string.FollowerPulling, list.count()))
+                    }
+
+                    override fun onRateLimitReset() {
+                        getFollowers(cursor, callback)
+                    }
+                }.catch()
             }
         }).start()
     }

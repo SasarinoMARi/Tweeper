@@ -77,7 +77,6 @@ class HetzerReportActivity : BaseActivity() {
                 view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.createdAt)
             }
         })
-        adapter.addSpace(5)
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 val f = adapter.getFragment(viewType - 1)
@@ -111,7 +110,7 @@ class HetzerReportActivity : BaseActivity() {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 val f = adapter.getFragment(viewType - 1)
                 view.noitem_text.visibility = if(f.visible && f.count == 0) {
-                    view.noitem_text.text = getString(R.string.NoMatchedUsers)
+                    view.noitem_text.text = getString(R.string.NoMatchedTweets)
                     View.VISIBLE
                 } else View.GONE
             }

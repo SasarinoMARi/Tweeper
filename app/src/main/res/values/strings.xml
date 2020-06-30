@@ -123,4 +123,6 @@
     <string name="PullingMe">내 정보를 불러오는 중이에요.</string>
     <string name="RateLimitWaiting">(API 한도 초기화 대기중)</string>
     <string name="TweetChecking">불러온 트윗들을 확인중이에요.</string>
+    <string name="NoAnalyticsReports">트윗일지 실행 기록이 없어요.</string>
+    <string name="NoHetzerReports">트윗 청소기 실행 이력이 없어요.</string>
 </resources>

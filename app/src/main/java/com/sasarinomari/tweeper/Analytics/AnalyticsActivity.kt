@@ -16,6 +16,7 @@ import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
+import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_tweet_report.view.*
@@ -125,6 +126,15 @@ class AnalyticsActivity : BaseActivity() {
                 startActivityForResult(intent, 0)
             }
 
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                val f = adapter.getFragment(viewType - 1)
+                view.noitem_text.visibility = if(f.visible && f.count == 0) {
+                    view.noitem_text.text = getString(R.string.NoAnalyticsReports)
+                    View.VISIBLE
+                } else View.GONE
+            }
         })
         root.layoutManager = LinearLayoutManager(this)
         root.adapter = adapter

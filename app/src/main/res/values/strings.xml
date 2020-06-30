@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">트윗지기</string>
     <string name="TweetCleaner">트윗 청소기</string>
-    <string name="FollowerManagement">언팔매니저</string>
-    <string name="FollowingManagement">팔로잉 관리</string>
     <string name="DeleteOption">삭제 옵션</string>
     <string name="DeleteOptionPlease">지우지 않고 남겨둘 트윗을 지정하세요.</string>
     <string name="WhichTweetDoNotRemove">어떤 트윗을 남겨둘까요?</string>
@@ -14,14 +12,10 @@
     <string name="Delete">삭제</string>
     <string name="TweetPulling">내 트윗 목록을 불러오는 중입니다. (현재 %1$d트윗)</string>
     <string name="TweetRemoving">트윗을 삭제하는 중입니다. (%1$d/%2$d)</string>
-    <string name="Hetzer_TweetRemovingContent">총 %1$d 트윗 중 %2$d 번째 작업중..</string>
     <string name="Done">완료!</string>
     <string name="Hetzer_Done">조건에 맞는 트윗이 모두 삭제되었습니다.</string>
-    <string name="Condition_Description_IncludedKeyword">내용에 어떤 문구가 포함되었을 때 트윗을 남겨둘까요?</string>
     <string name="CleanTweet">이 조건으로 실행하기</string>
     <string name="TweetCleanerDescription">조건에 맞는 트윗들을 삭제합니다.</string>
-    <string name="FollowingManagementDescription">팔로잉 관리 메뉴를 엽니다.</string>
-    <string name="FollowerManagementDescription">나를 팔로우하지 않는 사람들을 봅니다.</string>
     <string name="Error">에러!</string>
     <string name="RateLimitError">트위터에서 제공하는 api 한도를 초과했습니다\n나중에 다시 시도해주세요.\n(%1$s)</string>
     <string name="AreYouSure">확실한가요?</string>
@@ -30,7 +24,6 @@
     <string name="Wait">잠깐만요!</string>
     <string name="FriendPulling">팔로잉 목록을 가져오는 중이에요. (현재 %1$d명)</string>
     <string name="FollowerPulling">팔로워 목록을 가져오는 중이에요. (현재 %1$d명)</string>
-    <string name="CompareFsFw">팔로잉 목록과 팔로워 목록을 비교하는 중이에요.</string>
     <string name="TweetAnalytics">트윗 일지</string>
     <string name="TweetAnalyticsDesc">트윗, 팔로우쉽 변화 추이를 봅니다.</string>
     <string name="PermissionRequestTitle">권한이 필요합니다.</string>
@@ -47,9 +40,7 @@
     <string name="Report_Label_FollowerCount">팔로워 수 : </string>
     <string name="Format_Date">yyyy년 MM월 dd일</string>
     <string name="Format_Time">aa hh시 mm분</string>
-    <string name="TweetReportProcessing">트윗 일지를 작성중입니다..</string>
-    <string name="TweetReportDone">트윗 일지를 작성했습니다.</string>
-    <string name="TweetReportCant">이미 트윗일지를 기록했습니다.\n나중에 다시 시도해 주세요..</string>
+    <string name="Format_DateTime">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
     <string name="NewFriends">이어진 팔로우</string>
     <string name="NoMoreFriends">끊어진 팔로우</string>
     <string name="NewFollowers">새로운 팔로워</string>
@@ -57,14 +48,12 @@
     <string name="TokenManagement">로그인 관리</string>
     <string name="TokenManagementDetail">트윗일지에 로그인된 계정을 관리할 수 있어요.</string>
     <string name="AddUser">유저 추가</string>
-    <string name="NoApplicableUser">해당하는 유저가 없어요.</string>
     <string name="ScreenNameHint">타깃의 아이디는?</string>
     <string name="Follower">팔로워</string>
     <string name="Friend">팔로잉</string>
     <string name="ChainBlockWarning1">이 유저가 확실한가요?</string>
     <string name="ChainBlockWarning2">이 행동은 돌이킬 수 없어요!.\n트윗지기 앱은 이에 대하여 어떠한 책임도 지지 않아요.\n한번 더 신중히 생각해 보시길 바랄게요.</string>
     <string name="UserNotFoundError">해당 유저를 찾을 수 없었어요.</string>
-    <string name="NotCompletely">API 리밋으로 인하여 일부 데이터를 불러오지 못했어요.</string>
     <string name="ChainBlockDone">체인블락을 완료했어요! %1$d명의 유저를 블락했어요.</string>
     <string name="UserProtected">프로텍트 설정된 유저를 대상으로 사용할 수 없어요!</string>
     <string name="BlockClear">블락 일괄 해제</string>
@@ -73,8 +62,6 @@
     <string name="FetchBlockedUsers">블락한 유저 정보를 가져오는 중이에요.</string>
     <string name="ClearBlockedUsers">블락을 해제하는 중이에요.\n(%1$d / %2$d)</string>
     <string name="BlockCleared">모든 블락을 해제했어요!.</string>
-    <string name="Tweeper">트윗지기</string>
-    <string name="Hetzer_WaitingTitle">가져올 트윗이 너무 많아 API 한도를 초과했어요.</string>
     <string name="HetzerConditions_1">내가 마음에 들어한 트윗</string>
     <string name="HetzerConditions_2">내가 마음에 들어하지 않은 트윗</string>
     <string name="HetzerConditions_3">내가 리트윗한 트윗</string>
@@ -99,27 +86,16 @@
     <string name="HetzerConditions_12_Desc">어떤 키워드가 포함되지 않았을 때 트윗을 남겨둘까요?</string>
     <string name="HetzerConditions_15_Desc">최근 몇 개 까지의 트윗을 남겨둘까요?</string>
     <string name="HetzerConditions_16_Desc">최근 몇 분 내에 작성한 트윗까지 남겨둘까요?</string>
-    <string name="FriendFetch_WaitingTitle">팔로잉이 너무 많아서 API 한도를 초과했어요!</string>
-    <string name="FollowerFetch_WaitingTitle">팔로워가 너무 많아서 API 한도를 초과했어요!</string>
-    <string name="WaitingDesc">잠시 후 자동으로 다시 시도할게요.</string>
-    <string name="FriendFetch_PullingTile">팔로잉 목록을 불러오는 중이에요.</string>
-    <string name="FollowrFetch_PullingTile">팔로워 목록을 불러오는 중이에요.</string>
-    <string name="FriendFetch_PullingDesc">현재 %1$d명의 유저를 불러왔어요.</string>
-    <string name="FollowerManagementDone">모든 팔로잉과 팔로워를 불러왔어요.</string>
     <string name="Error_NoParameter">인텐트 호출에 필요한 인자가 갖춰지지 않았습니다. 액티비티를 종료합니다.</string>
     <string name="Error_WrongParameter">인텐트 호출에 필요한 인자가 잘못되었습니다. 액티비티를 종료합니다.</string>
     <string name="TweetCleanerReport">트윗 청소기 보고서</string>
     <string name="TweetCleanerReportDesc">트윗 청소기가 삭제한 트윗들이에요.</string>
     <string name="DeletedTweetCount">삭제한 트윗 수 : %1$d</string>
     <string name="SavedTweetCount">남긴 트윗 수 : %1$d</string>
-    <string name="DeleteReportsDesc">조회할 보고서를 선택해주세요.</string>
-    <string name="TweetCleanerNoReport">트윗 청소기를 실행한 이력이 없어요!</string>
-    <string name="DateFormat">yyyy년 MM월 dd일 hh시 mm분 ss초</string>
     <string name="FollowManagement">언팔매니저</string>
     <string name="FollowManagementDesc">나와 맞팔이 아닌 팔로잉 / 팔로워를 보아요.</string>
     <string name="duplicateService_Hetzer">트윗 청소기가 이미 실행중이에요!\n한 번에 하나의 청소기만 실행할 수 있어요.</string>
     <string name="duplicateService_ChainBlock">체인블락이 이미 실행중이에요!\n한 번에 하나만 실행할 수 있어요.</string>
-    <string name="NoReport">실행 이력이 없습니다.</string>
     <string name="General">기본</string>
     <string name="TweetCleanerReports">트윗 청소기 보고서들</string>
     <string name="TouchToDetail">터치해서 자세히 볼 수 있어요!</string>
@@ -133,7 +109,6 @@
     <string name="NoMatchedTweets">해당되는 트윗이 없어요.</string>
     <string name="SavedTweets">남겨진 트윗들</string>
     <string name="TouchToExpend">여기를 터치해서 접고 펼 수 있어요!</string>
-    <string name="API_WaitingTitle">API 한도를 초과했어요.</string>
     <string name="AnalyticsDone">트윗 일지가 완성되었어요!</string>
     <string name="TweetAnalyticsRun">일지 갱신하기</string>
     <string name="AnalyticsReport">트윗 일지</string>
@@ -146,7 +121,6 @@
     <string name="Blocking">유저를 블락하는 중이에요 (%1$d/%2$d)</string>
     <string name="Service">트윗지기 서비스</string>
     <string name="PullingMe">내 정보를 불러오는 중이에요.</string>
-    <string name="PeoleCount">%1$d명 완료</string>
     <string name="RateLimitWaiting">(API 한도 초기화 대기중)</string>
     <string name="TweetChecking">불러온 트윗들을 확인중이에요.</string>
 </resources>

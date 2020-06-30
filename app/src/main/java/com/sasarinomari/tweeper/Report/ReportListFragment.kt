@@ -66,7 +66,7 @@ class ReportListFragment(private val intent: Intent,
                 override fun drawItem(item: Any, title: TextView, description: TextView) {
                     item as Pair<*, *>
                     title.text = item.first.toString()
-                    description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.second as Date)
+                    description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.second as Date)
                 }
             }
             rootView.listView.adapter = adapter

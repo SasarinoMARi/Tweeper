@@ -2,7 +2,6 @@ package com.sasarinomari.tweeper.Hetzer
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -69,7 +68,7 @@ class HetzerActivity : BaseActivity() {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 item as Pair<*, *>
                 view.defaultitem_title.text = getString(R.string.TweetCleanerReport) + ' ' + (item.first.toString().removePrefix(reportPrefix).toInt() + 1)
-                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.second as Date)
+                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.second as Date)
             }
 
             override fun onClickListItem(item: Any?) {

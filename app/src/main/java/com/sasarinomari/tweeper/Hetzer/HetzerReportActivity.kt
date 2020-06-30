@@ -71,7 +71,7 @@ class HetzerReportActivity : BaseActivity() {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 item as Status
                 view.defaultitem_title.text = item.text
-                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
+                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.createdAt)
             }
         })
         adapter.addSpace(5)
@@ -101,7 +101,7 @@ class HetzerReportActivity : BaseActivity() {
                 override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                     item as Status
                     view.defaultitem_title.text = item.text
-                    view.defaultitem_description.text = SimpleDateFormat(getString(R.string.DateFormat)).format(item.createdAt)
+                    view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.createdAt)
                 }
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {

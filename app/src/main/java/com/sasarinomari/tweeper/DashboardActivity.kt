@@ -19,6 +19,7 @@ import com.sasarinomari.tweeper.ChainBlock.BlockClearActivity
 import com.sasarinomari.tweeper.ChainBlock.ChainBlockActivity
 import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.SimplizatedClass.User
 import twitter4j.TwitterFactory
 
 class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
@@ -127,6 +128,11 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
         newTwitter.oAuthAccessToken = authData.token
         SharedTwitterProperties.clear(newTwitter)
         AuthData.Recorder(this).setFocusedUser(authData)
+        SharedTwitterProperties.getMe(this) {
+            // 포커스 변경 먼저 반영하고 유저 갱신 후 다시 저장
+            authData.user = User(it) 
+            AuthData.Recorder(this).setFocusedUser(authData)
+        }
         setResult(RESULT_OK)
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.SimplizatedClass.User
 import twitter4j.TwitterFactory
 import java.lang.Exception
 
@@ -24,6 +25,8 @@ class MainActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
                 SharedTwitterProperties.instance().oAuthAccessToken = loggedUser.token!!
                 try {
                     SharedTwitterProperties.getMe(this) { me->
+                        loggedUser.user = User(me)
+                        AuthData.Recorder(this).setFocusedUser(loggedUser)
                         openDashboard()
                         finish()
                     }

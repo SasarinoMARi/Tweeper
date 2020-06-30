@@ -102,12 +102,9 @@ class HetzerService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                sendNotification(getString(R.string.Hetzer_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(HetzerService::class.java.name, "API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Log.i(HetzerService::class.java.name, "lastIndex:$lastIndex")
-                Thread.sleep(1000 * 60 * 5)
-                getTweets(lastIndex, callback) // TODO: Catch 된 커서가 제대로 마지막 커서 이후인지 확인해봐야함
-                te.printStackTrace()
+                super.onTwitterException(te, "getUserTimeline") {
+                    getTweets(lastIndex, callback)
+                }
             }
         }).start()
     }

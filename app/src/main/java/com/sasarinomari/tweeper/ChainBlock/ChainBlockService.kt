@@ -6,6 +6,7 @@ import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.TwitterErrorCode
 import twitter4j.TwitterException
 
 class ChainBlockService : BaseService() {
@@ -24,13 +25,9 @@ class ChainBlockService : BaseService() {
 
         val targetUserId = intent!!.getLongExtra(Parameters.TargetId.name, -1)
 
-        sendNotification(getString(R.string.Chainblock), getString(R.string.FriendPulling))
         getFriends(targetUserId) { followings ->
-            sendNotification(getString(R.string.Chainblock), getString(R.string.Blocking, followings.count()))
             blockUsers(followings) {
-                sendNotification(getString(R.string.Chainblock), getString(R.string.FollowerPulling))
                 getFollowers(targetUserId) { followers ->
-                    sendNotification(getString(R.string.Chainblock), getString(R.string.Blocking, followings.count()))
                     blockUsers(followers) {
                         // 알림 송출
                         sendNotification(
@@ -54,9 +51,10 @@ class ChainBlockService : BaseService() {
 
     // region API 코드
     private fun blockUsers(startIndex: Int, list: ArrayList<Long>, callback: () -> Unit) {
+        sendNotification(getString(R.string.Chainblock), getString(R.string.Blocking, list.count()))
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
-            var cursor: Int = 0
+            var cursor = 0
             try {
                 for (i in startIndex until list.size) {
                     cursor = i
@@ -64,13 +62,9 @@ class ChainBlockService : BaseService() {
                 }
                 callback()
             } catch (te: TwitterException) {
-                te.printStackTrace()
-                sendNotification(getString(R.string.API_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "createBlock API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Log.i(ChannelName, "lastIndex:$cursor")
-                Thread.sleep(1000 * 60 * 5)
-                blockUsers(cursor, list, callback)
-                te.printStackTrace()
+                super.onTwitterException(te, "createBlock") {
+                    blockUsers(cursor, list, callback)
+                }
             }
         }).start()
     }
@@ -80,6 +74,7 @@ class ChainBlockService : BaseService() {
     }
 
     private fun getFriends(startIndex: Long, targetUserId: Long, callback: (ArrayList<Long>) -> Unit) {
+        sendNotification(getString(R.string.Chainblock), getString(R.string.FriendPulling))
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
             val list = ArrayList<Long>()
@@ -93,14 +88,9 @@ class ChainBlockService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                // 75K명에서 리밋 걸림
-                te.printStackTrace()
-                sendNotification(getString(R.string.FriendFetch_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "getFriendsIDs API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Log.i(ChannelName, "lastIndex:$cursor")
-                Thread.sleep(1000 * 60 * 5)
-                getFriends(cursor, targetUserId, callback)
-                te.printStackTrace()
+                super.onTwitterException(te, "getFriendsIDs") {
+                    getFriends(cursor, targetUserId, callback)
+                }
             }
         }).start()
     }
@@ -110,6 +100,7 @@ class ChainBlockService : BaseService() {
     }
 
     private fun getFollowers(startIndex: Long, targetUserId: Long, callback: (ArrayList<Long>) -> Unit) {
+        sendNotification(getString(R.string.Chainblock), getString(R.string.FollowerPulling))
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
             val list = ArrayList<Long>()
@@ -123,14 +114,9 @@ class ChainBlockService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                // 75K명에서 리밋 걸림
-                te.printStackTrace()
-                sendNotification(getString(R.string.FollowerFetch_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "getFollowersIDs API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Log.i(ChannelName, "lastIndex:$cursor")
-                Thread.sleep(1000 * 60 * 5)
-                getFollowers(cursor, targetUserId, callback)
-                te.printStackTrace()
+                super.onTwitterException(te, "getFollowersIDs") {
+                    getFollowers(cursor, targetUserId, callback)
+                }
             }
         }).start()
     }

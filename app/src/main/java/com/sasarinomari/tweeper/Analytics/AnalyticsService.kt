@@ -9,7 +9,6 @@ import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.Report.ReportInterface
 import twitter4j.TwitterException
 import twitter4j.User
-import java.util.*
 import kotlin.collections.ArrayList
 
 class AnalyticsService : BaseService() {
@@ -60,23 +59,22 @@ class AnalyticsService : BaseService() {
 
     // region API 코드
     private fun getMe(callback: (User)-> Unit) {
+        sendNotification(getString(R.string.TweetAnalytics), getString(R.string.PullingMe))
         Thread(Runnable {
             try {
                 val twitter = SharedTwitterProperties.instance()
                 val me = twitter.showUser(twitter.id)
                 callback(me)
             } catch (te: TwitterException) {
-                te.printStackTrace()
-                sendNotification(getString(R.string.API_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "showUser API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Thread.sleep(1000 * 60 * 5)
-                getMe(callback)
-                te.printStackTrace()
+                super.onTwitterException(te, "showUser") {
+                    getMe(callback)
+                }
             }
         }).start()
     }
 
     private fun getFriends(startIndex: Long, callback: (ArrayList<User>)-> Unit) {
+        sendNotification(getString(R.string.TweetAnalytics), getString(R.string.FriendPulling))
         Thread(Runnable {
             val list = ArrayList<User>()
             // gets Twitter instance with default credentials
@@ -85,10 +83,6 @@ class AnalyticsService : BaseService() {
             val me = SharedTwitterProperties.myId!!
             try {
                 while (true) {
-                    sendNotification(
-                        getString(R.string.FriendFetch_PullingTile),
-                        getString(R.string.FriendFetch_PullingDesc, list.count())
-                    )
                     val users = twitter.getFriendsList(me, cursor, 200, true, true)
                     list.addAll(users)
                     if (users.hasNext()) cursor = users.nextCursor
@@ -96,12 +90,9 @@ class AnalyticsService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                sendNotification(getString(R.string.FriendFetch_PullingTile), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "getFriends API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Log.i(ChannelName, "lastIndex:$cursor")
-                Thread.sleep(1000 * 60 * 5)
-                getFriends(cursor, callback)
-                te.printStackTrace()
+                super.onTwitterException(te, "getFriendsList") {
+                    getFriends(cursor, callback)
+                }
             }
         }).start()
     }
@@ -111,6 +102,7 @@ class AnalyticsService : BaseService() {
     }
 
     private fun getFollowers(startIndex: Long, callback: (ArrayList<User>)-> Unit) {
+        sendNotification(getString(R.string.TweetAnalytics), getString(R.string.FollowerPulling))
         Thread(Runnable {
             val list = ArrayList<User>()
             // gets Twitter instance with default credentials
@@ -119,10 +111,6 @@ class AnalyticsService : BaseService() {
             val me = SharedTwitterProperties.myId!!
             try {
                 while (true) {
-                    sendNotification(
-                        getString(R.string.FriendFetch_PullingTile),
-                        getString(R.string.FriendFetch_PullingDesc, list.count())
-                    )
                     val users = twitter.getFollowersList(me, cursor, 200, true, true)
                     list.addAll(users)
                     if (users.hasNext()) cursor = users.nextCursor
@@ -130,12 +118,9 @@ class AnalyticsService : BaseService() {
                 }
                 callback(list)
             } catch (te: TwitterException) {
-                sendNotification(getString(R.string.FollowerFetch_WaitingTitle), getString(R.string.WaitingDesc))
-                Log.i(ChannelName, "getFollowers API 한도에 도달했습니다. 5분 뒤 다시 시도합니다.")
-                Log.i(ChannelName, "lastIndex:$cursor")
-                Thread.sleep(1000 * 60 * 5)
-                getFollowers(cursor, callback)
-                te.printStackTrace()
+                super.onTwitterException(te, "getFollowersList") {
+                    getFollowers(cursor, callback)
+                }
             }
         }).start()
     }

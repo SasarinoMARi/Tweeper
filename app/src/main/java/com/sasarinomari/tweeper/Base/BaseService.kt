@@ -8,6 +8,8 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.TwitterErrorCode
+import twitter4j.TwitterException
 import java.util.*
 
 abstract class BaseService: Service() {
@@ -97,6 +99,18 @@ abstract class BaseService: Service() {
         val notification = createNotification(title, text, silent, cancelable, redirect)
         val mNotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         mNotificationManager.notify(id, notification)
+    }
+
+    fun onTwitterException(exception: TwitterException, apiEndpoint: String, callback: () -> Unit) {
+        when (exception.errorCode) {
+            TwitterErrorCode.RateLlimitExceeded.code -> {
+                sendNotification(getString(R.string.API_WaitingTitle), getString(R.string.WaitingDesc))
+                Log.i(ChannelName, "Rate Limit Exceeded:\n\t[API] $apiEndpoint\n\tSeconds Until Reset: ${exception.rateLimitStatus.secondsUntilReset}")
+                Thread.sleep((1000 * exception.rateLimitStatus.secondsUntilReset).toLong())
+                callback()
+            }
+            else -> throw exception
+        }
     }
 
 }

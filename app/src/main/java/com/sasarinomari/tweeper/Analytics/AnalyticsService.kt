@@ -93,7 +93,7 @@ class AnalyticsService : BaseService() {
         }).start()
     }
 
-    private fun getFriends(callback: (ArrayList<User>)-> Unit, startIndex: Long = 0, list: ArrayList<User> = ArrayList()) {
+    private fun getFriends(callback: (ArrayList<User>)-> Unit, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
         Thread(Runnable {
             // gets Twitter instance with default credentials
             var cursor: Long = startIndex
@@ -122,7 +122,7 @@ class AnalyticsService : BaseService() {
         }).start()
     }
 
-    private fun getFollowers(callback: (ArrayList<User>)-> Unit, startIndex: Long = 0, list: ArrayList<User> = ArrayList()) {
+    private fun getFollowers(callback: (ArrayList<User>)-> Unit, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
         Thread(Runnable {
             // gets Twitter instance with default credentials
             var cursor: Long = startIndex

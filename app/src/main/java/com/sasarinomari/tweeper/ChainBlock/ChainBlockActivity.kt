@@ -97,6 +97,7 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
         button_next2.setOnClickListener {
             da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
                 .setConfirmText(getString(R.string.Yes))
+                .setCancelText(getString(R.string.Wait))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
 

@@ -118,11 +118,14 @@
     <string name="UserFetching">대상의 정보를 불러오고 있어요.</string>
     <string name="ChainBlockRunning">체인블락 작업을 시작할게요.</string>
     <string name="FetchingUser">유저 목록을 수집하는 중이에요 (현재 %1$d명)</string>
-    <string name="Blocking">유저를 블락하는 중이에요 (%1$d/%2$d)</string>
+    <string name="Blocking">유저를 블락하는 중이에요. (%1$d/%2$d)</string>
+    <string name="Unblocking">블락을 해제하는 중이에요. (%1$d/%2$d)</string>
     <string name="Service">트윗지기 서비스</string>
     <string name="PullingMe">내 정보를 불러오는 중이에요.</string>
     <string name="RateLimitWaiting">(API 한도 초기화 대기중)</string>
     <string name="TweetChecking">불러온 트윗들을 확인중이에요.</string>
     <string name="NoAnalyticsReports">트윗일지 실행 기록이 없어요.</string>
     <string name="NoHetzerReports">트윗 청소기 실행 이력이 없어요.</string>
+    <string name="BlockCleanDone">블락 일괄 해제가 완료되었어요. %1$d건의 블락을 해제했어요.</string>
+    <string name="BlockClearRunning">블락 일괄 해제 작업을 시작할게요.</string>
 </resources>

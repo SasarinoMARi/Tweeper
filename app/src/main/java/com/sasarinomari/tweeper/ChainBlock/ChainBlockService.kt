@@ -92,7 +92,7 @@ class ChainBlockService : BaseService() {
         }).start()
     }
 
-    private fun getFriends(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = 0, list: ArrayList<Long> = ArrayList()) {
+    private fun getFriends(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
             var cursor: Long = startIndex
@@ -123,7 +123,7 @@ class ChainBlockService : BaseService() {
         }).start()
     }
 
-    private fun getFollowers(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = 0, list: ArrayList<Long> = ArrayList()) {
+    private fun getFollowers(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
             var cursor: Long = startIndex

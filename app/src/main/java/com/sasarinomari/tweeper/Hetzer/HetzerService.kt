@@ -125,7 +125,7 @@ class HetzerService : BaseService() {
     }
 
     // API 코드
-    private fun getTweets(callback: (List<Status>) -> Unit, startIndex: Int = 0, list: ArrayList<Status> = ArrayList()) {
+    private fun getTweets(callback: (List<Status>) -> Unit, startIndex: Int = -1, list: ArrayList<Status> = ArrayList()) {
         Thread(Runnable {
             var lastIndex = startIndex
             try {

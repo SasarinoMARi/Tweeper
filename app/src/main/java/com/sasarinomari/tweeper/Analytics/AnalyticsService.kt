@@ -37,8 +37,8 @@ class AnalyticsService : BaseService() {
             createNotification(getString(R.string.app_name), "Initializing...", false))
 
         getMe { me ->
-            getFriends { followings ->
-                getFollowers { followers ->
+            getFriends({ followings ->
+                getFollowers({ followers ->
                     Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
 
                     // 리포트 기록
@@ -64,8 +64,8 @@ class AnalyticsService : BaseService() {
                     // 서비스 종료
                     this.stopForeground(true)
                     this.stopSelf()
-                }
-            }
+                })
+            })
         }
 
         return START_REDELIVER_INTENT
@@ -93,9 +93,8 @@ class AnalyticsService : BaseService() {
         }).start()
     }
 
-    private fun getFriends(startIndex: Long, callback: (ArrayList<User>)-> Unit) {
+    private fun getFriends(callback: (ArrayList<User>)-> Unit, startIndex: Long = 0, list: ArrayList<User> = ArrayList()) {
         Thread(Runnable {
-            val list = ArrayList<User>()
             // gets Twitter instance with default credentials
             var cursor: Long = startIndex
             val twitter = SharedTwitterProperties.instance()
@@ -116,20 +115,15 @@ class AnalyticsService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        getFriends(cursor, callback)
+                        getFriends(callback, cursor, list)
                     }
                 }.catch()
             }
         }).start()
     }
 
-    private fun getFriends(callback: (ArrayList<User>) -> Unit) {
-        getFriends(-1, callback)
-    }
-
-    private fun getFollowers(startIndex: Long, callback: (ArrayList<User>)-> Unit) {
+    private fun getFollowers(callback: (ArrayList<User>)-> Unit, startIndex: Long = 0, list: ArrayList<User> = ArrayList()) {
         Thread(Runnable {
-            val list = ArrayList<User>()
             // gets Twitter instance with default credentials
             var cursor: Long = startIndex
             val twitter = SharedTwitterProperties.instance()
@@ -150,15 +144,11 @@ class AnalyticsService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        getFollowers(cursor, callback)
+                        getFollowers(callback, cursor, list)
                     }
                 }.catch()
             }
         }).start()
-    }
-
-    private fun getFollowers(callback: (ArrayList<User>) -> Unit) {
-        getFollowers(-1, callback)
     }
 
     // endregion

@@ -8,6 +8,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.TwitterException
+import twitter4j.User
 
 class ChainBlockService : BaseService() {
     companion object {
@@ -33,12 +34,12 @@ class ChainBlockService : BaseService() {
 
         val targetUserId = intent!!.getLongExtra(Parameters.TargetId.name, -1)
 
-        getFriends(targetUserId) { followings ->
+        getFriends(targetUserId, { followings ->
             followingsCount = followings.count()
-            blockUsers(followings) {
-                getFollowers(targetUserId) { followers ->
+            blockUsers(followings, {
+                getFollowers(targetUserId, { followers ->
                     followersCount = followers.count()
-                    blockUsers(followers) {
+                    blockUsers(followers, {
                         // 알림 송출
                         sendNotification(
                             strServiceName,
@@ -51,16 +52,16 @@ class ChainBlockService : BaseService() {
                         // 서비스 종료
                         this.stopForeground(true)
                         this.stopSelf()
-                    }
-                }
-            }
-        }
+                    })
+                })
+            })
+        })
 
         return START_REDELIVER_INTENT
     }
 
     // region API 코드
-    private fun blockUsers(startIndex: Int, list: ArrayList<Long>, callback: () -> Unit) {
+    private fun blockUsers(list: ArrayList<Long>, callback: () -> Unit, startIndex: Int = 0) {
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
             var cursor = 0
@@ -84,21 +85,16 @@ class ChainBlockService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        blockUsers(cursor, list, callback)
+                        blockUsers(list, callback, cursor)
                     }
                 }.catch()
             }
         }).start()
     }
 
-    private fun blockUsers(list: ArrayList<Long>, callback: () -> Unit) {
-        blockUsers(0, list, callback)
-    }
-
-    private fun getFriends(startIndex: Long, targetUserId: Long, callback: (ArrayList<Long>) -> Unit) {
+    private fun getFriends(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = 0, list: ArrayList<Long> = ArrayList()) {
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
-            val list = ArrayList<Long>()
             var cursor: Long = startIndex
             try {
                 while (true) {
@@ -120,21 +116,16 @@ class ChainBlockService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        getFriends(cursor, targetUserId, callback)
+                        getFriends(targetUserId, callback, cursor, list)
                     }
                 }.catch()
             }
         }).start()
     }
 
-    private fun getFriends(targetUserId: Long, callback: (ArrayList<Long>) -> Unit) {
-        getFriends(-1, targetUserId, callback)
-    }
-
-    private fun getFollowers(startIndex: Long, targetUserId: Long, callback: (ArrayList<Long>) -> Unit) {
+    private fun getFollowers(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = 0, list: ArrayList<Long> = ArrayList()) {
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
-            val list = ArrayList<Long>()
             var cursor: Long = startIndex
             try {
                 while (true) {
@@ -155,15 +146,11 @@ class ChainBlockService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        getFollowers(cursor, targetUserId, callback)
+                        getFollowers(targetUserId, callback, cursor, list)
                     }
                 }.catch()
             }
         }).start()
-    }
-
-    private fun getFollowers(targetUserId: Long, callback: (ArrayList<Long>) -> Unit) {
-        getFollowers(-1, targetUserId, callback)
     }
     // endregion
 

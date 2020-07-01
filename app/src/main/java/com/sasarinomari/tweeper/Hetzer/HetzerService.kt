@@ -13,6 +13,7 @@ import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.Paging
 import twitter4j.Status
 import twitter4j.TwitterException
+import twitter4j.User
 import java.lang.Exception
 
 class HetzerService : BaseService() {
@@ -50,7 +51,7 @@ class HetzerService : BaseService() {
         val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
         val hetzer = Hetzer(conditions)
 
-        getTweets { tweets ->
+        getTweets ({ tweets ->
             sendNotification(strServiceName, getString(R.string.TweetChecking))
             val passedStatuses = ArrayList<Status>() // 삭제되지 않은 트윗
             val targetStatus = ArrayList<Status>() // 삭제된 트윗
@@ -66,7 +67,7 @@ class HetzerService : BaseService() {
                 }
             }
 
-            destroyStatus(targetStatus) {
+            destroyStatus(targetStatus, {
                 // 리포트 작성
                 val ri = ReportInterface<HetzerReport>(loggedInUserId, HetzerReport.prefix)
                 val report = HetzerReport(targetStatus, passedStatuses)
@@ -88,11 +89,11 @@ class HetzerService : BaseService() {
                 // 서비스 종료
                 this.stopForeground(true)
                 this.stopSelf()
-            }
-        }
+            })
+        })
     }
 
-    private fun destroyStatus(startIndex: Int, statuses: ArrayList<Status>, callback: () -> Unit) {
+    private fun destroyStatus(statuses: ArrayList<Status>, callback: () -> Unit, startIndex: Int = 0) {
         // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
         Thread(Runnable {
             val twitter = SharedTwitterProperties.instance()
@@ -116,21 +117,16 @@ class HetzerService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        destroyStatus(cursor, statuses, callback)
+                        destroyStatus(statuses, callback, cursor)
                     }
                 }.catch()
             }
         }).start()
     }
 
-    private fun destroyStatus(statuses: ArrayList<Status>, callback: () -> Unit) {
-        destroyStatus(0, statuses, callback)
-    }
-
     // API 코드
-    private fun getTweets(startIndex: Int, callback: (List<Status>) -> Unit) {
+    private fun getTweets(callback: (List<Status>) -> Unit, startIndex: Int = 0, list: ArrayList<Status> = ArrayList()) {
         Thread(Runnable {
-            val list = ArrayList<Status>()
             var lastIndex = startIndex
             try {
                 val twitter = SharedTwitterProperties.instance()
@@ -153,15 +149,11 @@ class HetzerService : BaseService() {
                     }
 
                     override fun onRateLimitReset() {
-                        getTweets(lastIndex, callback)
+                        getTweets(callback, lastIndex, list)
                     }
                 }.catch()
             }
         }).start()
-    }
-
-    private fun getTweets(callback: (List<Status>) -> Unit) {
-        getTweets(1, callback)
     }
     // endregion
 

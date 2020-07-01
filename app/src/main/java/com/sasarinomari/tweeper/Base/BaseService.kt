@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterErrorCode
 import twitter4j.TwitterException
@@ -108,6 +109,12 @@ abstract class BaseService: Service() {
             sendNotification(title, desc)
             _lastTick = currentTick
         }
+    }
+
+    protected fun sendActivityRefrashNotification(targetActivityClassName: String) {
+        val intent = Intent(ActivityRefrashReceiver.eventName)
+        intent.putExtra(ActivityRefrashReceiver.Parameters.Target.name, targetActivityClassName)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
 }

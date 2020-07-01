@@ -60,6 +60,7 @@ class AnalyticsService : BaseService() {
                         redirect = redirect,
                         id = NotificationId + 1
                     )
+                    super.sendActivityRefrashNotification(AnalyticsActivity::class.java.name)
 
                     // 서비스 종료
                     this.stopForeground(true)

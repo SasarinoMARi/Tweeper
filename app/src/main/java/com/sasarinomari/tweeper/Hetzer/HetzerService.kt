@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
@@ -85,6 +86,7 @@ class HetzerService : BaseService() {
                     redirect = redirect,
                     id = NotificationId + 1
                 )
+                super.sendActivityRefrashNotification(HetzerActivity::class.java.name)
 
                 // 서비스 종료
                 this.stopForeground(true)

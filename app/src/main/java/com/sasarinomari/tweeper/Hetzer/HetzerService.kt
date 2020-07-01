@@ -103,7 +103,7 @@ class HetzerService : BaseService() {
                     cursor = i
                     val status = statuses[i]
                     restrainedNotification(strServiceName, getString(R.string.TweetRemoving, cursor + 1, statusCount))
-                    twitter.destroyStatus(status.id)
+//                    twitter.destroyStatus(status.id)
                 }
                 callback()
             } catch (te: TwitterException) {

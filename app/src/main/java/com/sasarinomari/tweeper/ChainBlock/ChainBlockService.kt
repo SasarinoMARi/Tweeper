@@ -8,7 +8,6 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.TwitterException
-import twitter4j.User
 
 class ChainBlockService : BaseService() {
     companion object {
@@ -16,7 +15,7 @@ class ChainBlockService : BaseService() {
     }
 
     enum class Parameters {
-        TargetId
+        TargetId, BlockFollowing, BlockFollower
     }
 
     lateinit var strServiceName: String
@@ -24,38 +23,58 @@ class ChainBlockService : BaseService() {
 
     var followingsCount: Int = 0
     var followersCount: Int = 0
+    var blockedCount: Int = 0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
+        super.onStartCommand(intent!!, flags, startId)
         strServiceName = getString(R.string.Chainblock)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
 
-        val targetUserId = intent!!.getLongExtra(Parameters.TargetId.name, -1)
+        val targetUserId = intent.getLongExtra(Parameters.TargetId.name, -1)
+        val blockFollowingFlag = intent.getBooleanExtra(Parameters.BlockFollowing.name, false)
+        val blockFollowerFlag = intent.getBooleanExtra(Parameters.BlockFollower.name, false)
 
-        getFriends(targetUserId, { followings ->
-            followingsCount = followings.count()
-            blockUsers(followings, {
-                getFollowers(targetUserId, { followers ->
-                    followersCount = followers.count()
-                    blockUsers(followers, {
-                        // 알림 송출
-                        sendNotification(
-                            strServiceName,
-                            getString(R.string.ChainBlockDone, followingsCount + followersCount),
-                            silent = false,
-                            cancelable = true,
-                            id = NotificationId + 1
-                        )
+        val finishedCallback = Runnable {
+            // 알림 송출
+            sendNotification(
+                strServiceName,
+                getString(R.string.ChainBlockDone, blockedCount),
+                silent = false,
+                cancelable = true,
+                id = NotificationId + 1
+            )
 
-                        // 서비스 종료
-                        this.stopForeground(true)
-                        this.stopSelf()
-                    })
+            // 서비스 종료
+            this.stopForeground(true)
+            this.stopSelf()
+        }
+
+        val blockFollower = Runnable {
+            getFollowers(targetUserId, { followers ->
+                followersCount = followers.count()
+                blockUsers(followers, {
+                    finishedCallback.run()
                 })
             })
-        })
+        }
+
+        val blockFollowing = Runnable {
+            getFriends(targetUserId, { followings ->
+                followingsCount = followings.count()
+                blockUsers(followings, {
+                    if(blockFollowerFlag) blockFollower.run()
+                    else finishedCallback.run()
+                })
+            })
+        }
+
+        when {
+            blockFollowingFlag -> blockFollowing.run()
+            blockFollowerFlag -> blockFollower.run()
+            else -> finishedCallback.run()
+        }
 
         return START_REDELIVER_INTENT
     }
@@ -68,9 +87,10 @@ class ChainBlockService : BaseService() {
             try {
                 for (i in startIndex until list.size) {
                     cursor = i
+                    blockedCount += 1
                     restrainedNotification(
                         strServiceName,
-                        getString(R.string.Blocking, followingsCount + cursor + 1, followingsCount + followersCount)
+                        getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
                     ) // 초기값이 0이라 이거 가능
                     twitter.createBlock(list[i])
                 }
@@ -78,6 +98,7 @@ class ChainBlockService : BaseService() {
             } catch (te: TwitterException) {
                 object : TwitterExceptionHandler(te, "createBlock") {
                     override fun onRateLimitExceeded() {
+                        blockedCount--
                         sendNotification(
                             "$strServiceName $strRateLimitWaiting",
                             getString(R.string.Blocking, followingsCount + cursor + 1, followingsCount + followersCount)

@@ -128,4 +128,5 @@
     <string name="NoHetzerReports">트윗 청소기 실행 이력이 없어요.</string>
     <string name="BlockCleanDone">블락 일괄 해제가 완료되었어요. %1$d건의 블락을 해제했어요.</string>
     <string name="BlockClearRunning">블락 일괄 해제 작업을 시작할게요.</string>
+    <string name="SelectMoreThanOne">팔로잉과 팔로워 중 하나 이상의 대상을 선택해주세요!</string>
 </resources>

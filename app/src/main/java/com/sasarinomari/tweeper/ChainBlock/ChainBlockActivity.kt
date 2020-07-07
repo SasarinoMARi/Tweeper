@@ -93,6 +93,7 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
 
         layout_following.setOnClickListener { checkbox_following.isChecked = !checkbox_following.isChecked }
         layout_followers.setOnClickListener { checkbox_followers.isChecked = !checkbox_followers.isChecked }
+        layout_ignoreMyFollowing.setOnClickListener { checkbox_ignoremyFollowing.isChecked = !checkbox_ignoremyFollowing.isChecked }
 
         text_ScreenName.setOnClickListener {
             SharedTwitterProperties.showProfile(this@ChainBlockActivity, user.screenName)
@@ -112,6 +113,7 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
                     intent.putExtra(ChainBlockService.Parameters.TargetId.name, user.id)
                     intent.putExtra(ChainBlockService.Parameters.BlockFollowing.name, checkbox_following.isChecked)
                     intent.putExtra(ChainBlockService.Parameters.BlockFollower.name, checkbox_followers.isChecked)
+                    intent.putExtra(ChainBlockService.Parameters.IgnoreMyFollowing.name, checkbox_ignoremyFollowing.isChecked)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         startForegroundService(intent)
                     } else {

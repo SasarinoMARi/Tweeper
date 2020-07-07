@@ -2,12 +2,9 @@ package com.sasarinomari.tweeper.ChainBlock
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.SharedTwitterProperties
-import com.sasarinomari.tweeper.TwitterExceptionHandler
-import twitter4j.TwitterException
+import com.sasarinomari.tweeper.TwitterAdapter
 
 class ChainBlockService : BaseService() {
     companion object {
@@ -15,7 +12,7 @@ class ChainBlockService : BaseService() {
     }
 
     enum class Parameters {
-        TargetId, BlockFollowing, BlockFollower
+        TargetId, BlockFollowing, BlockFollower, IgnoreMyFollowing
     }
 
     lateinit var strServiceName: String
@@ -24,6 +21,8 @@ class ChainBlockService : BaseService() {
     var followingsCount: Int = 0
     var followersCount: Int = 0
     var blockedCount: Int = 0
+
+    val twitterAdapter = TwitterAdapter(this)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent!!, flags, startId)
@@ -35,8 +34,12 @@ class ChainBlockService : BaseService() {
         val targetUserId = intent.getLongExtra(Parameters.TargetId.name, -1)
         val blockFollowingFlag = intent.getBooleanExtra(Parameters.BlockFollowing.name, false)
         val blockFollowerFlag = intent.getBooleanExtra(Parameters.BlockFollower.name, false)
+        val ignoreMyFollowing = intent.getBooleanExtra(Parameters.IgnoreMyFollowing.name, false)
 
-        val finishedCallback = Runnable {
+        val getMyFriendsRutin = Runnable {
+            // TODO:
+        }
+        val finishRutin = Runnable {
             // 알림 송출
             sendNotification(
                 strServiceName,
@@ -50,129 +53,100 @@ class ChainBlockService : BaseService() {
             this.stopForeground(true)
             this.stopSelf()
         }
+        val blockFollowerRutin = Runnable {
+            twitterAdapter.getFollowersIds(targetUserId, object: TwitterAdapter.FetchListInterface{
+                override fun onStart() { }
+                override fun onFinished(list: ArrayList<*>) {
+                    followersCount = list.count()
+                    list as ArrayList<Long>
+                    twitterAdapter.blockUsers(list , object: TwitterAdapter.IterableInterface{
+                        override fun onStart() { }
+                        override fun onFinished() {
+                            finishRutin.run()
+                        }
 
-        val blockFollower = Runnable {
-            getFollowers(targetUserId, { followers ->
-                followersCount = followers.count()
-                blockUsers(followers, {
-                    finishedCallback.run()
-                })
+                        override fun onIterate(listIndex: Int) {
+                            blockedCount += 1
+                            restrainedNotification(
+                                strServiceName,
+                                getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
+                            )
+                        }
+
+                        override fun onRateLimit(listIndex: Int) {
+                            blockedCount--
+                            sendNotification(
+                                "$strServiceName $strRateLimitWaiting",
+                                getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
+                            )
+                        }
+                    })
+                }
+
+                override fun onFetch(listSize: Int) {
+                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
+                }
+
+                override fun onRateLimit(listSize: Int) {
+                    sendNotification(
+                        "$strServiceName $strRateLimitWaiting",
+                        getString(R.string.FetchingUser, listSize)
+                    )
+                }
             })
         }
+        val blockFriendsRutin = Runnable {
+            twitterAdapter.getFriendsIds(targetUserId, object: TwitterAdapter.FetchListInterface{
+                override fun onStart() { }
+                override fun onFinished(list: ArrayList<*>) {
+                    followingsCount = list.count()
+                    list as ArrayList<Long>
+                    twitterAdapter.blockUsers(list , object: TwitterAdapter.IterableInterface{
+                        override fun onStart() { }
+                        override fun onFinished() {
+                            if(blockFollowerFlag) blockFollowerRutin.run()
+                            else finishRutin.run()
+                        }
 
-        val blockFollowing = Runnable {
-            getFriends(targetUserId, { followings ->
-                followingsCount = followings.count()
-                blockUsers(followings, {
-                    if(blockFollowerFlag) blockFollower.run()
-                    else finishedCallback.run()
-                })
+                        override fun onIterate(listIndex: Int) {
+                            blockedCount += 1
+                            restrainedNotification(
+                                strServiceName,
+                                getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
+                            )
+                        }
+
+                        override fun onRateLimit(listIndex: Int) {
+                            blockedCount--
+                            sendNotification(
+                                "$strServiceName $strRateLimitWaiting",
+                                getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
+                            )
+                        }
+                    })
+                }
+
+                override fun onFetch(listSize: Int) {
+                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
+                }
+
+                override fun onRateLimit(listSize: Int) {
+                    sendNotification(
+                        "$strServiceName $strRateLimitWaiting",
+                        getString(R.string.FetchingUser, listSize)
+                    )
+                }
             })
         }
 
         when {
-            blockFollowingFlag -> blockFollowing.run()
-            blockFollowerFlag -> blockFollower.run()
-            else -> finishedCallback.run()
+            ignoreMyFollowing -> getMyFriendsRutin.run()
+            blockFollowingFlag -> blockFriendsRutin.run()
+            blockFollowerFlag -> blockFollowerRutin.run()
+            else -> finishRutin.run()
         }
 
         return START_REDELIVER_INTENT
     }
-
-    // region API 코드
-    private fun blockUsers(list: ArrayList<Long>, callback: () -> Unit, startIndex: Int = 0) {
-        Thread(Runnable {
-            val twitter = SharedTwitterProperties.instance()
-            var cursor = 0
-            try {
-                for (i in startIndex until list.size) {
-                    cursor = i
-                    blockedCount += 1
-                    restrainedNotification(
-                        strServiceName,
-                        getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
-                    ) // 초기값이 0이라 이거 가능
-                    twitter.createBlock(list[i])
-                }
-                callback()
-            } catch (te: TwitterException) {
-                object : TwitterExceptionHandler(te, "createBlock") {
-                    override fun onRateLimitExceeded() {
-                        blockedCount--
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.Blocking, followingsCount + cursor + 1, followingsCount + followersCount)
-                        )
-                    }
-
-                    override fun onRateLimitReset() {
-                        blockUsers(list, callback, cursor)
-                    }
-                }.catch()
-            }
-        }).start()
-    }
-
-    private fun getFriends(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
-        Thread(Runnable {
-            val twitter = SharedTwitterProperties.instance()
-            var cursor: Long = startIndex
-            try {
-                while (true) {
-                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, list.count()))
-                    val users = twitter.getFriendsIDs(targetUserId, cursor, 5000)
-                    list.addAll(users.iDs.toList())
-                    Log.i(ChannelName, "Count of Collected Users: ${list.count()}")
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-                callback(list)
-            } catch (te: TwitterException) {
-                object : TwitterExceptionHandler(te, "getFriendsIDs") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.FetchingUser, list.count())
-                        )
-                    }
-
-                    override fun onRateLimitReset() {
-                        getFriends(targetUserId, callback, cursor, list)
-                    }
-                }.catch()
-            }
-        }).start()
-    }
-
-    private fun getFollowers(targetUserId: Long, callback: (ArrayList<Long>) -> Unit, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
-        Thread(Runnable {
-            val twitter = SharedTwitterProperties.instance()
-            var cursor: Long = startIndex
-            try {
-                while (true) {
-                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, followingsCount + list.count()))
-                    val users = twitter.getFollowersIDs(targetUserId, cursor, 5000)
-                    list.addAll(users.iDs.toList())
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-                callback(list)
-            } catch (te: TwitterException) {
-                object : TwitterExceptionHandler(te, "getFollowersIDs") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.FetchingUser, followingsCount + list.count())
-                        )
-                    }
-
-                    override fun onRateLimitReset() {
-                        getFollowers(targetUserId, callback, cursor, list)
-                    }
-                }.catch()
-            }
-        }).start()
-    }
-    // endregion
 
 }

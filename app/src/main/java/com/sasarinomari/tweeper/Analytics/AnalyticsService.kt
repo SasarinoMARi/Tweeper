@@ -5,13 +5,10 @@ import android.content.Intent
 import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.Report.ReportInterface
-import com.sasarinomari.tweeper.TwitterExceptionHandler
-import twitter4j.TwitterException
-import twitter4j.User
+import com.sasarinomari.tweeper.SimplizatedClass.User
+import com.sasarinomari.tweeper.TwitterAdapter
 import java.lang.Exception
-import kotlin.collections.ArrayList
 
 class AnalyticsService : BaseService() {
     companion object {
@@ -26,6 +23,8 @@ class AnalyticsService : BaseService() {
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
+    val twitterAdapter = TwitterAdapter(this)
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent!!, flags, startId)
         strServiceName = getString(R.string.TweetAnalytics)
@@ -36,122 +35,85 @@ class AnalyticsService : BaseService() {
         startForeground(NotificationId,
             createNotification(getString(R.string.app_name), "Initializing...", false))
 
-        getMe { me ->
-            getFriends({ followings ->
-                getFollowers({ followers ->
-                    Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
+        twitterAdapter.getMe(object: TwitterAdapter.FetchObjectInterface {
+            override fun onStart() {
+                sendNotification(strServiceName, getString(R.string.PullingMe))
+            }
 
-                    // 리포트 기록
-                    val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
-                    val lastReportIndex = ri.getReportCount(this)
-                    val recentReport = if(lastReportIndex >= 0) ri.readReport(this, lastReportIndex, AnalyticsReport()) as AnalyticsReport else null
-                    val report = AnalyticsReport(me, followings, followers, recentReport)
-                    report.id = lastReportIndex + 1
-                    ri.writeReport(this, report.id, report)
+            override fun onFinished(obj: Any) {
+                val me = obj as twitter4j.User
+                twitterAdapter.getFriends(me.id, object: TwitterAdapter.FetchListInterface {
+                    override fun onStart() { }
+                    override fun onFinished(list: ArrayList<*>) {
+                        val followings = list as ArrayList<twitter4j.User>
+                        twitterAdapter.getFollowers(me.id, object: TwitterAdapter.FetchListInterface {
+                            override fun onStart() {  }
 
-                    // 알림 송출
-                    val redirect = Intent(this, AnalyticsReportActivity::class.java)
-                    redirect.putExtra(AnalyticsReportActivity.Parameters.ReportId.name, report.id)
-                    sendNotification(
-                        strServiceName,
-                        getString(R.string.AnalyticsDone),
-                        silent = false,
-                        cancelable = true,
-                        redirect = redirect,
-                        id = NotificationId + 1
-                    )
-                    super.sendActivityRefrashNotification(AnalyticsActivity::class.java.name)
+                            override fun onFinished(list: ArrayList<*>) {
+                                val context = this@AnalyticsService
+                                val followers = list as ArrayList<twitter4j.User>
+                                Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
 
-                    // 서비스 종료
-                    this.stopForeground(true)
-                    this.stopSelf()
+                                // 리포트 기록
+                                val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
+                                val lastReportIndex = ri.getReportCount(context)
+                                val recentReport = if(lastReportIndex >= 0) ri.readReport(context, lastReportIndex, AnalyticsReport()) as AnalyticsReport else null
+                                val report = AnalyticsReport(me, followings, followers, recentReport)
+                                report.id = lastReportIndex + 1
+                                ri.writeReport(context, report.id, report)
+
+                                // 알림 송출
+                                val redirect = Intent(context, AnalyticsReportActivity::class.java)
+                                redirect.putExtra(AnalyticsReportActivity.Parameters.ReportId.name, report.id)
+                                sendNotification(
+                                    strServiceName,
+                                    getString(R.string.AnalyticsDone),
+                                    silent = false,
+                                    cancelable = true,
+                                    redirect = redirect,
+                                    id = NotificationId + 1
+                                )
+                                context.sendActivityRefrashNotification(AnalyticsActivity::class.java.name)
+
+                                // 서비스 종료
+                                context.stopForeground(true)
+                                context.stopSelf()
+                            }
+
+                            override fun onFetch(listSize: Int) {
+                                restrainedNotification(strServiceName, getString(R.string.FollowerPulling, listSize))
+                            }
+
+                            override fun onRateLimit(listSize: Int) {
+                                sendNotification("$strServiceName $strRateLimitWaiting",
+                                    getString(R.string.FollowerPulling, list.count()))
+                            }
+
+                        })
+                    }
+
+                    override fun onFetch(listSize: Int) {
+                        restrainedNotification(strServiceName, getString(R.string.FriendPulling, listSize))
+                    }
+
+                    override fun onRateLimit(listSize: Int) {
+                        sendNotification("$strServiceName $strRateLimitWaiting",
+                            getString(R.string.FollowerPulling, listSize))
+                    }
+
                 })
-            })
-        }
+            }
+
+            override fun onRateLimit() {
+                sendNotification("$strServiceName $strRateLimitWaiting", "")
+            }
+
+        })
 
         return START_REDELIVER_INTENT
     }
 
     // region API 코드
-    private fun getMe(callback: (User)-> Unit) {
-        sendNotification(strServiceName, getString(R.string.PullingMe))
-        Thread(Runnable {
-            try {
-                val twitter = SharedTwitterProperties.instance()
-                val me = twitter.showUser(twitter.id)
-                callback(me)
-            } catch (te: TwitterException) {
-                object: TwitterExceptionHandler(te, "showUser") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification("$strServiceName $strRateLimitWaiting", "")
-                    }
-
-                    override fun onRateLimitReset() {
-                        getMe(callback)
-                    }
-                }.catch()
-            }
-        }).start()
-    }
-
-    private fun getFriends(callback: (ArrayList<User>)-> Unit, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
-        Thread(Runnable {
-            // gets Twitter instance with default credentials
-            var cursor: Long = startIndex
-            val twitter = SharedTwitterProperties.instance()
-            try {
-                while (true) {
-                    restrainedNotification(strServiceName, getString(R.string.FriendPulling, list.count()))
-                    val users = twitter.getFriendsList(userId, cursor, 200, true, true)
-                    list.addAll(users)
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-                callback(list)
-            } catch (te: TwitterException) {
-                object: TwitterExceptionHandler(te, "getFriendsList") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification("$strServiceName $strRateLimitWaiting",
-                            getString(R.string.FollowerPulling, list.count()))
-                    }
-
-                    override fun onRateLimitReset() {
-                        getFriends(callback, cursor, list)
-                    }
-                }.catch()
-            }
-        }).start()
-    }
-
-    private fun getFollowers(callback: (ArrayList<User>)-> Unit, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
-        Thread(Runnable {
-            // gets Twitter instance with default credentials
-            var cursor: Long = startIndex
-            val twitter = SharedTwitterProperties.instance()
-            try {
-                while (true) {
-                    restrainedNotification(strServiceName, getString(R.string.FollowerPulling, list.count()))
-                    val users = twitter.getFollowersList(userId, cursor, 200, true, true)
-                    list.addAll(users)
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-                callback(list)
-            } catch (te: TwitterException) {
-                object: TwitterExceptionHandler(te, "getFollowersList") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification("$strServiceName $strRateLimitWaiting",
-                            getString(R.string.FollowerPulling, list.count()))
-                    }
-
-                    override fun onRateLimitReset() {
-                        getFollowers(callback, cursor, list)
-                    }
-                }.catch()
-            }
-        }).start()
-    }
-
     // endregion
 
 }

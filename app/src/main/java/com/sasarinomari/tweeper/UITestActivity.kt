@@ -3,12 +3,22 @@ package com.sasarinomari.tweeper
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.annotation.NonNull
 import kotlinx.android.synthetic.main.activity_uitest.*
 import su.levenetc.android.textsurface.TextBuilder
 import su.levenetc.android.textsurface.contants.Side
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdCallback
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.sasarinomari.tweeper.Base.BaseActivity
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
@@ -24,12 +34,58 @@ import kotlin.random.Random
 
 class UITestActivity : BaseActivity() {
 
+    private lateinit var rewardedAd: RewardedAd
+    private val LOG_TAG = "UITest"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uitest)
 
         if(false) testTextSufrace()
-        if(true) testRecyclerInjector()
+        if(false) testRecyclerInjector()
+        if(true) testRewardAd()
+    }
+
+    private fun testRewardAd() {
+        rewardedAd = RewardedAd(this, if (BuildConfig.DEBUG) getString(R.string.reward_ad_unit_id_for_test)
+        else getString(R.string.reward_ad_unit_id))
+
+        val adLoadCallback = object: RewardedAdLoadCallback() {
+            override fun onRewardedAdLoaded() {
+                Log.i(LOG_TAG, "onRewardedAdLoaded")
+                showAd()
+            }
+            override fun onRewardedAdFailedToLoad(errorCode: Int) {
+                Log.i(LOG_TAG, "onRewardedAdFailedToLoad $errorCode")
+            }
+        }
+        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
+
+        showAd()
+    }
+
+    private fun showAd() {
+        if (rewardedAd.isLoaded) {
+            val activityContext = this
+            val adCallback = object: RewardedAdCallback() {
+                override fun onRewardedAdOpened() {
+                    // Ad opened.
+                }
+                override fun onRewardedAdClosed() {
+                    // Ad closed.
+                }
+                override fun onUserEarnedReward(reward: com.google.android.gms.ads.rewarded.RewardItem) {
+                    // User earned reward.
+                }
+                override fun onRewardedAdFailedToShow(errorCode: Int) {
+                    // Ad failed to display.
+                }
+            }
+            rewardedAd.show(activityContext, adCallback)
+        }
+        else {
+            Log.d("TAG", "The rewarded ad wasn't loaded yet.")
+        }
     }
 
     private fun testRecyclerInjector() {

@@ -110,7 +110,7 @@ class TwitterAdapter(private val context: Context) {
                     }
 
                     override fun onRateLimitReset() {
-                        getFriendsIds(targetUserId, apiInterface, cursor, list)
+                        getFollowersIds(targetUserId, apiInterface, cursor, list)
                     }
                 }.catch()
             }

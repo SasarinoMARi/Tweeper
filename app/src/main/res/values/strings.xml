@@ -130,4 +130,6 @@
     <string name="BlockClearRunning">블락 일괄 해제 작업을 시작할게요.</string>
     <string name="SelectMoreThanOne">팔로잉과 팔로워 중 하나 이상의 대상을 선택해주세요!</string>
     <string name="IgnoreMyFollowing">내가 팔로잉하는 사람은 블락 대상에서 제외하기</string>
+    <string name="Donate">개발자에게 기부하기</string>
+    <string name="DonateDesc">개발자에게 기부하고 인앱 광고를 제거하세요.</string>
 </resources>

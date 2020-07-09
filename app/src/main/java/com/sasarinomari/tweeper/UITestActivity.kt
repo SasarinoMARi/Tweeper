@@ -1,5 +1,6 @@
 package com.sasarinomari.tweeper
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -20,6 +21,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.Billing.BillingActivity
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -42,7 +44,10 @@ class UITestActivity : BaseActivity() {
 
         if(false) testTextSufrace()
         if(false) testRecyclerInjector()
-        if(true) testRewardAd()
+        if(false) testRewardAd()
+
+        val intent = Intent(this, BillingActivity::class.java)
+        startActivity(intent)
     }
 
     private fun testRewardAd() {

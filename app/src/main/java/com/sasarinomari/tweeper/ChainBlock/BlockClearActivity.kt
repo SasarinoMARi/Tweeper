@@ -7,6 +7,7 @@ import android.util.Log
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.RewardedAdAdapter
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.activity_block_clear.*
 import twitter4j.TwitterException
@@ -22,17 +23,21 @@ class BlockClearActivity : BaseActivity() {
                 .setCancelText(getString(R.string.Wait))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
-                    val intent = Intent(this, BlockClearService::class.java)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(intent)
-                    } else {
-                        startService(intent)
-                    }
-                    da.success(getString(R.string.Done), getString(R.string.BlockClearRunning))
-                        .setConfirmClickListener { it2 ->
-                            it2.dismissWithAnimation()
-                            finish()
-                        }.show()
+                    RewardedAdAdapter.show(this@BlockClearActivity, object: RewardedAdAdapter.RewardInterface {
+                        override fun onFinished() {
+                            val intent = Intent(this@BlockClearActivity, BlockClearService::class.java)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(intent)
+                            } else {
+                                startService(intent)
+                            }
+                            da.success(getString(R.string.Done), getString(R.string.BlockClearRunning))
+                                .setConfirmClickListener { it2 ->
+                                    it2.dismissWithAnimation()
+                                    finish()
+                                }.show()
+                        }
+                    })
                 }.show()
         }
     }

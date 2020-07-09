@@ -34,7 +34,6 @@ import kotlin.random.Random
 
 class UITestActivity : BaseActivity() {
 
-    private lateinit var rewardedAd: RewardedAd
     private val LOG_TAG = "UITest"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,45 +46,11 @@ class UITestActivity : BaseActivity() {
     }
 
     private fun testRewardAd() {
-        rewardedAd = RewardedAd(this, if (BuildConfig.DEBUG) getString(R.string.reward_ad_unit_id_for_test)
-        else getString(R.string.reward_ad_unit_id))
-
-        val adLoadCallback = object: RewardedAdLoadCallback() {
-            override fun onRewardedAdLoaded() {
-                Log.i(LOG_TAG, "onRewardedAdLoaded")
-                showAd()
+        RewardedAdAdapter.show(this, object: RewardedAdAdapter.RewardInterface {
+            override fun onFinished() {
+                finish()
             }
-            override fun onRewardedAdFailedToLoad(errorCode: Int) {
-                Log.i(LOG_TAG, "onRewardedAdFailedToLoad $errorCode")
-            }
-        }
-        rewardedAd.loadAd(AdRequest.Builder().build(), adLoadCallback)
-
-        showAd()
-    }
-
-    private fun showAd() {
-        if (rewardedAd.isLoaded) {
-            val activityContext = this
-            val adCallback = object: RewardedAdCallback() {
-                override fun onRewardedAdOpened() {
-                    // Ad opened.
-                }
-                override fun onRewardedAdClosed() {
-                    // Ad closed.
-                }
-                override fun onUserEarnedReward(reward: com.google.android.gms.ads.rewarded.RewardItem) {
-                    // User earned reward.
-                }
-                override fun onRewardedAdFailedToShow(errorCode: Int) {
-                    // Ad failed to display.
-                }
-            }
-            rewardedAd.show(activityContext, adCallback)
-        }
-        else {
-            Log.d("TAG", "The rewarded ad wasn't loaded yet.")
-        }
+        })
     }
 
     private fun testRecyclerInjector() {

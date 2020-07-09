@@ -14,6 +14,7 @@ import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
+import com.sasarinomari.tweeper.RewardedAdAdapter
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
@@ -56,14 +57,18 @@ class AnalyticsActivity : BaseActivity() {
                             .setCancelText(getString(R.string.Wait))
                             .setConfirmClickListener {
                                 it.dismissWithAnimation()
-                                val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
-                                intent.putExtra(AnalyticsService.Parameters.UserId.name, userId)
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    startForegroundService(intent)
-                                }
-                                else {
-                                    startService(intent)
-                                }
+                                RewardedAdAdapter.show(this@AnalyticsActivity, object: RewardedAdAdapter.RewardInterface {
+                                    override fun onFinished() {
+                                        val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
+                                        intent.putExtra(AnalyticsService.Parameters.UserId.name, userId)
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            startForegroundService(intent)
+                                        }
+                                        else {
+                                            startService(intent)
+                                        }
+                                    }
+                                })
                             }.show()
                     }
                 }

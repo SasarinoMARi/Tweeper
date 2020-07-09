@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.RewardedAdAdapter
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chain_block.*
@@ -108,22 +109,25 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
                 .setCancelText(getString(R.string.Wait))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
-
-                    val intent = Intent(this, ChainBlockService::class.java)
-                    intent.putExtra(ChainBlockService.Parameters.TargetId.name, user.id)
-                    intent.putExtra(ChainBlockService.Parameters.BlockFollowing.name, checkbox_following.isChecked)
-                    intent.putExtra(ChainBlockService.Parameters.BlockFollower.name, checkbox_followers.isChecked)
-                    intent.putExtra(ChainBlockService.Parameters.IgnoreMyFollowing.name, checkbox_ignoremyFollowing.isChecked)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        startForegroundService(intent)
-                    } else {
-                        startService(intent)
-                    }
-                    da.success(getString(R.string.Done), getString(R.string.ChainBlockRunning))
-                        .setConfirmClickListener { it2 ->
-                            it2.dismissWithAnimation()
-                            finish()
-                        }.show()
+                    RewardedAdAdapter.show(this, object: RewardedAdAdapter.RewardInterface {
+                        override fun onFinished() {
+                            val intent = Intent(this@ChainBlockActivity, ChainBlockService::class.java)
+                            intent.putExtra(ChainBlockService.Parameters.TargetId.name, user.id)
+                            intent.putExtra(ChainBlockService.Parameters.BlockFollowing.name, checkbox_following.isChecked)
+                            intent.putExtra(ChainBlockService.Parameters.BlockFollower.name, checkbox_followers.isChecked)
+                            intent.putExtra(ChainBlockService.Parameters.IgnoreMyFollowing.name, checkbox_ignoremyFollowing.isChecked)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(intent)
+                            } else {
+                                startService(intent)
+                            }
+                            da.success(getString(R.string.Done), getString(R.string.ChainBlockRunning))
+                                .setConfirmClickListener { it2 ->
+                                    it2.dismissWithAnimation()
+                                    finish()
+                                }.show()
+                        }
+                    })
                 }.show()
         }
     }

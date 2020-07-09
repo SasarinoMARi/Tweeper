@@ -17,6 +17,7 @@ class MainActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
         NotificationChannels().declaration(this)
         SharedTwitterProperties.clear(TwitterFactory().instance)
         SharedTwitterProperties.setOAuthConsumer(this, SharedTwitterProperties.instance())
+        RewardedAdAdapter.load(this)
         when (val loggedUser = AuthData.Recorder(this).getFocusedUser()) {
             null -> {
                 doAuth()

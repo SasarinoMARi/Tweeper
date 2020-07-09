@@ -24,6 +24,7 @@ import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.RewardedAdAdapter
 import com.sasarinomari.tweeper.SharedTwitterProperties
 
 /*
@@ -52,11 +53,15 @@ internal class HetzerConditionsActivity : BaseActivity() {
                 .setCancelText(getString(R.string.Wait))
                 .setConfirmClickListener {
                     it.dismissWithAnimation()
-                    Recorder(this).set(conditions)
-                    val i = Intent()
-                    i.putExtra(HetzerService.Parameters.HetzerConditions.name, Gson().toJson(conditions))
-                    setResult(RESULT_OK, i)
-                    finish()
+                    RewardedAdAdapter.show(this, object: RewardedAdAdapter.RewardInterface {
+                        override fun onFinished() {
+                            Recorder(this@HetzerConditionsActivity).set(conditions)
+                            val i = Intent()
+                            i.putExtra(HetzerService.Parameters.HetzerConditions.name, Gson().toJson(conditions))
+                            setResult(RESULT_OK, i)
+                            finish()
+                        }
+                    })
                 }
             d.setOnShowListener { dialog ->
                 dialog as SweetAlertDialog

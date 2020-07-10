@@ -44,14 +44,15 @@ abstract class BaseService: Service() {
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // 종료 코드 분기
+        // region 서비스 중단 분기 코드
         if(intent!=null && intent.action != null && intent.action!! == ACTION_STOP_SERVICE) {
             stopForeground(true)
             stopSelf()
             return START_NOT_STICKY
         }
-
+        // endregion
         innerRunningFlag = true
+        // region 알림 채널 빌드 코드
         silentChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
             NotificationCompat.Builder(this, ChannelName)
         } else {
@@ -63,6 +64,7 @@ abstract class BaseService: Service() {
         } else {
             NotificationCompat.Builder(this)
         }
+        // endregion
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -78,6 +80,7 @@ abstract class BaseService: Service() {
         return null
     }
 
+    // region 알림 관련 코드
     protected  fun createNotification(
         title: String,
         text: String,
@@ -127,6 +130,7 @@ abstract class BaseService: Service() {
             _lastTick = currentTick
         }
     }
+    // endregion
 
     protected fun sendActivityRefrashNotification(targetActivityClassName: String) {
         val intent = Intent(ActivityRefrashReceiver.eventName)
@@ -134,6 +138,7 @@ abstract class BaseService: Service() {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
+    // region 서비스 종속 스레드 관리 코드
     private var threads = ArrayList<Thread>()
     protected fun runOnManagedThread(runnable: ()-> Unit) {
         val thread = Thread(runnable)
@@ -148,5 +153,6 @@ abstract class BaseService: Service() {
             }
         }
     }
+    // endregion
 
 }

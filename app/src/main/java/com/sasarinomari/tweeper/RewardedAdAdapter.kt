@@ -43,17 +43,20 @@ class RewardedAdAdapter {
             when {
                 rewardedAd != null && rewardedAd!!.isLoaded -> {
                     val adCallback = object : RewardedAdCallback() {
+                        var isCompleted: Boolean = false
                         override fun onRewardedAdOpened() {
                             Log.i(LOG_TAG, "onRewardedAdOpened")
                         }
 
                         override fun onRewardedAdClosed() {
                             Log.i(LOG_TAG, "onRewardedAdClosed")
-                            ri.onFinished()
+                            if(isCompleted) ri.onFinished()
+                            load(activity)
                         }
 
                         override fun onUserEarnedReward(reward: com.google.android.gms.ads.rewarded.RewardItem) {
                             Log.i(LOG_TAG, "onUserEarnedReward ${reward.type}")
+                            isCompleted = true
                         }
 
                         override fun onRewardedAdFailedToShow(errorCode: Int) {

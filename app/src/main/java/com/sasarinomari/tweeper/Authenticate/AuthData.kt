@@ -15,7 +15,7 @@ class AuthData {
     var lastLogin: Date? = null
 
     override operator fun equals(other: Any?): Boolean {
-        return if (other is AuthData) this.user == other.user else super.equals(other)
+        return if (other is AuthData) this.user?.id == other.user?.id else super.equals(other)
     }
 
     override fun hashCode(): Int {
@@ -67,8 +67,11 @@ class AuthData {
 
         fun setFocusedUser(authData: AuthData) {
             val users = getUsers()
-            for (u in users) {
-                u.focused = u == authData
+            for (user in users) {
+                user.focused = if(user == authData) {
+                    user.user = authData.user
+                     true
+                } else false
             }
             saveUsers(users)
         }

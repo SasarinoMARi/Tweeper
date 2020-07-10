@@ -24,7 +24,7 @@ class HetzerService : BaseService() {
     lateinit var strRateLimitWaiting: String
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent!!, flags, startId)
+        if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.TweetCleaner)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
@@ -48,81 +48,85 @@ class HetzerService : BaseService() {
         val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
         val hetzer = Hetzer(conditions)
 
-        twitterAdapter.getTweets(object: TwitterAdapter.FetchListInterface{
-            override fun onStart() { }
+        runOnManagedThread {
+            twitterAdapter.getTweets(object : TwitterAdapter.FetchListInterface {
+                override fun onStart() {}
 
-            override fun onFinished(list: ArrayList<*>) {
-                val tweets = list as ArrayList<Status>
-                val context = this@HetzerService
-                sendNotification(strServiceName, getString(R.string.TweetChecking))
-                val passedStatuses = ArrayList<Status>() // 삭제되지 않은 트윗
-                val targetStatus = ArrayList<Status>() // 삭제된 트윗
-                val tweetCount = tweets.count()
-                if (tweets.isNotEmpty()) {
-                    for (i in 0 until tweetCount) {
-                        val item = tweets[i]
-                        if (hetzer.filter(item, i)) {
-                            passedStatuses.add(item)
-                        } else {
-                            targetStatus.add(item)
+                override fun onFinished(list: ArrayList<*>) {
+                    val tweets = list as ArrayList<Status>
+                    val context = this@HetzerService
+                    sendNotification(strServiceName, getString(R.string.TweetChecking))
+                    val passedStatuses = ArrayList<Status>() // 삭제되지 않은 트윗
+                    val targetStatus = ArrayList<Status>() // 삭제된 트윗
+                    val tweetCount = tweets.count()
+                    if (tweets.isNotEmpty()) {
+                        for (i in 0 until tweetCount) {
+                            val item = tweets[i]
+                            if (hetzer.filter(item, i)) {
+                                passedStatuses.add(item)
+                            } else {
+                                targetStatus.add(item)
+                            }
                         }
+                    }
+
+                    runOnManagedThread {
+                        twitterAdapter.destroyStatus(targetStatus, object : TwitterAdapter.IterableInterface {
+                            override fun onStart() {}
+
+                            override fun onFinished() {
+                                // 리포트 작성
+                                val ri = ReportInterface<HetzerReport>(loggedInUserId, HetzerReport.prefix)
+                                val report = HetzerReport(targetStatus, passedStatuses)
+                                report.id = ri.getReportCount(context) + 1
+                                ri.writeReport(context, report.id, report)
+
+                                // 알림 송출
+                                val redirect = Intent(context, HetzerReportActivity::class.java)
+                                redirect.putExtra(HetzerReportActivity.Parameters.ReportId.name, report.id)
+                                sendNotification(
+                                    strServiceName,
+                                    getString(R.string.Hetzer_Done),
+                                    silent = false,
+                                    cancelable = true,
+                                    redirect = redirect,
+                                    id = NotificationId + 1
+                                )
+                                context.sendActivityRefrashNotification(HetzerActivity::class.java.name)
+
+                                // 서비스 종료
+                                context.stopForeground(true)
+                                context.stopSelf()
+                            }
+
+                            override fun onIterate(listIndex: Int) {
+                                restrainedNotification(strServiceName, getString(R.string.TweetRemoving, listIndex + 1, targetStatus.count()))
+                            }
+
+                            override fun onRateLimit(listIndex: Int) {
+                                sendNotification(
+                                    "$strServiceName $strRateLimitWaiting",
+                                    getString(R.string.TweetRemoving, listIndex + 1, targetStatus.count())
+                                )
+                            }
+
+                        })
                     }
                 }
 
-                twitterAdapter.destroyStatus(targetStatus, object: TwitterAdapter.IterableInterface {
-                    override fun onStart() { }
+                override fun onFetch(listSize: Int) {
+                    restrainedNotification(strServiceName, getString(R.string.TweetPulling, listSize))
+                }
 
-                    override fun onFinished() {
-                        // 리포트 작성
-                        val ri = ReportInterface<HetzerReport>(loggedInUserId, HetzerReport.prefix)
-                        val report = HetzerReport(targetStatus, passedStatuses)
-                        report.id = ri.getReportCount(context) + 1
-                        ri.writeReport(context, report.id, report)
+                override fun onRateLimit(listSize: Int) {
+                    sendNotification(
+                        "$strServiceName $strRateLimitWaiting",
+                        getString(R.string.TweetPulling, listSize)
+                    )
+                }
 
-                        // 알림 송출
-                        val redirect = Intent(context, HetzerReportActivity::class.java)
-                        redirect.putExtra(HetzerReportActivity.Parameters.ReportId.name, report.id)
-                        sendNotification(
-                            strServiceName,
-                            getString(R.string.Hetzer_Done),
-                            silent = false,
-                            cancelable = true,
-                            redirect = redirect,
-                            id = NotificationId + 1
-                        )
-                        context.sendActivityRefrashNotification(HetzerActivity::class.java.name)
-
-                        // 서비스 종료
-                        context.stopForeground(true)
-                        context.stopSelf()
-                    }
-
-                    override fun onIterate(listIndex: Int) {
-                        restrainedNotification(strServiceName, getString(R.string.TweetRemoving, listIndex + 1, targetStatus.count()))
-                    }
-
-                    override fun onRateLimit(listIndex: Int) {
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.TweetRemoving, listIndex + 1, targetStatus.count())
-                        )
-                    }
-
-                })
-            }
-
-            override fun onFetch(listSize: Int) {
-                restrainedNotification(strServiceName, getString(R.string.TweetPulling, listSize))
-            }
-
-            override fun onRateLimit(listSize: Int) {
-                sendNotification(
-                    "$strServiceName $strRateLimitWaiting",
-                    getString(R.string.TweetPulling, listSize)
-                )
-            }
-
-        })
+            })
+        }
     }
 
 

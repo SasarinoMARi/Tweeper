@@ -9,13 +9,14 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.TwitterErrorCode
-import twitter4j.TwitterException
+import java.io.IOException
+import java.io.InterruptedIOException
 import java.util.*
 
 abstract class BaseService: Service() {
     companion object {
         private var innerRunningFlag = false
+        private var ACTION_STOP_SERVICE = "StopService4425"
 
         @Suppress("DEPRECATION")
         fun checkServiceRunning(context: Context, serviceName: String): Boolean {
@@ -43,6 +44,13 @@ abstract class BaseService: Service() {
 
     @Suppress("DEPRECATION")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // 종료 코드 분기
+        if(intent!=null && intent.action != null && intent.action!! == ACTION_STOP_SERVICE) {
+            stopForeground(true)
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         innerRunningFlag = true
         silentChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
             NotificationCompat.Builder(this, ChannelName)
@@ -61,6 +69,7 @@ abstract class BaseService: Service() {
     override fun onDestroy() {
         Log.i(this::class.java.name, "onDestroy")
         innerRunningFlag = false
+        stopAllManagedThreads()
         super.onDestroy()
     }
 
@@ -84,6 +93,15 @@ abstract class BaseService: Service() {
         builder.setContentText(text)
         builder.setContentIntent(pendingIntent)
         builder.setAutoCancel(cancelable)
+
+        if(!cancelable) {
+            val cls = this::class.java
+            val cancelIntent = Intent(this, cls)
+            cancelIntent.action = ACTION_STOP_SERVICE
+            val cancelPendingIntent = PendingIntent.getService(this, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+            builder.mActions.clear()
+            builder.addAction(0, "중지", cancelPendingIntent)
+        }
 
         return builder.build()!!
     }
@@ -114,6 +132,21 @@ abstract class BaseService: Service() {
         val intent = Intent(ActivityRefrashReceiver.eventName)
         intent.putExtra(ActivityRefrashReceiver.Parameters.Target.name, targetActivityClassName)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+    }
+
+    private var threads = ArrayList<Thread>()
+    protected fun runOnManagedThread(runnable: ()-> Unit) {
+        val thread = Thread(runnable)
+        threads.add(thread)
+        thread.start()
+    }
+    private fun stopAllManagedThreads() {
+        for (t in threads) {
+            if(t.isAlive) {
+                t.interrupt()
+                // t.stop()
+            }
+        }
     }
 
 }

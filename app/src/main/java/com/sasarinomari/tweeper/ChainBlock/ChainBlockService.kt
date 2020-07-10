@@ -33,7 +33,7 @@ class ChainBlockService : BaseService() {
     val twitterAdapter = TwitterAdapter(this)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent!!, flags, startId)
+        if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.Chainblock)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
@@ -59,127 +59,139 @@ class ChainBlockService : BaseService() {
     }
 
     private fun getMyFollowing() {
-        twitterAdapter.getMe(object : TwitterAdapter.FetchObjectInterface {
-            override fun onStart() {
-                sendNotification(strServiceName, getString(R.string.PullingMe))
-            }
+        runOnManagedThread {
+            twitterAdapter.getMe(object : TwitterAdapter.FetchObjectInterface {
+                override fun onStart() {
+                    sendNotification(strServiceName, getString(R.string.PullingMe))
+                }
 
-            override fun onFinished(obj: Any) {
-                ignoreMyFollowing = false
-                val me = obj as twitter4j.User
-                twitterAdapter.getFriendsIds(me.id, object : TwitterAdapter.FetchListInterface {
-                    override fun onStart() {}
-                    override fun onFinished(list: ArrayList<*>) {
-                        ignoreUserList = list as ArrayList<Long>
-                        ignoreMyFollowing = false
-                        doNextStuff()
+                override fun onFinished(obj: Any) {
+                    ignoreMyFollowing = false
+                    val me = obj as twitter4j.User
+                    runOnManagedThread {
+                        twitterAdapter.getFriendsIds(me.id, object : TwitterAdapter.FetchListInterface {
+                            override fun onStart() {}
+                            override fun onFinished(list: ArrayList<*>) {
+                                ignoreUserList = list as ArrayList<Long>
+                                ignoreMyFollowing = false
+                                doNextStuff()
+                            }
+
+                            override fun onFetch(listSize: Int) {
+                                restrainedNotification(strServiceName, getString(R.string.FriendPulling, listSize))
+                            }
+
+                            override fun onRateLimit(listSize: Int) {
+                                sendNotification(
+                                    "$strServiceName $strRateLimitWaiting",
+                                    getString(R.string.FollowerPulling, listSize)
+                                )
+                            }
+                        })
                     }
+                }
 
-                    override fun onFetch(listSize: Int) {
-                        restrainedNotification(strServiceName, getString(R.string.FriendPulling, listSize))
-                    }
-
-                    override fun onRateLimit(listSize: Int) {
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.FollowerPulling, listSize)
-                        )
-                    }
-                })
-            }
-
-            override fun onRateLimit() {
-                sendNotification("$strServiceName $strRateLimitWaiting", "")
-            }
-        })
+                override fun onRateLimit() {
+                    sendNotification("$strServiceName $strRateLimitWaiting", "")
+                }
+            })
+        }
     }
 
     private fun blockFollowing() {
-        twitterAdapter.getFriendsIds(targetUserId, object : TwitterAdapter.FetchListInterface {
-            override fun onStart() {}
-            override fun onFinished(list: ArrayList<*>) {
-                val targets = ignoreingUsers(list as ArrayList<Long>, ignoreUserList)
-                followingsCount = targets.count()
-                twitterAdapter.blockUsers(targets, object : TwitterAdapter.IterableInterface {
-                    override fun onStart() {}
-                    override fun onFinished() {
-                        blockFollowingFlag = false
-                        doNextStuff()
+        runOnManagedThread {
+            twitterAdapter.getFriendsIds(targetUserId, object : TwitterAdapter.FetchListInterface {
+                override fun onStart() {}
+                override fun onFinished(list: ArrayList<*>) {
+                    val targets = ignoreingUsers(list as ArrayList<Long>, ignoreUserList)
+                    followingsCount = targets.count()
+                    runOnManagedThread {
+                        twitterAdapter.blockUsers(targets, object : TwitterAdapter.IterableInterface {
+                            override fun onStart() {}
+                            override fun onFinished() {
+                                blockFollowingFlag = false
+                                doNextStuff()
+                            }
+
+                            override fun onIterate(listIndex: Int) {
+                                blockedCount += 1
+                                restrainedNotification(
+                                    strServiceName,
+                                    getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
+                                )
+                            }
+
+                            override fun onRateLimit(listIndex: Int) {
+                                blockedCount--
+                                sendNotification(
+                                    "$strServiceName $strRateLimitWaiting",
+                                    getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
+                                )
+                            }
+                        })
                     }
+                }
 
-                    override fun onIterate(listIndex: Int) {
-                        blockedCount += 1
-                        restrainedNotification(
-                            strServiceName,
-                            getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
-                        )
-                    }
+                override fun onFetch(listSize: Int) {
+                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
+                }
 
-                    override fun onRateLimit(listIndex: Int) {
-                        blockedCount--
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
-                        )
-                    }
-                })
-            }
-
-            override fun onFetch(listSize: Int) {
-                restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
-            }
-
-            override fun onRateLimit(listSize: Int) {
-                sendNotification(
-                    "$strServiceName $strRateLimitWaiting",
-                    getString(R.string.FetchingUser, listSize)
-                )
-            }
-        })
+                override fun onRateLimit(listSize: Int) {
+                    sendNotification(
+                        "$strServiceName $strRateLimitWaiting",
+                        getString(R.string.FetchingUser, listSize)
+                    )
+                }
+            })
+        }
     }
 
     private fun blockFollowers() {
-        twitterAdapter.getFollowersIds(targetUserId, object : TwitterAdapter.FetchListInterface {
-            override fun onStart() {}
-            override fun onFinished(list: ArrayList<*>) {
-                val targets = ignoreingUsers(list as ArrayList<Long>, ignoreUserList)
-                followersCount = targets.count()
-                twitterAdapter.blockUsers(targets, object : TwitterAdapter.IterableInterface {
-                    override fun onStart() {}
-                    override fun onFinished() {
-                        blockFollowerFlag = false
-                        doNextStuff()
+        runOnManagedThread {
+            twitterAdapter.getFollowersIds(targetUserId, object : TwitterAdapter.FetchListInterface {
+                override fun onStart() {}
+                override fun onFinished(list: ArrayList<*>) {
+                    val targets = ignoreingUsers(list as ArrayList<Long>, ignoreUserList)
+                    followersCount = targets.count()
+                    runOnManagedThread {
+                        twitterAdapter.blockUsers(targets, object : TwitterAdapter.IterableInterface {
+                            override fun onStart() {}
+                            override fun onFinished() {
+                                blockFollowerFlag = false
+                                doNextStuff()
+                            }
+
+                            override fun onIterate(listIndex: Int) {
+                                blockedCount += 1
+                                restrainedNotification(
+                                    strServiceName,
+                                    getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
+                                )
+                            }
+
+                            override fun onRateLimit(listIndex: Int) {
+                                blockedCount--
+                                sendNotification(
+                                    "$strServiceName $strRateLimitWaiting",
+                                    getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
+                                )
+                            }
+                        })
                     }
+                }
 
-                    override fun onIterate(listIndex: Int) {
-                        blockedCount += 1
-                        restrainedNotification(
-                            strServiceName,
-                            getString(R.string.Blocking, blockedCount, followingsCount + followersCount)
-                        )
-                    }
+                override fun onFetch(listSize: Int) {
+                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
+                }
 
-                    override fun onRateLimit(listIndex: Int) {
-                        blockedCount--
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
-                        )
-                    }
-                })
-            }
-
-            override fun onFetch(listSize: Int) {
-                restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
-            }
-
-            override fun onRateLimit(listSize: Int) {
-                sendNotification(
-                    "$strServiceName $strRateLimitWaiting",
-                    getString(R.string.FetchingUser, listSize)
-                )
-            }
-        })
+                override fun onRateLimit(listSize: Int) {
+                    sendNotification(
+                        "$strServiceName $strRateLimitWaiting",
+                        getString(R.string.FetchingUser, listSize)
+                    )
+                }
+            })
+        }
     }
 
     private fun finish() {
@@ -197,10 +209,10 @@ class ChainBlockService : BaseService() {
         this.stopSelf()
     }
 
-    private fun ignoreingUsers(users: ArrayList<Long>, ignoreUsers: ArrayList<Long>?):ArrayList<Long> {
-        if(ignoreUsers == null) return users
+    private fun ignoreingUsers(users: ArrayList<Long>, ignoreUsers: ArrayList<Long>?): ArrayList<Long> {
+        if (ignoreUsers == null) return users
         for (ignore in ignoreUsers) {
-            if(users.contains(ignore)) {
+            if (users.contains(ignore)) {
                 Log.i("ChainBlock", "Ignored Block: User $ignore")
                 users.remove(ignore)
             }

@@ -2,11 +2,13 @@ package com.sasarinomari.tweeper.ChainBlock
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.TwitterException
+import java.io.InterruptedIOException
 
 class BlockClearService : BaseService() {
     companion object {
@@ -17,7 +19,7 @@ class BlockClearService : BaseService() {
     lateinit var strRateLimitWaiting: String
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        super.onStartCommand(intent, flags, startId)
+        if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.BlockClear)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
@@ -45,7 +47,7 @@ class BlockClearService : BaseService() {
 
     // region API 코드
     private fun getBlockedUsers(callback: (ArrayList<Long>) -> Unit, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
-        Thread(Runnable {
+        runOnManagedThread {
             val twitter = SharedTwitterProperties.instance()
             var cursor: Long = startIndex
             try {
@@ -71,11 +73,11 @@ class BlockClearService : BaseService() {
                     }
                 }.catch()
             }
-        }).start()
+        }
     }
 
     private fun unblockUsers(list: ArrayList<Long>, callback: () -> Unit, startIndex: Int = 0) {
-        Thread(Runnable {
+        runOnManagedThread {
             val twitter = SharedTwitterProperties.instance()
             var cursor = 0
             try {
@@ -102,7 +104,7 @@ class BlockClearService : BaseService() {
                     }
                 }.catch()
             }
-        }).start()
+        }
     }
 
     // endregion

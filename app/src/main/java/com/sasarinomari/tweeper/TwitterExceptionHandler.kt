@@ -16,6 +16,14 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                 Thread.sleep((1000 * te.rateLimitStatus.secondsUntilReset).toLong())
                 onRateLimitReset()
             }
+            -1 -> {
+                when (te.message) {
+                    "thread interrupted" -> {
+                        Log.i(LOG_HEADER, "Thread Interrupted!")
+                    }
+                    else -> throw te
+                }
+            }
             else -> throw te
         }
     }

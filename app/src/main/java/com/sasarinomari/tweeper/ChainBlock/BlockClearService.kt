@@ -10,7 +10,7 @@ import twitter4j.TwitterException
 
 class BlockClearService : BaseService() {
     companion object {
-        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
+        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, BlockClearService::class.java.name)
     }
 
     lateinit var strServiceName: String

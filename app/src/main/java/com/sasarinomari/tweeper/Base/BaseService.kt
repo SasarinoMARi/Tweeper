@@ -18,15 +18,14 @@ abstract class BaseService: Service() {
         private var innerRunningFlag = false
 
         @Suppress("DEPRECATION")
-        fun checkServiceRunning(context: Context): Boolean {
+        fun checkServiceRunning(context: Context, serviceName: String): Boolean {
             var flag1 = false
             val flag2 = innerRunningFlag
 
             val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            val className = this::class.java.name
             for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
-                if (className == service.service.className) {
-                    Log.i(className, "$className 서비스가 이미 실행중입니다.")
+                if (serviceName == service.service.className) {
+                    Log.i(serviceName, "$serviceName 서비스가 이미 실행중입니다.")
                     flag1 = true
                     break
                 }

@@ -6,13 +6,12 @@ import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
-import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.sasarinomari.tweeper.TwitterAdapter
 import java.lang.Exception
 
 class AnalyticsService : BaseService() {
     companion object {
-        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
+        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, AnalyticsService::class.java.name)
     }
 
     enum class Parameters {

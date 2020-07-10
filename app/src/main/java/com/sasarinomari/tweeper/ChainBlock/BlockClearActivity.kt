@@ -18,6 +18,11 @@ class BlockClearActivity : BaseActivity() {
         setContentView(R.layout.activity_block_clear)
 
         button_ok.setOnClickListener {
+            if (BlockClearService.checkServiceRunning((this@BlockClearActivity))) {
+                da.warning(getString(R.string.Wait), getString(R.string.duplicateService_BlockClear)).show()
+                return@setOnClickListener
+            }
+
             da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
                 .setConfirmText(getString(R.string.Yes))
                 .setCancelText(getString(R.string.Wait))

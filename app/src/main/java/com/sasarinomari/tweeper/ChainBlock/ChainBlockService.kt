@@ -6,11 +6,10 @@ import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
-import twitter4j.User
 
 class ChainBlockService : BaseService() {
     companion object {
-        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
+        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, ChainBlockService::class.java.name)
     }
 
     enum class Parameters {

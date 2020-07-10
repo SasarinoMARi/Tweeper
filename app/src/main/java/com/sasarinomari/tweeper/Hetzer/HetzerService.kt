@@ -6,17 +6,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter
-import com.sasarinomari.tweeper.TwitterExceptionHandler
 import twitter4j.Status
-import twitter4j.TwitterException
 import java.lang.Exception
 
 class HetzerService : BaseService() {
     companion object {
-        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context)
+        fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, HetzerService::class.java.name)
     }
 
     enum class Parameters {

@@ -7,6 +7,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
+import android.view.View
 import android.widget.LinearLayout
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -45,8 +46,13 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
         button_blockClear.setOnClickListener {
             startActivity(Intent(this, BlockClearActivity::class.java))
         }
-        button_gotoTest.setOnClickListener {
-            startActivity(Intent(this, UITestActivity::class.java))
+        if(BuildConfig.DEBUG) {
+            button_gotoTest.setOnClickListener {
+                startActivity(Intent(this, UITestActivity::class.java))
+            }
+        }
+        else {
+            button_gotoTest.visibility = View.GONE
         }
 
         image_profilePicture.background = ShapeDrawable(OvalShape())

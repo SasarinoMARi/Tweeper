@@ -13,7 +13,7 @@ import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.item_default.view.*
 
 @Suppress("DEPRECATION")
-@Deprecated("User RecyclerInjector")
+@Deprecated("Use RecyclerInjector")
 abstract class DefaultListItem(private val items: List<*>) : BaseAdapter() {
     var clickEffectVisibility = false
 

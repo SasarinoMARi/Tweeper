@@ -41,6 +41,9 @@ class RewardedAdAdapter {
 
         fun show(activity: Activity, ri: RewardInterface) {
             when {
+                BuildConfig.DEBUG ->{
+                    ri.onFinished()
+                }
                 rewardedAd != null && rewardedAd!!.isLoaded -> {
                     val adCallback = object : RewardedAdCallback() {
                         var isCompleted: Boolean = false

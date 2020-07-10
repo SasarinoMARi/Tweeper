@@ -104,6 +104,10 @@ internal class HetzerConditionsActivity : BaseActivity() {
         if (conditions.containsKey(14)) addCondition14()
         if (conditions.containsKey(15)) addCondition15((conditions[15] as Double).toInt())
         if (conditions.containsKey(16)) addCondition16((conditions[16] as Double).toInt())
+        if (conditions.containsKey(17)) addCondition17((conditions[17] as Double).toInt())
+        if (conditions.containsKey(18)) addCondition18((conditions[18] as Double).toInt())
+        if (conditions.containsKey(19)) addCondition19((conditions[19] as Double).toInt())
+        if (conditions.containsKey(20)) addCondition20((conditions[20] as Double).toInt())
     }
 
     private fun addView(text: String, callback: ()-> Unit){
@@ -221,6 +225,30 @@ internal class HetzerConditionsActivity : BaseActivity() {
         addView(getString(R.string.HetzerConditions_16, minute.toString())){conditions.remove(16)}
     }
 
+    // N회 이상 인용 받은 트윗 (Int)
+    private fun addCondition17(number: Int) {
+        conditions[17] = number
+        addView(getString(R.string.HetzerConditions_17, number.toString())){conditions.remove(17)}
+    }
+
+    // N회 이하 인용 받은 트윗 (Int)
+    private fun addCondition18(number: Int) {
+        conditions[18] = number
+        addView(getString(R.string.HetzerConditions_18, number.toString())){conditions.remove(18)}
+    }
+
+    // N회 이상 멘션 받은 트윗 (Int)
+    private fun addCondition19(number: Int) {
+        conditions[19] = number
+        addView(getString(R.string.HetzerConditions_19, number.toString())){conditions.remove(19)}
+    }
+
+    // N회 이하 멘션 받은 트윗 (Int)
+    private fun addCondition20(number: Int) {
+        conditions[20] = number
+        addView(getString(R.string.HetzerConditions_20, number.toString())){conditions.remove(20)}
+    }
+
     // endregion
 
     private fun createAddConditionDialog(): MaterialDialog {
@@ -307,6 +335,20 @@ internal class HetzerConditionsActivity : BaseActivity() {
         if (!conditions.containsKey(16)) {
             listItems.add(getString(R.string.HetzerConditions_16, "N"))
         }
+        /*
+        if (!conditions.containsKey(17)) {
+            listItems.add(getString(R.string.HetzerConditions_17, "N"))
+        }
+        if (!conditions.containsKey(18)) {
+            listItems.add(getString(R.string.HetzerConditions_18, "N"))
+        }
+         */
+        if (!conditions.containsKey(19)) {
+            listItems.add(getString(R.string.HetzerConditions_19, "N"))
+        }
+        if (!conditions.containsKey(20)) {
+            listItems.add(getString(R.string.HetzerConditions_20, "N"))
+        }
         // endregion
         // region ListItem Choice Event
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
@@ -357,6 +399,29 @@ internal class HetzerConditionsActivity : BaseActivity() {
                 getString(R.string.HetzerConditions_16, "N") -> {
                     inputNumber(getString(R.string.HetzerConditions_16_Desc)) { number ->
                         addCondition16(number)
+                    }
+                }
+                /*
+                getString(R.string.HetzerConditions_17, "N") -> {
+                    inputNumber(getString(R.string.HetzerConditions_16_Desc)) { number ->
+                        addCondition8(number)
+                    }
+                }
+                getString(R.string.HetzerConditions_18, "N") -> {
+                    inputNumber(getString(R.string.HetzerConditions_17_Desc)) { number ->
+                        addCondition8(number)
+                    }
+                }
+
+                 */
+                getString(R.string.HetzerConditions_19, "N") -> {
+                    inputNumber(getString(R.string.HetzerConditions_19_Desc)) { number ->
+                        addCondition8(number)
+                    }
+                }
+                getString(R.string.HetzerConditions_20, "N") -> {
+                    inputNumber(getString(R.string.HetzerConditions_20_Desc)) { number ->
+                        addCondition8(number)
                     }
                 }
             }

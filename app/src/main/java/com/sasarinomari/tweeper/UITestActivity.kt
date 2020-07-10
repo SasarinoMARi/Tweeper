@@ -45,7 +45,19 @@ class UITestActivity : BaseActivity() {
         if(false) testTextSufrace()
         if(false) testRecyclerInjector()
         if(false) testRewardAd()
+        if(false) testBillingActivity()
+        if(true) testFirebaseLogging()
 
+    }
+
+    private fun testFirebaseLogging() {
+        fbLog.log("Test_Event",
+            Pair("Param1", "Hello, World!"),
+            Pair("Param2", "Second Run"),
+            Pair("Param3", "Zi be ga go sip da"))
+    }
+
+    private fun testBillingActivity() {
         val intent = Intent(this, BillingActivity::class.java)
         startActivity(intent)
     }

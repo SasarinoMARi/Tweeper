@@ -24,7 +24,7 @@ abstract class BaseService: Service() {
 
             val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val className = this::class.java.name
-            for (service in manager.getRunningServices(Integer.MAX_VALUE)) { // TODO : 이것 때문에 릴리즈 안될 수도..
+            for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
                 if (className == service.service.className) {
                     Log.i(className, "$className 서비스가 이미 실행중입니다.")
                     flag1 = true

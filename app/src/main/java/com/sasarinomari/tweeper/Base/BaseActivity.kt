@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sasarinomari.tweeper.DialogAdapter
+import com.sasarinomari.tweeper.FirebaseLogger
 
 abstract class BaseActivity : AppCompatActivity() {
     fun hideKeyboard() {
@@ -19,12 +20,14 @@ abstract class BaseActivity : AppCompatActivity() {
     private val FINISH_INTERVAL_TIME: Long = 2000
     private var backPressedTime: Long = 0
     protected lateinit var da: DialogAdapter
-    protected lateinit var activityRefrashReceiver: ActivityRefrashReceiver
+    private lateinit var activityRefrashReceiver: ActivityRefrashReceiver
+    protected lateinit var fbLog: FirebaseLogger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         da = DialogAdapter(this)
         activityRefrashReceiver = ActivityRefrashReceiver(this)
+        fbLog = FirebaseLogger(this)
     }
 
     fun backPressJail(warningText: String): Boolean {

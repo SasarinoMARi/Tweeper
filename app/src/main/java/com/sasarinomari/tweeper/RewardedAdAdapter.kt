@@ -32,7 +32,8 @@ class RewardedAdAdapter {
 
                 override fun onRewardedAdFailedToLoad(errorCode: Int) {
                     Log.i(LOG_TAG, "onRewardedAdFailedToLoad $errorCode")
-                    // TODO: 로그 남기기
+                    FirebaseLogger(context).log("onRewardedAdFailedToLoad",
+                        Pair("ErrorCode", errorCode.toString()))
                 }
             }
             rewardedAd!!.loadAd(AdRequest.Builder().build(), adLoadCallback)
@@ -57,7 +58,8 @@ class RewardedAdAdapter {
 
                         override fun onRewardedAdFailedToShow(errorCode: Int) {
                             Log.i(LOG_TAG, "onRewardedAdFailedToShow $errorCode")
-                            // TODO: 로그 남기기
+                            FirebaseLogger(activity).log("onRewardedAdFailedToShow",
+                                Pair("ErrorCode", errorCode.toString()))
                         }
                     }
                     rewardedAd!!.show(activity, adCallback)

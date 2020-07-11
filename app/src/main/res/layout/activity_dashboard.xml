@@ -139,6 +139,17 @@
                     app:ovalColor="@color/purple"
                     app:title="@string/BlockClear" />
 
+                <com.sasarinomari.tweeper.View.DashboardCardView
+                    android:id="@+id/button_billing"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    app:description="@string/DonateDesc"
+                    app:icon="@drawable/credit_card_outline"
+                    app:ovalColor="@color/yellow"
+                    app:title="@string/Donate" />
+
 
                 <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_gotoTest"

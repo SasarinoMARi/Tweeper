@@ -20,6 +20,7 @@ import com.sasarinomari.tweeper.ChainBlock.BlockClearActivity
 import com.sasarinomari.tweeper.ChainBlock.ChainBlockActivity
 import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.Billing.BillingActivity
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import twitter4j.TwitterFactory
 
@@ -45,6 +46,9 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
         }
         button_blockClear.setOnClickListener {
             startActivity(Intent(this, BlockClearActivity::class.java))
+        }
+        button_billing.setOnClickListener {
+            startActivity(Intent(this, BillingActivity::class.java))
         }
         if(BuildConfig.DEBUG) {
             button_gotoTest.setOnClickListener {

@@ -5,6 +5,7 @@
     <color name="colorPrimary">#73c5f7</color>
     <color name="colorPrimaryDark">#5bbbf5</color>
     <color name="colorPrimaryDeepDark">#139df1</color>
+    <color name="spotlightBackground">#dF000000</color>
     <color name="black">#000000</color>
     <color name="colorAccent">#37FADC</color>
     <color name="semiwhite">#cccccc</color>

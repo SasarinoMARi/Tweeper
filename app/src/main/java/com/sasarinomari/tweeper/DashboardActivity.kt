@@ -8,6 +8,8 @@ import kotlinx.android.synthetic.main.activity_dashboard.*
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.ShapeDrawable
 import android.view.View
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -22,6 +24,10 @@ import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
 import com.sasarinomari.tweeper.SimplizatedClass.User
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.Target
+import com.takusemba.spotlight.shape.Circle
+import kotlinx.android.synthetic.main.fragment_spotlight.view.*
 import twitter4j.TwitterFactory
 
 class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
@@ -63,13 +69,42 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
         image_profilePicture.clipToOutline = true
 
         initAds()
-        showTips()
+        Thread {
+            Thread.sleep(100)
+            runOnUiThread {
+                showTips()
+            }
+        }.start()
     }
 
+
     private fun showTips() {
-        // TODO
-        // 사용 가이드 팝업 띄워주기.
-        // 다시 보지 않기 설정했다면 설정에서 값을 바꾸기 전까지 띄우지 않음.
+        val targets = ArrayList<Target>()
+        val firstRoot = FrameLayout(this)
+        val first = layoutInflater.inflate(R.layout.fragment_spotlight, firstRoot)
+        val firstTarget = Target.Builder()
+            .setAnchor(image_profilePicture)
+            .setShape(Circle(100f))
+            .setOverlay(first)
+            .build()
+
+        targets.add(firstTarget)
+
+        val spotlight = Spotlight.Builder(this)
+            .setTargets(targets)
+            .setBackgroundColor(R.color.spotlightBackground)
+            .setDuration(1000L)
+            .setAnimation(DecelerateInterpolator(2f))
+            .build()
+
+        spotlight.start()
+
+        first.column_title.text = "계정 변경하기"
+        first.column_description.text = "이곳을 클릭해서 트윗지기에 로그인한 계정을 바꿀 수 있어요!"
+        first.isClickable = true
+        first.setOnClickListener {
+            spotlight.finish()
+        }
     }
 
     private fun initAds() {

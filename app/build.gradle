@@ -48,4 +48,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.4.3'
     implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
     implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    implementation 'com.github.takusemba:spotlight:+'
 }

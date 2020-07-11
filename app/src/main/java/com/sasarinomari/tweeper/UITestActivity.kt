@@ -4,33 +4,28 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.annotation.NonNull
-import kotlinx.android.synthetic.main.activity_uitest.*
-import su.levenetc.android.textsurface.TextBuilder
-import su.levenetc.android.textsurface.contants.Side
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.MobileAds
-import com.google.android.gms.ads.reward.RewardItem
-import com.google.android.gms.ads.reward.RewardedVideoAd
-import com.google.android.gms.ads.reward.RewardedVideoAdListener
-import com.google.android.gms.ads.rewarded.RewardedAd
-import com.google.android.gms.ads.rewarded.RewardedAdCallback
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
+import com.takusemba.spotlight.Spotlight
+import com.takusemba.spotlight.Target
+import kotlinx.android.synthetic.main.activity_uitest.*
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import su.levenetc.android.textsurface.Text
+import su.levenetc.android.textsurface.TextBuilder
 import su.levenetc.android.textsurface.animations.*
-import su.levenetc.android.textsurface.contants.Pivot
 import su.levenetc.android.textsurface.contants.Align.*
 import su.levenetc.android.textsurface.contants.Direction
+import su.levenetc.android.textsurface.contants.Pivot
+import su.levenetc.android.textsurface.contants.Side
 import kotlin.random.Random
 
 
@@ -46,8 +41,37 @@ class UITestActivity : BaseActivity() {
         if(false) testRecyclerInjector()
         if(false) testRewardAd()
         if(false) testBillingActivity()
-        if(true) testFirebaseLogging()
+        if(false) testFirebaseLogging()
+        if(true) testSpotlight()
 
+    }
+
+    private fun testSpotlight() {
+        spotlightTarget.setOnClickListener {
+            val firstRoot = FrameLayout(this)
+            val first = layoutInflater.inflate(R.layout.fragment_spotlight, firstRoot)
+            val firstTarget = Target.Builder()
+                .setAnchor(findViewById<ImageView>(R.id.spotlightTarget))
+                .setShape(com.takusemba.spotlight.shape.Circle(100f))
+                .setOverlay(first)
+                .build()
+
+            val spotlight = Spotlight.Builder(this)
+                .setTargets(firstTarget)
+                .setBackgroundColor(R.color.spotlightBackground)
+                .setDuration(1000L)
+                .setAnimation(DecelerateInterpolator(2f))
+                .build()
+
+            spotlight.start()
+
+            first.column_title.text = "계정 변경하기"
+            first.column_description.text = "이곳을 클릭해서 트윗지기에 로그인한 계정을 바꿀 수 있어요!"
+            first.isClickable = true
+            first.setOnClickListener {
+                spotlight.finish()
+            }
+        }
     }
 
     private fun testFirebaseLogging() {

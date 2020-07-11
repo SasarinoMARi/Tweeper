@@ -62,9 +62,11 @@ class HetzerReportActivity : BaseActivity() {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.column_title.text = getString(R.string.RemovedTweets)
                 view.column_description.text = getString(R.string.DeletedTweetCount, report.removedStatuses.count())
+                view.chevron.visibility = View.VISIBLE
                 view.setOnClickListener {
                     val f = adapter.getFragment(viewType + 1)
                     f.visible = !f.visible
+                    view.chevron.setImageResource(if(f.visible) R.drawable.chevron_down else R.drawable.chevron_up)
                     adapter.notifyDataSetChanged()
                 }
             }
@@ -91,9 +93,11 @@ class HetzerReportActivity : BaseActivity() {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.column_title.text = getString(R.string.SavedTweets)
                 view.column_description.text = getString(R.string.SavedTweetCount, report.savedStatuses.count())
+                view.chevron.visibility = View.VISIBLE
                 view.setOnClickListener {
                     val f = adapter.getFragment(viewType + 1)
                     f.visible = !f.visible
+                    view.chevron.setImageResource(if(f.visible) R.drawable.chevron_down else R.drawable.chevron_up)
                     adapter.notifyDataSetChanged()
                 }
             }

@@ -1,44 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:foreground="?attr/selectableItemBackground"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="6dp">
+    android:layout_margin="30dp"
+    android:layout_marginBottom="30dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingLeft="14dp"
-        android:paddingTop="16dp"
-        android:paddingRight="14dp"
-        android:paddingBottom="16dp">
+        android:layout_gravity="center_horizontal"
+        android:foreground="?attr/selectableItemBackground"
+        android:minWidth="300dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp">
 
-        <com.sasarinomari.tweeper.View.OvalImageView
-            android:id="@+id/cardbutton_image"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:icon="@null"
-            app:ovalColor="@color/black" />
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
 
-        <TextView
-            android:id="@+id/cardbutton_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:fontFamily="@font/noto_sans_regular"
-            android:text="Button Text"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            tools:ignore="HardcodedText" />
+            <com.sasarinomari.tweeper.View.OvalImageView
+                android:id="@+id/cardbutton_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@null"
+                app:ovalColor="@color/black" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/cardbutton_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/noto_sans_regular"
+                android:text="Button Text"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                tools:ignore="HardcodedText" />
 
-</androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

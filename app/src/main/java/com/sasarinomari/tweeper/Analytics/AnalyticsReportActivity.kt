@@ -3,6 +3,7 @@ package com.sasarinomari.tweeper.Analytics
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -256,10 +257,12 @@ class AnalyticsReportActivity : BaseActivity() {
     private fun drawHeader(view: View, title: String, adapter: RecyclerInjector, viewType: Int) {
         view.column_title.text = title
         view.column_description.text = getString(R.string.TouchToExpend)
+        view.chevron.visibility = View.VISIBLE
 
         val f = adapter.getFragment(viewType + 1)
         view.setOnClickListener {
             f.visible = !f.visible
+            view.chevron.setImageResource(if(f.visible) R.drawable.chevron_down else R.drawable.chevron_up)
             adapter.notifyDataSetChanged()
         }
     }

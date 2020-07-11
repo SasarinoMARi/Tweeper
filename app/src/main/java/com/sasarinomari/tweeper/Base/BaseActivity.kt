@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.google.gson.Gson
 import com.sasarinomari.tweeper.DialogAdapter
 import com.sasarinomari.tweeper.FirebaseLogger
 
@@ -60,4 +61,17 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onPause()
         LocalBroadcastManager.getInstance(this).unregisterReceiver( activityRefrashReceiver)
     }
+
+    //region FirstRun
+    protected fun isFirstRunThisActivity() : Boolean {
+        val prefs = getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE)
+        val flag = prefs.getInt("flag", 0)
+        return flag == 0
+    }
+    protected fun setNotFirstrun(){
+        val prefs = getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE).edit()
+        prefs.putInt("flag", 1)
+        prefs.apply()
+    }
+    //endregion
 }

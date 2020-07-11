@@ -24,6 +24,7 @@ import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
 import com.sasarinomari.tweeper.SimplizatedClass.User
+import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
@@ -69,7 +70,7 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
         image_profilePicture.clipToOutline = true
 
         initAds()
-        Thread {
+        if (isFirstRunThisActivity()) Thread {
             Thread.sleep(100)
             runOnUiThread {
                 showTips()
@@ -95,6 +96,11 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
             .setBackgroundColor(R.color.spotlightBackground)
             .setDuration(1000L)
             .setAnimation(DecelerateInterpolator(2f))
+            .setOnSpotlightListener(object: OnSpotlightListener {
+                override fun onEnded() { setNotFirstrun() }
+
+                override fun onStarted() { }
+            })
             .build()
 
         spotlight.start()

@@ -342,13 +342,13 @@ internal class HetzerConditionsActivity : BaseActivity() {
         if (!conditions.containsKey(18)) {
             listItems.add(getString(R.string.HetzerConditions_18, "N"))
         }
-         */
         if (!conditions.containsKey(19)) {
             listItems.add(getString(R.string.HetzerConditions_19, "N"))
         }
         if (!conditions.containsKey(20)) {
             listItems.add(getString(R.string.HetzerConditions_20, "N"))
         }
+         */
         // endregion
         // region ListItem Choice Event
         dialog.listItemsSingleChoice(items = listItems) { _, _, textSeq ->
@@ -404,26 +404,25 @@ internal class HetzerConditionsActivity : BaseActivity() {
                 /*
                 getString(R.string.HetzerConditions_17, "N") -> {
                     inputNumber(getString(R.string.HetzerConditions_16_Desc)) { number ->
-                        addCondition8(number)
+                        addCondition16(number)
                     }
                 }
                 getString(R.string.HetzerConditions_18, "N") -> {
                     inputNumber(getString(R.string.HetzerConditions_17_Desc)) { number ->
-                        addCondition8(number)
+                        addCondition17(number)
                     }
                 }
-
-                 */
                 getString(R.string.HetzerConditions_19, "N") -> {
                     inputNumber(getString(R.string.HetzerConditions_19_Desc)) { number ->
-                        addCondition8(number)
+                        addCondition19(number)
                     }
                 }
                 getString(R.string.HetzerConditions_20, "N") -> {
                     inputNumber(getString(R.string.HetzerConditions_20_Desc)) { number ->
-                        addCondition8(number)
+                        addCondition20(number)
                     }
                 }
+                 */
             }
         }
         // endregion

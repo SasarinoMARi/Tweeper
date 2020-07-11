@@ -20,10 +20,10 @@ internal class Hetzer(private val conditions: HashMap<Int, Any>) {
         14. 위치 정보를 포함하지 않은 트윗 // TODO: 동작 체크
         15. 최근 N개 까지의 트윗 (Int)
         16. 최근 N분 이내의 트윗 (Int) // TODO: 동작 체크
-        17. N회 이상 인용 받은 트윗 (Int)
-        18. N회 이하 인용 받은 트윗 (Int)
-        19. N회 이상 멘션 받은 트윗 (Int) // TODO: 동작 체크
-        20. N회 이하 멘션 받은 트윗 (Int) // TODO: 동작 체크
+        17. N회 이상 인용 받은 트윗 (Int) // 알아낼 방법이 없음
+        18. N회 이하 인용 받은 트윗 (Int) // 알아낼 방법이 없음
+        19. N회 이상 멘션 받은 트윗 (Int)  // 알아낼 방법이 없음
+        20. N회 이하 멘션 받은 트윗 (Int)  // 알아낼 방법이 없음
      */
     fun filter(status: Status, i: Int): Boolean {
         return when {
@@ -144,7 +144,7 @@ internal class Hetzer(private val conditions: HashMap<Int, Any>) {
     private fun 최근N분이내의트윗(status: Status): Boolean {
         if (!conditions.containsKey(16)) return false
         val min = (conditions[16] as Double).toInt()
-        val divider = 1000 / 60
+        val divider = 1000 * 60
         val tweetMinuteStamp = status.createdAt.time / divider + min
         val safeMinuteStamp = System.currentTimeMillis() / divider
         return tweetMinuteStamp >= safeMinuteStamp
@@ -164,11 +164,13 @@ internal class Hetzer(private val conditions: HashMap<Int, Any>) {
 
     private fun N회이상멘션받은트윗(status: Status): Boolean {
         if (!conditions.containsKey(19)) return false
-        return status.userMentionEntities.count() >= (conditions[19] as Double).toInt()
+        //return status.userMentionEntities.count() >= (conditions[19] as Double).toInt()
+        return true
     }
 
     private fun N회이하멘션받은트윗(status: Status): Boolean {
         if (!conditions.containsKey(20)) return false
-        return status.userMentionEntities.count() >= (conditions[20] as Double).toInt()
+        //return status.userMentionEntities.count() >= (conditions[20] as Double).toInt()
+        return true
     }
 }

@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Hetzer.HetzerReportActivity
-import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.fragment_report_list.view.*
 import java.text.SimpleDateFormat
 import java.util.*

@@ -31,7 +31,7 @@ import com.takusemba.spotlight.shape.Circle
 import kotlinx.android.synthetic.main.fragment_spotlight.view.*
 import twitter4j.TwitterFactory
 
-class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
+class DashboardActivity : BaseActivity() {
     enum class Requests {
         Switch, Hetzer
     }
@@ -132,15 +132,27 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
         text_ScreenName.text = ""
         image_profilePicture.setImageResource(0)
 
-        SharedTwitterProperties.getMe(this) { me ->
-            runOnUiThread {
-                text_Name.text = me.name
-                text_ScreenName.text = me.screenName
-                Picasso.get()
-                    .load(me.profileImageURL.replace("normal.jpg", "200x200.jpg"))
-                    .into(image_profilePicture)
-            }
-        }
+        Thread {
+            TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
+                override fun onStart() { }
+
+                override fun onFinished(obj: Any) {
+                    val me = obj as twitter4j.User
+                    runOnUiThread {
+                        text_Name.text = me.name
+                        text_ScreenName.text = me.screenName
+                        Picasso.get()
+                            .load(me.profileImageURL.replace("normal.jpg", "200x200.jpg"))
+                            .into(image_profilePicture)
+                    }
+                }
+
+                override fun onRateLimit() {
+                    da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
+                }
+
+            })
+        }.start()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -175,21 +187,27 @@ class DashboardActivity : BaseActivity(), SharedTwitterProperties.ActivityInterf
 
     private fun setUser(authData: AuthData) {
         val newTwitter = TwitterFactory().instance
-        SharedTwitterProperties.setOAuthConsumer(this, newTwitter)
+        TwitterAdapter.setOAuthConsumer(this, newTwitter)
         newTwitter.oAuthAccessToken = authData.token
-        SharedTwitterProperties.clear(newTwitter)
+        TwitterAdapter.initialize(newTwitter)
         AuthData.Recorder(this).setFocusedUser(authData)
-        SharedTwitterProperties.getMe(this) {
-            // 포커스 변경 먼저 반영하고 유저 갱신 후 다시 저장
-            authData.user = User(it) 
-            AuthData.Recorder(this).setFocusedUser(authData)
-        }
-        setResult(RESULT_OK)
-    }
+        Thread {
+            TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
+                override fun onStart() { }
 
-    override fun onRateLimit(apiPoint: String) {
-        runOnUiThread {
-            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)).show()
-        }
+                override fun onFinished(obj: Any) {
+                    val me = obj as twitter4j.User
+                    // 포커스 변경 먼저 반영하고 유저 갱신 후 다시 저장
+                    authData.user = User(me)
+                    AuthData.Recorder(this@DashboardActivity).setFocusedUser(authData)
+                }
+
+                override fun onRateLimit() {
+                    da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
+                }
+
+            })
+        }.start()
+        setResult(RESULT_OK)
     }
 }

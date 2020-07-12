@@ -8,18 +8,17 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RewardedAdAdapter
-import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chain_block.*
 import twitter4j.TwitterException
 import twitter4j.User
 import java.text.DecimalFormat
 
-class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
+class ChainBlockActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,18 +60,35 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
             val screenN = input_ScreenName.text.toString()
             val p = da.progress(null, getString(R.string.UserFetching))
             p.show()
-            lookup(screenN) { user ->
-                runOnUiThread {
-                    p.dismissWithAnimation()
-                    if (user.isProtected) {
-                        input_ScreenName.text = null
-                        da.error(getString(R.string.Error), getString(R.string.UserProtected)).show()
-                    } else {
-                        phase2(user)
-                    }
-                }
-            }
+            Thread {
+                TwitterAdapter().lookup(screenN, object: TwitterAdapter.FoundObjectInterface {
+                    override fun onStart() { }
 
+                    override fun onFinished(obj: Any) {
+                        val user = obj as User
+                        runOnUiThread {
+                            p.dismissWithAnimation()
+                            if (user.isProtected) {
+                                input_ScreenName.text = null
+                                da.error(getString(R.string.Error), getString(R.string.UserProtected)).show()
+                            } else {
+                                phase2(user)
+                            }
+                        }
+                    }
+
+                    override fun onRateLimit() {
+                        da.error(getString(R.string.Error), getString(R.string.RateLimitError, "lookup")).show()
+                    }
+
+                    override fun onNotFound() {
+                        runOnUiThread {
+                            input_ScreenName.text = null
+                            da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
+                        }
+                    }
+                })
+            }.start()
         }
     }
 
@@ -97,7 +113,7 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
         layout_ignoreMyFollowing.setOnClickListener { checkbox_ignoremyFollowing.isChecked = !checkbox_ignoremyFollowing.isChecked }
 
         text_ScreenName.setOnClickListener {
-            SharedTwitterProperties.showProfile(this@ChainBlockActivity, user.screenName)
+            TwitterAdapter.showProfile(this@ChainBlockActivity, user.screenName)
         }
         button_next2.setOnClickListener {
             if(!checkbox_following.isChecked && !checkbox_followers.isChecked) {
@@ -132,31 +148,4 @@ class ChainBlockActivity : BaseActivity(), SharedTwitterProperties.ActivityInter
         }
     }
 
-    private fun lookup(screenName: String, callback: (User) -> Unit) {
-        Thread(Runnable {
-            try {
-                val user = SharedTwitterProperties.instance().showUser(screenName)
-                callback(user)
-            } catch (te: TwitterException) {
-                te.printStackTrace()
-                when (te.errorCode) {
-                    50 -> { // User not found.
-                        runOnUiThread {
-                            input_ScreenName.text = null
-                            da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
-                        }
-                    }
-                    else -> {
-                        onRateLimit("show/user/me")
-                    }
-                }
-            }
-        }).start()
-    }
-
-    override fun onRateLimit(apiPoint: String) {
-        runOnUiThread {
-            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)) { finish() }.show()
-        }
-    }
 }

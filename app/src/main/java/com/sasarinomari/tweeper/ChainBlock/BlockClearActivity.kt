@@ -3,14 +3,10 @@ package com.sasarinomari.tweeper.ChainBlock
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RewardedAdAdapter
-import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.activity_block_clear.*
-import twitter4j.TwitterException
 
 class BlockClearActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

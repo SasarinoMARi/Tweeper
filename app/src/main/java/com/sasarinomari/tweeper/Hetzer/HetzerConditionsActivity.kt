@@ -25,7 +25,7 @@ import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.RewardedAdAdapter
-import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.TwitterAdapter
 
 /*
     이 코드를 들여다보는 자여..
@@ -477,7 +477,7 @@ internal class HetzerConditionsActivity : BaseActivity() {
         }
 
         private fun getKey() : String {
-            return "hCon" + SharedTwitterProperties.instance().id
+            return "hCon" + TwitterAdapter.twitter.id
         }
     }
 }

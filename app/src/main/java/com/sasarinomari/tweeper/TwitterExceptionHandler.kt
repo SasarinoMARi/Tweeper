@@ -16,6 +16,9 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                 Thread.sleep((1000 * te.rateLimitStatus.secondsUntilReset).toLong())
                 onRateLimitReset()
             }
+            TwitterErrorCode.UserNotFound.code -> {
+                onUserNotFound()
+            }
             -1 -> {
                 when (te.message) {
                     "thread interrupted" -> {
@@ -30,4 +33,5 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
 
     abstract fun onRateLimitExceeded()
     abstract fun onRateLimitReset()
+    open fun onUserNotFound() { }
 }

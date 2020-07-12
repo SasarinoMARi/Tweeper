@@ -1,5 +1,5 @@
 package com.sasarinomari.tweeper
 
 enum class TwitterErrorCode(val code: Int)  {
-    RateLlimitExceeded(88)
+    RateLlimitExceeded(88), UserNotFound(50)
 }

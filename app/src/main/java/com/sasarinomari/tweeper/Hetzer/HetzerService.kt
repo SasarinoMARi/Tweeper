@@ -38,7 +38,7 @@ class HetzerService : BaseService() {
         return START_REDELIVER_INTENT
     }
 
-    val twitterAdapter = TwitterAdapter(this)
+    val twitterAdapter = TwitterAdapter()
 
     private fun hetzerLogic(intent: Intent) {
         if(!intent.hasExtra(Parameters.UserId.name)) throw Exception("User Id is undefined")

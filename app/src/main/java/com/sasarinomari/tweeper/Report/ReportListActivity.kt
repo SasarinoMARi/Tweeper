@@ -9,7 +9,6 @@ import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Hetzer.HetzerReportActivity
-import com.sasarinomari.tweeper.SharedTwitterProperties
 import kotlinx.android.synthetic.main.activity_report_list.*
 import java.text.SimpleDateFormat
 import java.util.*

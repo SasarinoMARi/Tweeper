@@ -2,7 +2,6 @@ package com.sasarinomari.tweeper.Analytics
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -12,8 +11,8 @@ import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
-import com.sasarinomari.tweeper.SharedTwitterProperties
 import com.sasarinomari.tweeper.SimplizatedClass.User
+import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
@@ -200,7 +199,7 @@ class FollowManagementActivity: BaseActivity() {
 
     // region API 함수들
     fun detail(screenName: String) {
-        SharedTwitterProperties.showProfile(this, screenName)
+        TwitterAdapter.showProfile(this, screenName)
     }
     fun unfollow(userId: Long, doneCallback: Runnable) {
         da.warning(getString(R.string.AreYouSure), getString(R.string.ActionDoNotRestore))
@@ -208,8 +207,7 @@ class FollowManagementActivity: BaseActivity() {
             .setConfirmClickListener {
                 it.dismissWithAnimation()
                 Thread(Runnable {
-                    val twitter = SharedTwitterProperties.instance()
-                    twitter.destroyFriendship(userId)
+                    TwitterAdapter.twitter.destroyFriendship(userId)
                     unfollowedUserIds.add(userId)
                     runOnUiThread {
                         da.success(getString(R.string.Done), getString(R.string.JobDone)) {
@@ -226,7 +224,7 @@ class FollowManagementActivity: BaseActivity() {
             .setConfirmClickListener {
                 it.dismissWithAnimation()
                 Thread(Runnable {
-                    val twitter = SharedTwitterProperties.instance()
+                    val twitter = TwitterAdapter.twitter
                     twitter.createBlock(userId)
                     twitter.destroyBlock(userId)
                     blockUnblockedUserIds.add(userId)

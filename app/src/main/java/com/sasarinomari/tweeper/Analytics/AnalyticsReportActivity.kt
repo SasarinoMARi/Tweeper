@@ -2,8 +2,6 @@ package com.sasarinomari.tweeper.Analytics
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -18,7 +16,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.sasarinomari.tweeper.Report.ReportInterface
-import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -283,6 +281,6 @@ class AnalyticsReportActivity : BaseActivity() {
     }
 
     fun detail(screenName: String) {
-        SharedTwitterProperties.showProfile(this, screenName)
+        TwitterAdapter.showProfile(this, screenName)
     }
 }

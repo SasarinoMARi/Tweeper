@@ -6,7 +6,7 @@ import android.view.View
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.TwitterAdapter
 import kotlinx.android.synthetic.main.activity_token_management.*
 
 class TokenManagementActivity : BaseActivity() {
@@ -42,7 +42,7 @@ class TokenManagementActivity : BaseActivity() {
                 override fun onDeleteUser(authData: AuthData) {
                     recorder.deleteUser(authData)
                     val focusedUser = recorder.getFocusedUser()
-                    if (SharedTwitterProperties.instance().id == authData.user?.id) {
+                    if (TwitterAdapter.twitter.id == authData.user?.id) {
                         val intent = Intent()
                         if (focusedUser != null) {
                             intent.putExtra(RESULT_AUTH_DATA, Gson().toJson(focusedUser))

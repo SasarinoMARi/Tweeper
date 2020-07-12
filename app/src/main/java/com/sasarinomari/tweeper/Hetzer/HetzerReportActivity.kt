@@ -10,7 +10,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SimplizatedClass.Status
 import com.sasarinomari.tweeper.Report.ReportInterface
-import com.sasarinomari.tweeper.SharedTwitterProperties
+import com.sasarinomari.tweeper.TwitterAdapter
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
@@ -103,12 +103,17 @@ class HetzerReportActivity : BaseActivity() {
             }
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default, report.savedStatuses) {
-                @SuppressLint("SimpleDateFormat")
-                override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                    item as Status
-                    view.defaultitem_title.text = item.text
-                    view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.createdAt)
-                }
+            @SuppressLint("SimpleDateFormat")
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                item as Status
+                view.defaultitem_title.text = item.text
+                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.createdAt)
+            }
+
+            override fun onClickListItem(item: Any?) {
+                item as Status
+                TwitterAdapter.showStatus(this@HetzerReportActivity, item.id)
+            }
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_no_item) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {

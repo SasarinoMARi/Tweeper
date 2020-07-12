@@ -2,13 +2,9 @@ package com.sasarinomari.tweeper.ChainBlock
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.SharedTwitterProperties
-import com.sasarinomari.tweeper.TwitterExceptionHandler
-import twitter4j.TwitterException
-import java.io.InterruptedIOException
+import com.sasarinomari.tweeper.TwitterAdapter
 
 class BlockClearService : BaseService() {
     companion object {
@@ -18,6 +14,8 @@ class BlockClearService : BaseService() {
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
+    private val twitterAdapter = TwitterAdapter()
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.BlockClear)
@@ -25,88 +23,59 @@ class BlockClearService : BaseService() {
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
 
-        getBlockedUsers({ blockedUsers ->
-            unblockUsers(blockedUsers, {
-                // 알림 송출
-                sendNotification(
-                    strServiceName,
-                    getString(R.string.BlockCleanDone, blockedUsers.count()),
-                    silent = false,
-                    cancelable = true,
-                    id = NotificationId + 1
-                )
+        runOnManagedThread {
+            twitterAdapter.getBlockedUsers(object: TwitterAdapter.FetchListInterface {
+                override fun onStart() { }
 
-                // 서비스 종료
-                this.stopForeground(true)
-                this.stopSelf()
+                override fun onFinished(list: ArrayList<*>) {
+                    twitterAdapter.unblockUsers(list as ArrayList<Long>, object: TwitterAdapter.IterableInterface {
+                        override fun onStart() { }
+
+                        override fun onFinished() {
+                            // 알림 송출
+                            sendNotification(
+                                strServiceName,
+                                getString(R.string.BlockCleanDone, list.count()),
+                                silent = false,
+                                cancelable = true,
+                                id = NotificationId + 1
+                            )
+
+                            // 서비스 종료
+                            this@BlockClearService.stopForeground(true)
+                            this@BlockClearService.stopSelf()
+                        }
+
+                        override fun onIterate(listIndex: Int) {
+                            restrainedNotification(
+                                strServiceName,
+                                getString(R.string.Unblocking, listIndex, list.size)
+                            ) // 초기값이 0이라 이거 가능
+                        }
+
+                        override fun onRateLimit(listIndex: Int) {
+                            sendNotification(
+                                "$strServiceName $strRateLimitWaiting",
+                                getString(R.string.Unblocking, listIndex, list.size)
+                            )
+                        }
+                    })
+                }
+
+                override fun onFetch(listSize: Int) {
+                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, listSize))
+                }
+
+                override fun onRateLimit(listSize: Int) {
+                    sendNotification(
+                        "$strServiceName $strRateLimitWaiting",
+                        getString(R.string.FetchingUser, listSize)
+                    )
+                }
             })
-        })
+        }
 
         return START_REDELIVER_INTENT
     }
-
-    // region API 코드
-    private fun getBlockedUsers(callback: (ArrayList<Long>) -> Unit, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
-        runOnManagedThread {
-            val twitter = SharedTwitterProperties.instance()
-            var cursor: Long = startIndex
-            try {
-                while (true) {
-                    restrainedNotification(strServiceName, getString(R.string.FetchingUser, list.count()))
-                    val users = twitter.getBlocksIDs(cursor)
-                    list.addAll(users.iDs.toList())
-                    if (users.hasNext()) cursor = users.nextCursor
-                    else break
-                }
-                callback(list)
-            } catch (te: TwitterException) {
-                object : TwitterExceptionHandler(te, "getBlocksIDs") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.FetchingUser, list.count())
-                        )
-                    }
-
-                    override fun onRateLimitReset() {
-                        getBlockedUsers(callback, cursor, list)
-                    }
-                }.catch()
-            }
-        }
-    }
-
-    private fun unblockUsers(list: ArrayList<Long>, callback: () -> Unit, startIndex: Int = 0) {
-        runOnManagedThread {
-            val twitter = SharedTwitterProperties.instance()
-            var cursor = 0
-            try {
-                for (i in startIndex until list.size) {
-                    cursor = i
-                    restrainedNotification(
-                        strServiceName,
-                        getString(R.string.Unblocking, cursor + 1, list.size)
-                    ) // 초기값이 0이라 이거 가능
-                    twitter.destroyBlock(list[i])
-                }
-                callback()
-            } catch (te: TwitterException) {
-                object : TwitterExceptionHandler(te, "createBlock") {
-                    override fun onRateLimitExceeded() {
-                        sendNotification(
-                            "$strServiceName $strRateLimitWaiting",
-                            getString(R.string.Unblocking, cursor + 1, list.size)
-                        )
-                    }
-
-                    override fun onRateLimitReset() {
-                        unblockUsers(list, callback, cursor)
-                    }
-                }.catch()
-            }
-        }
-    }
-
-    // endregion
 
 }

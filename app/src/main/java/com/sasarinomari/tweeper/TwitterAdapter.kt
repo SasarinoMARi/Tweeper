@@ -1,16 +1,71 @@
 package com.sasarinomari.tweeper
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
-import twitter4j.Paging
-import twitter4j.Status
-import twitter4j.TwitterException
-import twitter4j.User
+import twitter4j.*
 
-class TwitterAdapter(private val context: Context) {
-
+class TwitterAdapter {
     companion object {
         private const val LOG_TAG: String = "TwitterAdapter"
+
+        // TODO: 이 병신같은 초기화 코드 언제 좀 고치셈 ㅡㅡ^
+         var twitter: Twitter = TwitterFactory().instance
+             private set
+
+        fun setOAuthConsumer(context: Context, t: Twitter) {
+            t.setOAuthConsumer(
+                context.getString(R.string.consumerKey),
+                context.getString(R.string.consumerSecret)
+            )
+        }
+
+        fun initialize(context: Context) {
+            val t = TwitterFactory().instance
+            setOAuthConsumer(context, t)
+            this.twitter = t
+        }
+
+        fun initialize(twitter: Twitter) {
+            this.twitter = twitter
+        }
+
+        fun showProfile(context: Context, screenName: String) {
+            try {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("twitter://user?screen_name=${screenName}")
+                    )
+                )
+            } catch (e: Exception) {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://twitter.com/#!/${screenName}")
+                    )
+                )
+            }
+        }
+
+        fun showStatus(context: Context, statusId: Long) {
+            try {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("twitter://status?id=$statusId")
+                    )
+                )
+            } catch (e: Exception) {
+                context.startActivity(
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://twitter.com/i/web/status/$statusId")
+                    )
+                )
+            }
+        }
     }
 
     interface IterableInterface {
@@ -32,10 +87,15 @@ class TwitterAdapter(private val context: Context) {
         fun onFinished(obj: Any)
         fun onRateLimit()
     }
+    interface FoundObjectInterface {
+        fun onStart()
+        fun onFinished(obj: Any)
+        fun onRateLimit()
+        fun onNotFound()
+    }
 
     fun blockUsers(targetUsersIds: ArrayList<Long>, apiInterface: IterableInterface, startIndex: Int = 0) {
         apiInterface.onStart()
-        val twitter = SharedTwitterProperties.instance()
         var cursor = 0
         try {
             for (it in startIndex until targetUsersIds.size) {
@@ -59,7 +119,6 @@ class TwitterAdapter(private val context: Context) {
 
     fun getFriendsIds(targetUserId: Long, apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
         apiInterface.onStart()
-        val twitter = SharedTwitterProperties.instance()
         var cursor: Long = startIndex
         try {
             while (true) {
@@ -86,7 +145,6 @@ class TwitterAdapter(private val context: Context) {
 
     fun getFollowersIds(targetUserId: Long, apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
         apiInterface.onStart()
-        val twitter = SharedTwitterProperties.instance()
         var cursor: Long = startIndex
         try {
             while (true) {
@@ -114,7 +172,6 @@ class TwitterAdapter(private val context: Context) {
     fun getMe(activityInterface: FetchObjectInterface) {
         activityInterface.onStart()
         try {
-            val twitter = SharedTwitterProperties.instance()
             val me = twitter.showUser(twitter.id)
             activityInterface.onFinished(me)
         } catch (te: TwitterException) {
@@ -133,7 +190,6 @@ class TwitterAdapter(private val context: Context) {
     fun getFriends(targetUserId: Long, apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
         apiInterface.onStart()
         var cursor: Long = startIndex
-        val twitter = SharedTwitterProperties.instance()
         try {
             while (true) {
                 apiInterface.onFetch(list.count())
@@ -159,7 +215,6 @@ class TwitterAdapter(private val context: Context) {
     fun getFollowers(targetUserId: Long, apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
         apiInterface.onStart()
         var cursor: Long = startIndex
-        val twitter = SharedTwitterProperties.instance()
         try {
             while (true) {
                 apiInterface.onFetch(list.count())
@@ -186,7 +241,6 @@ class TwitterAdapter(private val context: Context) {
         apiInterface.onStart()
         var lastIndex = startIndex
         try {
-            val twitter = SharedTwitterProperties.instance()
             for (i in startIndex..Int.MAX_VALUE) {
                 apiInterface.onFetch(list.count())
                 val paging = Paging(i, 20)
@@ -212,7 +266,6 @@ class TwitterAdapter(private val context: Context) {
     fun destroyStatus(statuses: ArrayList<Status>, apiInterface: IterableInterface, startIndex: Int = 0) {
         apiInterface.onStart()
         // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
-        val twitter = SharedTwitterProperties.instance()
         var cursor = 0
         try {
             val statusCount = statuses.count()
@@ -235,4 +288,75 @@ class TwitterAdapter(private val context: Context) {
             }.catch()
         }
     }
+
+    fun getBlockedUsers(activityInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
+        activityInterface.onStart()
+        var cursor: Long = startIndex
+        try {
+            while (true) {
+                activityInterface.onFetch(list.count())
+                val users = twitter.getBlocksIDs(cursor)
+                list.addAll(users.iDs.toList())
+                if (users.hasNext()) cursor = users.nextCursor
+                else break
+            }
+            activityInterface.onFinished(list)
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "getBlocksIDs") {
+                override fun onRateLimitExceeded() {
+                    activityInterface.onRateLimit(list.count())
+                }
+
+                override fun onRateLimitReset() {
+                    getBlockedUsers(activityInterface, cursor, list)
+                }
+            }.catch()
+        }
+    }
+
+    fun unblockUsers(list: ArrayList<Long>, activityInterface: IterableInterface, startIndex: Int = 0) {
+        activityInterface.onStart()
+        var cursor = 0
+        try {
+            for (i in startIndex until list.size) {
+                cursor = i
+                activityInterface.onIterate(i+1)
+                twitter.destroyBlock(list[i])
+            }
+            activityInterface.onFinished()
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "createBlock") {
+                override fun onRateLimitExceeded() {
+                    activityInterface.onRateLimit(cursor + 1)
+                }
+
+                override fun onRateLimitReset() {
+                    unblockUsers(list, activityInterface, cursor)
+                }
+            }.catch()
+        }
+    }
+
+    fun lookup(screenName: String, activityInterface: FoundObjectInterface) {
+        activityInterface.onStart()
+        try {
+            val user = twitter.showUser(screenName)
+            activityInterface.onFinished(user)
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "lookup") {
+                override fun onRateLimitExceeded() {
+                    activityInterface.onRateLimit()
+                }
+
+                override fun onRateLimitReset() {
+                    lookup(screenName, activityInterface)
+                }
+
+                override fun onUserNotFound() {
+                    activityInterface.onNotFound()
+                }
+            }.catch()
+        }
+    }
+
 }

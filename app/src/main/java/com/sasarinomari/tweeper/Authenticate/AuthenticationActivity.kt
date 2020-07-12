@@ -17,7 +17,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import java.util.*
 
-class AuthenticationActivity : BaseActivity(), SharedTwitterProperties.ActivityInterface {
+class AuthenticationActivity : BaseActivity() {
     private val twitterInstance = TwitterFactory().instance
     private var webView: BoomWebView? = null
     private lateinit var requestToken: RequestToken
@@ -29,7 +29,7 @@ class AuthenticationActivity : BaseActivity(), SharedTwitterProperties.ActivityI
         initializeWebView()
         // Generate authentication url
         Thread(Runnable{
-            SharedTwitterProperties.setOAuthConsumer(this, twitterInstance)
+            TwitterAdapter.setOAuthConsumer(this@AuthenticationActivity, twitterInstance)
             requestToken = twitterInstance.oAuthRequestToken
             runOnUiThread {
                 webView!!.loadUrl(requestToken.authorizationURL)
@@ -85,26 +85,31 @@ class AuthenticationActivity : BaseActivity(), SharedTwitterProperties.ActivityI
     }
 
     private fun apiTest(accessToken: AccessToken) {
-        SharedTwitterProperties.clear(twitterInstance)
-        SharedTwitterProperties.getMe(this) { user ->
-            val authData = AuthData()
-            authData.token = accessToken
-            authData.lastLogin = Date()
-            authData.user = User(user)
+        TwitterAdapter.initialize(twitterInstance)
+        Thread {
+            TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
+                override fun onStart() {}
 
-            val recorder = AuthData.Recorder(this@AuthenticationActivity)
-            if(!recorder.hasUser(authData)) {
-                recorder.addUser(authData)
-            }
-            recorder.setFocusedUser(authData)
-            setResult(RESULT_OK)
-            finish()
-        }
-    }
+                override fun onFinished(obj: Any) {
+                    val user = obj as twitter4j.User
+                    val authData = AuthData()
+                    authData.token = accessToken
+                    authData.lastLogin = Date()
+                    authData.user = User(user)
 
-    override fun onRateLimit(apiPoint: String) {
-        runOnUiThread {
-            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiPoint)).show()
-        }
+                    val recorder = AuthData.Recorder(this@AuthenticationActivity)
+                    if (!recorder.hasUser(authData)) {
+                        recorder.addUser(authData)
+                    }
+                    recorder.setFocusedUser(authData)
+                    setResult(RESULT_OK)
+                    finish()
+                }
+
+                override fun onRateLimit() {
+                    da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
+                }
+            })
+        }.start()
     }
 }

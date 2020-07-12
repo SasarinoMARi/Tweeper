@@ -22,7 +22,7 @@ class AnalyticsService : BaseService() {
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
-    val twitterAdapter = TwitterAdapter(this)
+    val twitterAdapter = TwitterAdapter()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY

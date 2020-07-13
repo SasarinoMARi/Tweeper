@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lightBackground"
+    android:layout_marginBottom="2dp"
+    android:paddingTop="@dimen/listitem_vertical_padding"
+    android:paddingRight="@dimen/listitem_horizontal_padding"
+    android:paddingBottom="@dimen/listitem_vertical_padding"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/listitem_horizontal_padding"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/skuitem_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/noto_sans_light"
+            android:text="Title"
+            android:textColor="@color/white"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/skuitem_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/noto_sans_light"
+            android:text="Description"
+            android:textColor="@color/semiwhite"
+            android:textSize="11sp"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/skuitem_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans_light"
+        android:text="\ Price"
+        android:textColor="@color/white"
+        tools:ignore="HardcodedText" />
+</LinearLayout>

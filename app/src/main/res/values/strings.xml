@@ -141,4 +141,5 @@
     <string name="Donate">개발자에게 기부하기</string>
     <string name="DonateDesc">개발자에게 기부하고 인앱 광고를 제거하세요.</string>
     <string name="duplicateService_BlockClear">블락 일괄 해제는 한 번에 하나만 실행할 수 있어요.</string>
+    <string name="skuPostfix">(트윗지기)</string>
 </resources>

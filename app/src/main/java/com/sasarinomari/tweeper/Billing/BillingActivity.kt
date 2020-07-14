@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.SkuDetails
@@ -28,14 +29,13 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bp = BillingProcessor(this, "YOUR LICENSE KEY FROM GOOGLE PLAY CONSOLE HERE", this)
+        bp = BillingProcessor(this, getString(R.string.gp_license), this)
         bp.initialize()
     }
 
     // Region Billing Interface
     override fun onBillingInitialized() {
         setContentView(R.layout.full_recycler_view)
-
 
         val purchaseListingDetails: ArrayList<SkuDetails> = ArrayList(bp.getPurchaseListingDetails(arrayListOf(
             DonationItems.donate1000.name,
@@ -51,7 +51,6 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.title_text.text = getString(R.string.Donate)
                 view.title_description.text = getString(R.string.DonateDesc)
-
             }
        })
 
@@ -62,8 +61,14 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 view.skuitem_title.text = item.title.removeSuffix(getString(R.string.skuPostfix))
                 view.skuitem_description.text = item.description
                 view.skuitem_price.text = item.priceText
+                if(bp.isPurchased(item.productId)) {
+                    view.setBackgroundColor(ContextCompat.getColor(this@BillingActivity, R.color.spotlightBackground))
+                }
+            }
 
-                view.setOnClickListener {
+            override fun onClickListItem(item: Any?) {
+                item as SkuDetails
+                if(!bp.isPurchased(item.productId)) {
                     bp.purchase(this@BillingActivity, item.productId)
                 }
             }
@@ -93,14 +98,14 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         * Called when purchase history was restored and the list of all owned PRODUCT ID's
         * was loaded from Google Play
         */
-        da.message("개발 모드 알림", "onPurchaseHistoryRestored")
+        da.message("개발 모드 알림", "onPurchaseHistoryRestored").show()
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         /*
         * Called when requested PRODUCT ID was successfully purchased
         */
-        da.message("개발 모드 알림", "onProductPurchased\nproductId: $productId\ndetails: ${details.toString()}")
+        da.message("개발 모드 알림", "onProductPurchased\nproductId: $productId\ndetails: ${details.toString()}").show()
     }
 
     override fun onBillingError(errorCode: Int, error: Throwable?) {
@@ -110,7 +115,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         * Note - this includes handling the case where the user canceled the buy dialog:
         * errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED
         */
-        da.message("개발 모드 알림", "onBillingError: $errorCode")
+        da.message("개발 모드 알림", "onBillingError: $errorCode").show()
     }
     // endregion
 

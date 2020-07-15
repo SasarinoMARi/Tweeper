@@ -149,4 +149,7 @@
     <string name="tutorial_changeAccount">계정 변경하기</string>
     <string name="tutorial_changeAccountDesc">이곳을 클릭해서 트윗지기에 로그인한 계정을 바꿀 수 있어요!</string>
     <string name="HetzerRunning">트윗청소기가 실행되었어요.</string>
+    <string name="Paid">결제 완료</string>
+    <string name="RestorePayment">구매 내역 복원하기</string>
+    <string name="RestorePaymentDesc">기존 구매 이력을 불러와요. 추가 과금은 되지 않아요!</string>
 </resources>

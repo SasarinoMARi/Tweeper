@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,11 +8,10 @@
     android:paddingTop="@dimen/listitem_vertical_padding"
     android:paddingRight="@dimen/listitem_horizontal_padding"
     android:paddingBottom="@dimen/listitem_vertical_padding"
-    android:gravity="center_vertical"
-    android:paddingLeft="@dimen/listitem_horizontal_padding"
-    android:orientation="horizontal">
+    android:paddingLeft="@dimen/listitem_horizontal_padding">
 
     <LinearLayout
+        android:layout_gravity="center_vertical|start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -40,12 +38,8 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"/>
-
     <TextView
+        android:layout_gravity="center_vertical|end"
         android:id="@+id/skuitem_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -53,4 +47,19 @@
         android:text="\ Price"
         android:textColor="@color/white"
         tools:ignore="HardcodedText" />
-</LinearLayout>
+
+    <TextView
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:rotation="-5"
+        android:id="@+id/skuitem_paid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/roundrect_red_border"
+        android:text="@string/Paid"
+        android:textColor="@color/red"
+        android:textSize="15sp"
+        android:fontFamily="@font/noto_sans_bold"
+        />
+
+</FrameLayout>

@@ -7,6 +7,7 @@
     <color name="colorPrimaryDeepDark">#139df1</color>
     <color name="spotlightBackground">#dF000000</color>
     <color name="lightBackground">#2Fffffff</color>
+    <color name="grayBackground">#2F808080</color>
     <color name="black">#000000</color>
     <color name="colorAccent">#37FADC</color>
     <color name="semiwhite">#cccccc</color>

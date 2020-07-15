@@ -62,7 +62,8 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 view.skuitem_description.text = item.description
                 view.skuitem_price.text = item.priceText
                 if(bp.isPurchased(item.productId)) {
-                    view.setBackgroundColor(ContextCompat.getColor(this@BillingActivity, R.color.spotlightBackground))
+                    view.skuitem_paid.visibility = View.VISIBLE
+                    view.setBackgroundColor(ContextCompat.getColor(this@BillingActivity, R.color.grayBackground))
                 }
             }
 
@@ -76,8 +77,8 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.defaultitem_title.text = "구매 내역 복원하기"
-                view.defaultitem_description.text = "기존 구매 이력을 불러와요. 추가 과금은 되지 않아요!"
+                view.defaultitem_title.text = getString(R.string.RestorePayment)
+                view.defaultitem_description.text = getString(R.string.RestorePaymentDesc)
 
                 view.setOnClickListener {
                     restore()

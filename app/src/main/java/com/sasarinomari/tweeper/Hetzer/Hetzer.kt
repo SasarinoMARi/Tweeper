@@ -16,10 +16,10 @@ internal class Hetzer(private val conditions: HashMap<Int, Any>) {
         10. 미디어를 포함하지 않은 트윗
         11. 키워드를 포함한 트윗 (ArrayList<Sring>)
         12. 키워드를 포함하지 않은 트윗 (ArrayList<Sring>)
-        13. 위치 정보를 포함한 트윗 // TODO: 동작 체크
-        14. 위치 정보를 포함하지 않은 트윗 // TODO: 동작 체크
+        13. 위치 정보를 포함한 트윗
+        14. 위치 정보를 포함하지 않은 트윗
         15. 최근 N개 까지의 트윗 (Int)
-        16. 최근 N분 이내의 트윗 (Int) // TODO: 동작 체크
+        16. 최근 N분 이내의 트윗 (Int)
         17. N회 이상 인용 받은 트윗 (Int) // 알아낼 방법이 없음
         18. N회 이하 인용 받은 트윗 (Int) // 알아낼 방법이 없음
         19. N회 이상 멘션 받은 트윗 (Int)  // 알아낼 방법이 없음

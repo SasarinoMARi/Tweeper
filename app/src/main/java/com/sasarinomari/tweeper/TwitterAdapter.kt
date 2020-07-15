@@ -273,7 +273,7 @@ class TwitterAdapter {
                 cursor = i
                 val status = statuses[i]
                 apiInterface.onIterate(cursor)
-//                    twitter.destroyStatus(status.id)
+                if(!BuildConfig.DEBUG) twitter.destroyStatus(status.id)
             }
             apiInterface.onFinished()
         } catch (te: TwitterException) {

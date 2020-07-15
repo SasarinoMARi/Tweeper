@@ -128,12 +128,12 @@ internal class Hetzer(private val conditions: HashMap<Int, Any>) {
 
     private fun 위치정보를포함한트윗(status: Status): Boolean {
         if (!conditions.containsKey(13)) return false
-        return status.geoLocation != null
+        return status.place != null
     }
 
     private fun 위치정보를포함하지않은트윗(status: Status): Boolean {
         if (!conditions.containsKey(14)) return false
-        return status.geoLocation == null
+        return status.place == null
     }
     
     private fun 최근N개까지의트윗(index: Int): Boolean {

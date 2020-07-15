@@ -89,8 +89,25 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         root.adapter = adapter
     }
 
+    /**
+     * 이 함수를 호출하는게 효과가 있을지는 모르겠으나
+     * 만약의 경우에 대비해서 있는게 좋을 거라 판단함.
+     */
     private fun restore() {
-        TODO("Not yet implemented")
+        val items = arrayListOf(
+            DonationItems.donate1000.name,
+            DonationItems.donate2000.name,
+            DonationItems.donate5000.name,
+            DonationItems.donate8000.name,
+            DonationItems.donate13000.name
+        )
+
+        for(skuId in items) {
+            if(bp.isPurchased(skuId)) {
+                onPurchaseHistoryRestored()
+                return
+            }
+        }
     }
 
     override fun onPurchaseHistoryRestored() {

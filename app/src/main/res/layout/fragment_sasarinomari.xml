@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="20dp"
+    android:layout_margin="20dp"
+    android:layout_width="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@drawable/roundrect_white_opacity"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/sasarino_profileImage"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@color/red"/>
+
+    <LinearLayout
+        android:id="@+id/sasarino_id"
+        android:layout_width="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="15dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/semiwhite"
+            android:textSize="10sp"
+            android:fontFamily="@font/noto_sans_light"
+            android:text="Author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:layout_marginStart="8dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/noto_sans_regular"
+            android:text="\@Sasarino MARi"
+            android:textStyle="italic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="15dp"
+        android:textColor="@color/semiwhite"
+        android:textSize="12sp"
+        android:fontFamily="@font/noto_sans_light"
+        android:text="아름다운 것만 보며 살고 싶어요."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
+
+</LinearLayout>

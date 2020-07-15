@@ -99,7 +99,7 @@ class ChainBlockActivity : BaseActivity() {
         layout_second.visibility = View.VISIBLE
 
         Picasso.get()
-            .load(user.biggerProfileImageURL)
+            .load(user.biggerProfileImageURLHttps)
             .into(image_ProfilePicture)
         text_Name.text = user.name
         text_ScreenName.text = "@${user.screenName}"

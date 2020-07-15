@@ -2,6 +2,8 @@ package com.sasarinomari.tweeper.Billing
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -12,6 +14,9 @@ import com.anjlab.android.iab.v3.TransactionDetails
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
+import com.sasarinomari.tweeper.TwitterAdapter
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_sasarinomari.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_default.view.*
@@ -53,7 +58,33 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 view.title_description.text = getString(R.string.DonateDesc)
             }
        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_sasarinomari) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.sasarino_profileImage.background = ShapeDrawable(OvalShape())
+                view.sasarino_profileImage.clipToOutline = true
+                view.sasarino_id.setOnClickListener {
+                    TwitterAdapter.showProfile(this@BillingActivity, "SasarinoMARi")
+                }
+                Thread {
+                    TwitterAdapter().lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
+                        override fun onStart() { }
 
+                        override fun onFinished(obj: Any) {
+                            val me = obj as twitter4j.User
+                            runOnUiThread {
+                                Picasso.get()
+                                    .load(me.profileImageURLHttps.replace("normal.jpg", "200x200.jpg"))
+                                    .into(view.sasarino_profileImage)
+                            }
+                        }
+
+                        override fun onRateLimit() { }
+
+                        override fun onNotFound() { }
+                    })
+                }.start()
+            }
+        })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_sku, purchaseListingDetails) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
@@ -74,6 +105,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 }
             }
         })
+        adapter.addSpace(5)
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
@@ -138,7 +170,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         * errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED
         */
         if(errorCode != 1) {
-            da.message("개발 모드 알림", "onBillingError: $errorCode").show()
+            da.message(getString(R.string.Error), getString(R.string.PaymentFailed)).show()
         }
     }
     // endregion

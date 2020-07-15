@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/lightBackground"
     android:layout_marginBottom="2dp"
+    android:foreground="?attr/selectableItemBackground"
     android:paddingTop="@dimen/listitem_vertical_padding"
     android:paddingRight="@dimen/listitem_horizontal_padding"
     android:paddingBottom="@dimen/listitem_vertical_padding"

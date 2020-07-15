@@ -3,7 +3,7 @@ package com.sasarinomari.tweeper.SimplizatedClass
 class User(src: twitter4j.User) {
     val name: String = src.name
     val screenName: String = src.screenName
-    val profileImageUrl: String = src.profileImageURL
+    val profileImageUrl: String = src.profileImageURLHttps
     val id: Long = src.id
     val bio: String = src.description
 

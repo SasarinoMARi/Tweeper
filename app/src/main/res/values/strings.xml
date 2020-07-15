@@ -152,4 +152,5 @@
     <string name="Paid">결제 완료</string>
     <string name="RestorePayment">구매 내역 복원하기</string>
     <string name="RestorePaymentDesc">기존 구매 이력을 불러와요. 추가 과금은 되지 않아요!</string>
+    <string name="PaymentFailed">결제에 실패했습니다.</string>
 </resources>

@@ -7,6 +7,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.sasarinomari.tweeper.Billing.AdRemover
 
 class RewardedAdAdapter {
     interface RewardInterface {
@@ -18,6 +19,8 @@ class RewardedAdAdapter {
         private var rewardedAd: RewardedAd? = null
 
         fun load(context: Context) {
+            if(AdRemover(context).isAdRemoved()) return
+
             rewardedAd = RewardedAd(
                 context, context.getString(
                     if (BuildConfig.DEBUG) R.string.reward_ad_unit_id_for_test
@@ -41,9 +44,14 @@ class RewardedAdAdapter {
 
         fun show(activity: Activity, ri: RewardInterface) {
             when {
+                AdRemover(activity).isAdRemoved() -> {
+                    ri.onFinished()
+                }
+                /*
                 BuildConfig.DEBUG ->{
                     ri.onFinished()
                 }
+                 */
                 rewardedAd != null && rewardedAd!!.isLoaded -> {
                     val adCallback = object : RewardedAdCallback() {
                         var isCompleted: Boolean = false

@@ -98,14 +98,18 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         * Called when purchase history was restored and the list of all owned PRODUCT ID's
         * was loaded from Google Play
         */
-        da.message("개발 모드 알림", "onPurchaseHistoryRestored").show()
+        AdRemover(this).removeAd()
+        setResult(RESULT_OK)
+        da.message(getString(R.string.Notice), getString(R.string.PurchaseHistoryRestored)).show()
     }
 
     override fun onProductPurchased(productId: String, details: TransactionDetails?) {
         /*
         * Called when requested PRODUCT ID was successfully purchased
         */
-        da.message("개발 모드 알림", "onProductPurchased\nproductId: $productId\ndetails: ${details.toString()}").show()
+        AdRemover(this).removeAd()
+        setResult(RESULT_OK)
+        da.message(getString(R.string.Thanks), getString(R.string.Purchased)).show()
     }
 
     override fun onBillingError(errorCode: Int, error: Throwable?) {
@@ -115,7 +119,9 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
         * Note - this includes handling the case where the user canceled the buy dialog:
         * errorCode = Constants.BILLING_RESPONSE_RESULT_USER_CANCELED
         */
-        da.message("개발 모드 알림", "onBillingError: $errorCode").show()
+        if(errorCode != 1) {
+            da.message("개발 모드 알림", "onBillingError: $errorCode").show()
+        }
     }
     // endregion
 

@@ -22,6 +22,7 @@ import com.sasarinomari.tweeper.ChainBlock.BlockClearActivity
 import com.sasarinomari.tweeper.ChainBlock.ChainBlockActivity
 import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.Billing.BillingActivity
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.takusemba.spotlight.OnSpotlightListener
@@ -33,7 +34,7 @@ import twitter4j.TwitterFactory
 
 class DashboardActivity : BaseActivity() {
     enum class Requests {
-        Switch, Hetzer
+        Switch, Hetzer, Billing
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,7 @@ class DashboardActivity : BaseActivity() {
             startActivity(Intent(this, BlockClearActivity::class.java))
         }
         button_billing.setOnClickListener {
-            startActivity(Intent(this, BillingActivity::class.java))
+            startActivityForResult(Intent(this, BillingActivity::class.java), Requests.Billing.ordinal)
         }
         if(BuildConfig.DEBUG) {
             button_gotoTest.setOnClickListener {
@@ -105,8 +106,8 @@ class DashboardActivity : BaseActivity() {
 
         spotlight.start()
 
-        first.column_title.text = "계정 변경하기"
-        first.column_description.text = "이곳을 클릭해서 트윗지기에 로그인한 계정을 바꿀 수 있어요!"
+        first.column_title.text = getString(R.string.tutorial_changeAccount)
+        first.column_description.text = getString(R.string.tutorial_changeAccountDesc)
         first.isClickable = true
         first.setOnClickListener {
             spotlight.finish()
@@ -114,6 +115,8 @@ class DashboardActivity : BaseActivity() {
     }
 
     private fun initAds() {
+        if(AdRemover(this).isAdRemoved()) return
+
         MobileAds.initialize(this)
         val adView = AdView(this)
         layout_ad.addView(adView)
@@ -177,7 +180,12 @@ class DashboardActivity : BaseActivity() {
             }
             Requests.Hetzer.ordinal -> {
                 if(resultCode == RESULT_OK) {
-                    da.message(getString(R.string.Done), "트윗 청소기가 백그라운드에서 실행됩니다..").show()
+                    da.message(getString(R.string.Done), getString(R.string.HetzerRunning)).show()
+                }
+            }
+            Requests.Billing.ordinal -> {
+                if(resultCode == RESULT_OK) {
+                    layout_ad.visibility = View.GONE
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)

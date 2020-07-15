@@ -65,8 +65,8 @@ class UITestActivity : BaseActivity() {
 
             spotlight.start()
 
-            first.column_title.text = "계정 변경하기"
-            first.column_description.text = "이곳을 클릭해서 트윗지기에 로그인한 계정을 바꿀 수 있어요!"
+            first.column_title.text = getString(R.string.tutorial_changeAccount)
+            first.column_description.text = getString(R.string.tutorial_changeAccountDesc)
             first.isClickable = true
             first.setOnClickListener {
                 spotlight.finish()

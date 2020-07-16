@@ -17,7 +17,7 @@ class HetzerService : BaseService() {
     }
 
     enum class Parameters {
-        HetzerConditions, UserId
+        HetzerConditions
     }
 
     lateinit var strServiceName: String
@@ -41,8 +41,6 @@ class HetzerService : BaseService() {
     val twitterAdapter = TwitterAdapter()
 
     private fun hetzerLogic(intent: Intent) {
-        if(!intent.hasExtra(Parameters.UserId.name)) throw Exception("User Id is undefined")
-        val loggedInUserId = intent.getLongExtra(Parameters.UserId.name, -1)
         val json = intent.getStringExtra(Parameters.HetzerConditions.name)!!
         val typeToken = object : TypeToken<HashMap<Int, Any>>() {}.type
         val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
@@ -76,7 +74,7 @@ class HetzerService : BaseService() {
 
                             override fun onFinished() {
                                 // 리포트 작성
-                                val ri = ReportInterface<HetzerReport>(loggedInUserId, HetzerReport.prefix)
+                                val ri = ReportInterface<HetzerReport>(TwitterAdapter.twitter.id, HetzerReport.prefix)
                                 val report = HetzerReport(targetStatus, passedStatuses)
                                 report.id = ri.getReportCount(context) + 1
                                 ri.writeReport(context, report.id, report)

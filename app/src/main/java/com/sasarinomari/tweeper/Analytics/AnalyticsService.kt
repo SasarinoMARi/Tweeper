@@ -14,11 +14,6 @@ class AnalyticsService : BaseService() {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, AnalyticsService::class.java.name)
     }
 
-    enum class Parameters {
-        UserId
-    }
-
-    private var userId: Long = -1
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
@@ -28,8 +23,6 @@ class AnalyticsService : BaseService() {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.TweetAnalytics)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
-        if(!intent.hasExtra(Parameters.UserId.name)) throw Exception("User Id is undefined")
-        userId = intent.getLongExtra(Parameters.UserId.name, -1)
 
         startForeground(NotificationId,
             createNotification(getString(R.string.app_name), "Initializing...", false))
@@ -57,7 +50,7 @@ class AnalyticsService : BaseService() {
                                             Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
 
                                             // 리포트 기록
-                                            val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
+                                            val ri = ReportInterface<AnalyticsReport>(TwitterAdapter.twitter.id, AnalyticsReport.prefix)
                                             val lastReportIndex = ri.getReportCount(context)
                                             val recentReport = if (lastReportIndex >= 0) ri.readReport(
                                                 context,

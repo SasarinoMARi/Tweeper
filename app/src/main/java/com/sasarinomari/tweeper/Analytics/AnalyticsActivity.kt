@@ -60,7 +60,6 @@ class AnalyticsActivity : BaseActivity() {
                                 RewardedAdAdapter.show(this@AnalyticsActivity, object: RewardedAdAdapter.RewardInterface {
                                     override fun onFinished() {
                                         val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
-                                        intent.putExtra(AnalyticsService.Parameters.UserId.name, userId)
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                             startForegroundService(intent)
                                         }

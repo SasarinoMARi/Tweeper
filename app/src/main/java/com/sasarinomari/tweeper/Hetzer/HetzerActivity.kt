@@ -103,7 +103,6 @@ class HetzerActivity : BaseActivity() {
                 val intent = Intent(this, HetzerService::class.java)
                 val json = data!!.getStringExtra(HetzerService.Parameters.HetzerConditions.name)
                 intent.putExtra(HetzerService.Parameters.HetzerConditions.name, json)
-                intent.putExtra(HetzerService.Parameters.UserId.name, AuthData.Recorder(this).getFocusedUser()!!.user!!.id)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 } else {

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.BillingProcessor
 import com.anjlab.android.iab.v3.SkuDetails
 import com.anjlab.android.iab.v3.TransactionDetails
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
@@ -66,7 +67,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                     TwitterAdapter.showProfile(this@BillingActivity, "SasarinoMARi")
                 }
                 Thread {
-                    TwitterAdapter().lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
+                    TwitterAdapter().initialize(AuthData.Recorder(this@BillingActivity).getFocusedUser()!!.token!!).lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
                         override fun onStart() { }
 
                         override fun onFinished(obj: Any) {

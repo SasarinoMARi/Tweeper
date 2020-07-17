@@ -29,7 +29,6 @@ class AuthenticationActivity : BaseActivity() {
         initializeWebView()
         // Generate authentication url
         Thread(Runnable{
-            TwitterAdapter.setOAuthConsumer(this@AuthenticationActivity, twitterInstance)
             requestToken = twitterInstance.oAuthRequestToken
             runOnUiThread {
                 webView!!.loadUrl(requestToken.authorizationURL)
@@ -85,9 +84,9 @@ class AuthenticationActivity : BaseActivity() {
     }
 
     private fun apiTest(accessToken: AccessToken) {
-        TwitterAdapter.initialize(twitterInstance)
+        val twitter = TwitterAdapter().initialize(accessToken)
         Thread {
-            TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
+            twitter.getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() {}
 
                 override fun onFinished(obj: Any) {

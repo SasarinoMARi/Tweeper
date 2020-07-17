@@ -33,22 +33,16 @@ class TokenManagementActivity : BaseActivity() {
         } else {
             val adapter = AuthDataAdapter(users, object : AuthDataAdapter.ActivityInterface {
                 override fun onSelectUser(authData: AuthData) {
-                    val intent = Intent()
-                    intent.putExtra(RESULT_AUTH_DATA, Gson().toJson(authData))
-                    setResult(RESULT_OK, intent)
+                    recorder.setFocusedUser(authData)
+                    setResult(RESULT_OK)
                     finish()
                 }
 
                 override fun onDeleteUser(authData: AuthData) {
+                    // 저장된 유저를 삭제하고 액티비티를 닫을 때 유저를 갱신하도록 설정
+                    // focused user가 삭제될 경우에 대비한 것임
                     recorder.deleteUser(authData)
-                    val focusedUser = recorder.getFocusedUser()
-                    if (TwitterAdapter.twitter.id == authData.user?.id) {
-                        val intent = Intent()
-                        if (focusedUser != null) {
-                            intent.putExtra(RESULT_AUTH_DATA, Gson().toJson(focusedUser))
-                        }
-                        setResult(RESULT_OK, intent)
-                    }
+                    setResult(RESULT_OK)
                     getAuthData()
                 }
             })

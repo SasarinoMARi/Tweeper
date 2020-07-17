@@ -84,5 +84,11 @@ class AuthData {
             }
             saveUsers(users)
         }
+
+        fun getUser(id: Long): AuthData? {
+            val users = getUsers()
+            if(users.isEmpty()) return null
+            return users.first {i -> i.user?.id == id}
+        }
     }
 }

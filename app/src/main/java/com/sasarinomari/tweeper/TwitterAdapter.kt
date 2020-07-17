@@ -5,31 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import twitter4j.*
+import twitter4j.auth.AccessToken
 
 class TwitterAdapter {
     companion object {
         private const val LOG_TAG: String = "TwitterAdapter"
-
-        // TODO: 이 병신같은 초기화 코드 언제 좀 고치셈 ㅡㅡ^
-         var twitter: Twitter = TwitterFactory().instance
-             private set
-
-        fun setOAuthConsumer(context: Context, t: Twitter) {
-            t.setOAuthConsumer(
-                context.getString(R.string.consumerKey),
-                context.getString(R.string.consumerSecret)
-            )
-        }
-
-        fun initialize(context: Context) {
-            val t = TwitterFactory().instance
-            setOAuthConsumer(context, t)
-            this.twitter = t
-        }
-
-        fun initialize(twitter: Twitter) {
-            this.twitter = twitter
-        }
 
         fun showProfile(context: Context, screenName: String) {
             try {
@@ -68,20 +48,59 @@ class TwitterAdapter {
         }
     }
 
+    class TwitterInterface {
+        companion object {
+            private var consumerKey: String? = null
+            private var consumerSecret: String? = null
+
+            fun setOAuthConsumer(context: Context) {
+                consumerKey = context.getString(R.string.consumerKey)
+                consumerSecret = context.getString(R.string.consumerSecret)
+            }
+        }
+        val id: Long
+            get() { return client.id }
+
+        // TODO: 이 병신같은 초기화 코드 언제 좀 고치셈 ㅡㅡ^
+        lateinit var client: Twitter
+            private set
+
+        fun initialize() {
+            val t = TwitterFactory().instance
+            t.setOAuthConsumer(consumerKey, consumerSecret)
+            this.client = t
+        }
+
+        fun initialize(twitter: Twitter) {
+            this.client = twitter
+        }
+
+        fun initialize(accessToken: AccessToken) {
+            initialize()
+            client.oAuthAccessToken = accessToken
+        }
+    }
+
+    var twitter = TwitterInterface()
+
+    fun initialize(accessToken: AccessToken) : TwitterAdapter {
+        twitter.initialize(accessToken)
+        Log.i(LOG_TAG, "Logged in with ${accessToken.screenName}")
+        return this
+    }
+
     interface IterableInterface {
         fun onStart()
         fun onFinished()
         fun onIterate(listIndex: Int)
         fun onRateLimit(listIndex: Int)
     }
-
     interface FetchListInterface {
         fun onStart()
         fun onFinished(list: ArrayList<*>)
         fun onFetch(listSize: Int)
         fun onRateLimit(listSize: Int)
     }
-
     interface FetchObjectInterface {
         fun onStart()
         fun onFinished(obj: Any)
@@ -101,7 +120,7 @@ class TwitterAdapter {
             for (it in startIndex until targetUsersIds.size) {
                 cursor = it
                 apiInterface.onIterate(it)
-                twitter.createBlock(targetUsersIds[it])
+                twitter.client.createBlock(targetUsersIds[it])
             }
             apiInterface.onFinished()
         } catch (te: TwitterException) {
@@ -123,7 +142,7 @@ class TwitterAdapter {
         try {
             while (true) {
                 apiInterface.onFetch(list.count())
-                val users = twitter.getFriendsIDs(targetUserId, cursor, 5000)
+                val users = twitter.client.getFriendsIDs(targetUserId, cursor, 5000)
                 list.addAll(users.iDs.toList())
                 Log.i(LOG_TAG, "Count of Collected Users: ${list.count()}")
                 if (users.hasNext()) cursor = users.nextCursor
@@ -149,7 +168,7 @@ class TwitterAdapter {
         try {
             while (true) {
                 apiInterface.onFetch(list.count())
-                val users = twitter.getFollowersIDs(targetUserId, cursor, 5000)
+                val users = twitter.client.getFollowersIDs(targetUserId, cursor, 5000)
                 list.addAll(users.iDs.toList())
                 Log.i(LOG_TAG, "Count of Collected Users: ${list.count()}")
                 if (users.hasNext()) cursor = users.nextCursor
@@ -172,7 +191,7 @@ class TwitterAdapter {
     fun getMe(activityInterface: FetchObjectInterface) {
         activityInterface.onStart()
         try {
-            val me = twitter.showUser(twitter.id)
+            val me = twitter.client.showUser(twitter.client.id)
             activityInterface.onFinished(me)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "showUser") {
@@ -193,7 +212,7 @@ class TwitterAdapter {
         try {
             while (true) {
                 apiInterface.onFetch(list.count())
-                val users = twitter.getFriendsList(targetUserId, cursor, 200, true, true)
+                val users = twitter.client.getFriendsList(targetUserId, cursor, 200, true, true)
                 list.addAll(users)
                 if (users.hasNext()) cursor = users.nextCursor
                 else break
@@ -218,7 +237,7 @@ class TwitterAdapter {
         try {
             while (true) {
                 apiInterface.onFetch(list.count())
-                val users = twitter.getFollowersList(targetUserId, cursor, 200, true, true)
+                val users = twitter.client.getFollowersList(targetUserId, cursor, 200, true, true)
                 list.addAll(users)
                 if (users.hasNext()) cursor = users.nextCursor
                 else break
@@ -244,7 +263,7 @@ class TwitterAdapter {
             for (i in startIndex..Int.MAX_VALUE) {
                 apiInterface.onFetch(list.count())
                 val paging = Paging(i, 20)
-                val statuses = twitter.getUserTimeline(paging)
+                val statuses = twitter.client.getUserTimeline(paging)
                 list.addAll(statuses)
                 lastIndex = i
                 if (statuses.size == 0) break
@@ -273,7 +292,7 @@ class TwitterAdapter {
                 cursor = i
                 val status = statuses[i]
                 apiInterface.onIterate(cursor)
-                if(!BuildConfig.DEBUG) twitter.destroyStatus(status.id)
+                if(!BuildConfig.DEBUG) twitter.client.destroyStatus(status.id)
             }
             apiInterface.onFinished()
         } catch (te: TwitterException) {
@@ -295,7 +314,7 @@ class TwitterAdapter {
         try {
             while (true) {
                 activityInterface.onFetch(list.count())
-                val users = twitter.getBlocksIDs(cursor)
+                val users = twitter.client.getBlocksIDs(cursor)
                 list.addAll(users.iDs.toList())
                 if (users.hasNext()) cursor = users.nextCursor
                 else break
@@ -321,7 +340,7 @@ class TwitterAdapter {
             for (i in startIndex until list.size) {
                 cursor = i
                 activityInterface.onIterate(i+1)
-                twitter.destroyBlock(list[i])
+                twitter.client.destroyBlock(list[i])
             }
             activityInterface.onFinished()
         } catch (te: TwitterException) {
@@ -340,7 +359,7 @@ class TwitterAdapter {
     fun lookup(screenName: String, activityInterface: FoundObjectInterface) {
         activityInterface.onStart()
         try {
-            val user = twitter.showUser(screenName)
+            val user = twitter.client.showUser(screenName)
             activityInterface.onFinished(user)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "lookup") {

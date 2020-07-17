@@ -3,13 +3,18 @@ package com.sasarinomari.tweeper.Analytics
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.gson.Gson
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter
-import java.lang.Exception
 
 class AnalyticsService : BaseService() {
+    enum class Parameters {
+        User
+    }
+
     companion object {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, AnalyticsService::class.java.name)
     }
@@ -23,6 +28,9 @@ class AnalyticsService : BaseService() {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.TweetAnalytics)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
+
+        val user = Gson().fromJson(intent.getStringExtra(Parameters.User.name), AuthData::class.java)
+        twitterAdapter.initialize(user.token!!)
 
         startForeground(NotificationId,
             createNotification(getString(R.string.app_name), "Initializing...", false))
@@ -50,7 +58,7 @@ class AnalyticsService : BaseService() {
                                             Log.i(ChannelName, "Fridnes: ${followings.size},\tFollowers: ${followers.size}")
 
                                             // 리포트 기록
-                                            val ri = ReportInterface<AnalyticsReport>(TwitterAdapter.twitter.id, AnalyticsReport.prefix)
+                                            val ri = ReportInterface<AnalyticsReport>(twitterAdapter.twitter.id, AnalyticsReport.prefix)
                                             val lastReportIndex = ri.getReportCount(context)
                                             val recentReport = if (lastReportIndex >= 0) ri.readReport(
                                                 context,

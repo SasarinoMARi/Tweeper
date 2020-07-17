@@ -3,6 +3,8 @@ package com.sasarinomari.tweeper.ChainBlock
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import com.google.gson.Gson
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RewardedAdAdapter
@@ -27,6 +29,9 @@ class BlockClearActivity : BaseActivity() {
                     RewardedAdAdapter.show(this@BlockClearActivity, object: RewardedAdAdapter.RewardInterface {
                         override fun onFinished() {
                             val intent = Intent(this@BlockClearActivity, BlockClearService::class.java)
+                            intent.putExtra(
+                                BlockClearService.Parameters.User.name,
+                                Gson().toJson(AuthData.Recorder(this@BlockClearActivity).getFocusedUser()!!))
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 startForegroundService(intent)
                             } else {

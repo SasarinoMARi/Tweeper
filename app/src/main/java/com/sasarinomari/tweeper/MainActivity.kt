@@ -14,7 +14,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         NotificationChannels().declaration(this)
-        TwitterAdapter.initialize(this)
+        TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
         RewardedAdAdapter.load(this)
 
         when (val loggedUser = AuthData.Recorder(this).getFocusedUser()) {
@@ -22,10 +22,9 @@ class MainActivity : BaseActivity() {
                 doAuth()
             }
             else -> {
-                TwitterAdapter.twitter.oAuthAccessToken = loggedUser.token!!
                 Thread {
                     try {
-                        TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
+                        TwitterAdapter().initialize(loggedUser.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
                             override fun onStart() {}
 
                             override fun onFinished(obj: Any) {

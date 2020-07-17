@@ -136,7 +136,7 @@ class DashboardActivity : BaseActivity() {
         image_profilePicture.setImageResource(0)
 
         Thread {
-            TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
+            TwitterAdapter().initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() { }
 
                 override fun onFinished(obj: Any) {
@@ -164,10 +164,7 @@ class DashboardActivity : BaseActivity() {
                 if (resultCode == RESULT_OK) {
                     if(data!=null) {
                         if(data.hasExtra(TokenManagementActivity.RESULT_AUTH_DATA)) {
-                            // 계정 스위치
-                            val json = data.getStringExtra(TokenManagementActivity.RESULT_AUTH_DATA)
-                            val authData = Gson().fromJson(json, AuthData::class.java)
-                            setUser(authData)
+                            setResult(RESULT_OK)
                         }
                         else {
                             // 전환할 계정이 없는 상태로 종료됨
@@ -190,32 +187,5 @@ class DashboardActivity : BaseActivity() {
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
         }
-    }
-
-
-    private fun setUser(authData: AuthData) {
-        val newTwitter = TwitterFactory().instance
-        TwitterAdapter.setOAuthConsumer(this, newTwitter)
-        newTwitter.oAuthAccessToken = authData.token
-        TwitterAdapter.initialize(newTwitter)
-        AuthData.Recorder(this).setFocusedUser(authData)
-        Thread {
-            TwitterAdapter().getMe(object : TwitterAdapter.FetchObjectInterface {
-                override fun onStart() { }
-
-                override fun onFinished(obj: Any) {
-                    val me = obj as twitter4j.User
-                    // 포커스 변경 먼저 반영하고 유저 갱신 후 다시 저장
-                    authData.user = User(me)
-                    AuthData.Recorder(this@DashboardActivity).setFocusedUser(authData)
-                }
-
-                override fun onRateLimit() {
-                    da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
-                }
-
-            })
-        }.start()
-        setResult(RESULT_OK)
     }
 }

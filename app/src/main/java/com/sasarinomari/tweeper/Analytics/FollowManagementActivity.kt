@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
@@ -29,6 +30,8 @@ class FollowManagementActivity: BaseActivity() {
         UnfollowedUsers, BlockUnblockedUsers
     }
 
+    val twitterAdapter = TwitterAdapter()
+
     private val unfollowedUserIds = ArrayList<Long>()
     private val blockUnblockedUserIds = ArrayList<Long>()
 
@@ -47,6 +50,8 @@ class FollowManagementActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_recycler_view)
         if(!checkRequirements()) return
+
+        twitterAdapter.initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!)
 
         // Report 읽어오는 코드
         val followings = Gson().fromJson(intent.getStringExtra(Parameters.Followings.name), object : TypeToken<ArrayList<User>>() { }.type) as ArrayList<User>
@@ -207,7 +212,7 @@ class FollowManagementActivity: BaseActivity() {
             .setConfirmClickListener {
                 it.dismissWithAnimation()
                 Thread(Runnable {
-                    TwitterAdapter.twitter.destroyFriendship(userId)
+                    twitterAdapter.twitter.client.destroyFriendship(userId)
                     unfollowedUserIds.add(userId)
                     runOnUiThread {
                         da.success(getString(R.string.Done), getString(R.string.JobDone)) {
@@ -224,7 +229,7 @@ class FollowManagementActivity: BaseActivity() {
             .setConfirmClickListener {
                 it.dismissWithAnimation()
                 Thread(Runnable {
-                    val twitter = TwitterAdapter.twitter
+                    val twitter = twitterAdapter.twitter.client
                     twitter.createBlock(userId)
                     twitter.destroyBlock(userId)
                     blockUnblockedUserIds.add(userId)

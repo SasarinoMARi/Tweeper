@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Analytics.AnalyticsService
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
@@ -17,16 +19,22 @@ class HetzerService : BaseService() {
     }
 
     enum class Parameters {
-        HetzerConditions
+        User, HetzerConditions
     }
 
     lateinit var strServiceName: String
     lateinit var strRateLimitWaiting: String
 
+    val twitterAdapter = TwitterAdapter()
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.TweetCleaner)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
+
+        val j = intent.getStringExtra(Parameters.User.name)!!
+        val user = Gson().fromJson(j, AuthData::class.java)!!
+        twitterAdapter.twitter.initialize(user.token!!)
 
         startForeground(
             NotificationId,
@@ -37,8 +45,6 @@ class HetzerService : BaseService() {
 
         return START_REDELIVER_INTENT
     }
-
-    val twitterAdapter = TwitterAdapter()
 
     private fun hetzerLogic(intent: Intent) {
         val json = intent.getStringExtra(Parameters.HetzerConditions.name)!!
@@ -74,7 +80,7 @@ class HetzerService : BaseService() {
 
                             override fun onFinished() {
                                 // 리포트 작성
-                                val ri = ReportInterface<HetzerReport>(TwitterAdapter.twitter.id, HetzerReport.prefix)
+                                val ri = ReportInterface<HetzerReport>(twitterAdapter.twitter.id, HetzerReport.prefix)
                                 val report = HetzerReport(targetStatus, passedStatuses)
                                 report.id = ri.getReportCount(context) + 1
                                 ri.writeReport(context, report.id, report)

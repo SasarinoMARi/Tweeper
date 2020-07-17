@@ -8,6 +8,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RewardedAdAdapter
@@ -61,7 +63,7 @@ class ChainBlockActivity : BaseActivity() {
             val p = da.progress(null, getString(R.string.UserFetching))
             p.show()
             Thread {
-                TwitterAdapter().lookup(screenN, object: TwitterAdapter.FoundObjectInterface {
+                TwitterAdapter().initialize(AuthData.Recorder(this@ChainBlockActivity).getFocusedUser()!!.token!!).lookup(screenN, object: TwitterAdapter.FoundObjectInterface {
                     override fun onStart() { }
 
                     override fun onFinished(obj: Any) {
@@ -132,6 +134,9 @@ class ChainBlockActivity : BaseActivity() {
                             intent.putExtra(ChainBlockService.Parameters.BlockFollowing.name, checkbox_following.isChecked)
                             intent.putExtra(ChainBlockService.Parameters.BlockFollower.name, checkbox_followers.isChecked)
                             intent.putExtra(ChainBlockService.Parameters.IgnoreMyFollowing.name, checkbox_ignoremyFollowing.isChecked)
+                            intent.putExtra(
+                                ChainBlockService.Parameters.User.name,
+                                Gson().toJson(AuthData.Recorder(this@ChainBlockActivity).getFocusedUser()!!))
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 startForegroundService(intent)
                             } else {

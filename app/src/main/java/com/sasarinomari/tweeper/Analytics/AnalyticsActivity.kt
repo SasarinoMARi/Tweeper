@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
@@ -60,6 +61,9 @@ class AnalyticsActivity : BaseActivity() {
                                 RewardedAdAdapter.show(this@AnalyticsActivity, object: RewardedAdAdapter.RewardInterface {
                                     override fun onFinished() {
                                         val intent = Intent(this@AnalyticsActivity, AnalyticsService::class.java)
+                                        intent.putExtra(
+                                            AnalyticsService.Parameters.User.name,
+                                            Gson().toJson(AuthData.Recorder(this@AnalyticsActivity).getFocusedUser()!!))
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                             startForegroundService(intent)
                                         }

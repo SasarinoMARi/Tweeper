@@ -3,6 +3,9 @@ package com.sasarinomari.tweeper.ChainBlock
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.gson.Gson
+import com.sasarinomari.tweeper.Analytics.AnalyticsService
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
@@ -13,7 +16,7 @@ class ChainBlockService : BaseService() {
     }
 
     enum class Parameters {
-        TargetId, BlockFollowing, BlockFollower, IgnoreMyFollowing
+        User, TargetId, BlockFollowing, BlockFollower, IgnoreMyFollowing
     }
 
     lateinit var strServiceName: String
@@ -36,6 +39,9 @@ class ChainBlockService : BaseService() {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.Chainblock)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
+
+        val user = Gson().fromJson(intent.getStringExtra(Parameters.User.name), AuthData::class.java)
+        twitterAdapter.initialize(user.token!!)
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
@@ -103,6 +104,8 @@ class HetzerActivity : BaseActivity() {
                 val intent = Intent(this, HetzerService::class.java)
                 val json = data!!.getStringExtra(HetzerService.Parameters.HetzerConditions.name)
                 intent.putExtra(HetzerService.Parameters.HetzerConditions.name, json)
+                intent.putExtra(HetzerService.Parameters.User.name,
+                    Gson().toJson(AuthData.Recorder(this@HetzerActivity).getFocusedUser()!!))
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 } else {

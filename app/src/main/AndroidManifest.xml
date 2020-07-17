@@ -13,7 +13,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-        <activity android:name=".Billing.BillingActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +23,8 @@
         <activity android:name=".UITestActivity" />
         <activity android:name=".Authenticate.TokenManagementActivity" />
         <activity android:name=".Authenticate.AuthenticationActivity" />
+        <activity android:name=".Billing.BillingActivity"/>
+        <activity android:name=".ScheduledTask.ScheduleManageActivity"/>
         <activity android:name=".Report.ReportListActivity"/>
 
         <!--Hetzer-->

@@ -2,11 +2,18 @@ package com.sasarinomari.tweeper.ChainBlock
 
 import android.content.Context
 import android.content.Intent
+import com.google.gson.Gson
+import com.sasarinomari.tweeper.Analytics.AnalyticsService
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
 
 class BlockClearService : BaseService() {
+    enum class Parameters {
+        User
+    }
+
     companion object {
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, BlockClearService::class.java.name)
     }
@@ -20,6 +27,9 @@ class BlockClearService : BaseService() {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
         strServiceName = getString(R.string.BlockClear)
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
+
+        val user = Gson().fromJson(intent.getStringExtra(Parameters.User.name), AuthData::class.java)
+        twitterAdapter.initialize(user.token!!)
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
 

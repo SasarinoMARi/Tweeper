@@ -24,6 +24,7 @@ import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.activity_hetzer_conditions.*
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.RewardedAdAdapter
 import com.sasarinomari.tweeper.TwitterAdapter
 
@@ -477,7 +478,7 @@ internal class HetzerConditionsActivity : BaseActivity() {
         }
 
         private fun getKey() : String {
-            return "hCon" + TwitterAdapter.twitter.id
+            return "hCon" + AuthData.Recorder(context).getFocusedUser()!!.user!!.id
         }
     }
 }

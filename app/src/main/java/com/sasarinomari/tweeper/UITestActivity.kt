@@ -12,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
+import com.sasarinomari.tweeper.MediaDownload.MediaDownloadActivity
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import kotlinx.android.synthetic.main.activity_uitest.*
@@ -42,8 +43,13 @@ class UITestActivity : BaseActivity() {
         if(false) testRewardAd()
         if(false) testBillingActivity()
         if(false) testFirebaseLogging()
-        if(true) testSpotlight()
+        if(false) testSpotlight()
+        if(true) textMediaDownload()
 
+    }
+
+    private fun textMediaDownload() {
+        startActivity(Intent(this, MediaDownloadActivity::class.java))
     }
 
     private fun testSpotlight() {

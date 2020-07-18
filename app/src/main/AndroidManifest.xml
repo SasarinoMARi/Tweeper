@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -24,8 +25,21 @@
         <activity android:name=".Authenticate.TokenManagementActivity" />
         <activity android:name=".Authenticate.AuthenticationActivity" />
         <activity android:name=".Billing.BillingActivity"/>
-        <activity android:name=".ScheduledTask.ScheduleManageActivity"/>
         <activity android:name=".Report.ReportListActivity"/>
+
+        <activity android:name=".ScheduledTask.ScheduleManageActivity"/>
+
+        <!--Media Download-->
+        <activity android:name=".MediaDownload.MediaDownloadActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+        <service
+            android:name=".MediaDownload.MediaDownloadService"
+            android:exported="true" />
 
         <!--Hetzer-->
         <activity android:name=".Hetzer.HetzerActivity" />

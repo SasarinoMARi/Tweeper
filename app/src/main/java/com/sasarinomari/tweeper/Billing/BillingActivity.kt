@@ -118,6 +118,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 }
             }
         })
+        adapter.addSpace(5)
 
         root.layoutManager = LinearLayoutManager(this)
         root.adapter = adapter

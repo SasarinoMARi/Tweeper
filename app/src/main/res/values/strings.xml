@@ -153,4 +153,10 @@
     <string name="RestorePayment">구매 내역 복원하기</string>
     <string name="RestorePaymentDesc">기존 구매 이력을 불러와요. 추가 과금은 되지 않아요!</string>
     <string name="PaymentFailed">결제에 실패했습니다.</string>
+    <string name="PermissionDenied">파일 다운로드를 위해 저장소 접근을 허용해주세요!</string>
+    <string name="DownloadStarted">다운로드가 시작되었습니다.</string>
+    <string name="DownloadCompleted">다운로드가 완료되었습니다.</string>
+    <string name="FetchingStatus">트윗을 가져오는 중입니다.</string>
+    <string name="FetchingMedia">미디어를 저장하는 중입니다 (%1$d\%%)</string>
+    <string name="MediaDownloader">미디어 다운로더</string>
 </resources>

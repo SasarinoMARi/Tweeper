@@ -157,7 +157,7 @@
     <string name="DownloadStarted">다운로드가 시작되었습니다.</string>
     <string name="DownloadCompleted">다운로드가 완료되었습니다.</string>
     <string name="FetchingStatus">트윗을 가져오는 중입니다.</string>
-    <string name="FetchingMedia">미디어를 저장하는 중입니다 (%1$d\%%)</string>
+    <string name="FetchingMedia">미디어를 저장하는 중입니다 (%1$d％)</string>
     <string name="MediaDownloader">미디어 다운로더</string>
     <string name="MediaDownloaderDescription">트윗에 포함된 이미지, GIF, 동영상을 다운로드해요.</string>
     <string name="MediaDownloaderGuide">미디어 다운로더는 트위터 앱에서 공유하기를 눌러 사용할 수도 있어요!</string>

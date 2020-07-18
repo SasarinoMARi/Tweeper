@@ -1,29 +1,23 @@
 package com.sasarinomari.tweeper.MediaDownload
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
-import android.widget.Toast
-import androidx.core.app.NotificationCompat
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.FirebaseLogger
-import com.sasarinomari.tweeper.Permission.PermissionHelper
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
-import twitter4j.MediaEntity
 import twitter4j.Status
 import java.io.File
-import java.lang.NullPointerException
 
 class MediaDownloadService: BaseService() {
     enum class Parameters {
@@ -121,12 +115,12 @@ class MediaDownloadService: BaseService() {
         Fuel.download(url).fileDestination { _, _ -> filePath }.progress { readBytes, totalBytes ->
             val progress = readBytes.toFloat() / totalBytes.toFloat()
             restrainedNotification(getString(R.string.MediaDownloader), getString(R.string.FetchingMedia, progress.toInt()))
-        }.response { _, _, result ->
+        }.response { _, _, _ ->
+            val i = getOpenFileIntent(filePath)
             sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
                 silent = false,
                 cancelable = true,
-                redirect = Intent(),
-                /*redirect = getOpenFileIntent(filePath.toString()),*/
+                redirect = i,
                 id = NotificationId + 1
             )
             Log.d("mediaDownload", "File downloaded to : $filePath")
@@ -141,14 +135,67 @@ class MediaDownloadService: BaseService() {
         this@MediaDownloadService.stopSelf()
     }
 
-    private fun getOpenFileIntent(filePath: String): Intent {
-        val file = File(filePath)
+    private fun getImageContentUri(context: Context, file: File): Uri? {
+        val filePath = file.absolutePath
+        val cursor: Cursor? = context.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Images.Media._ID),
+            MediaStore.Images.Media.DATA + "=? ", arrayOf(filePath), null
+        )
+        return if (cursor != null && cursor.moveToFirst()) {
+            val id: Int = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
+            cursor.close()
+            Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id)
+        } else {
+            if (file.exists()) {
+                val values = ContentValues()
+                values.put(MediaStore.Images.Media.DATA, filePath)
+                context.contentResolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
+                )
+            } else {
+                null
+            }
+        }
+    }
+    private fun getVideoContentUri(context: Context, file: File): Uri? {
+        val filePath = file.absolutePath
+        val cursor: Cursor? = context.contentResolver.query(
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI, arrayOf(MediaStore.Video.Media._ID),
+            MediaStore.Video.Media.DATA + "=? ", arrayOf(filePath), null
+        )
+        return if (cursor != null && cursor.moveToFirst()) {
+            val id: Int = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID))
+            cursor.close()
+            Uri.withAppendedPath(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, "" + id)
+        } else {
+            if (file.exists()) {
+                val values = ContentValues()
+                values.put(MediaStore.Video.Media.DATA, filePath)
+                context.contentResolver.insert(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values
+                )
+            } else {
+                null
+            }
+        }
+    }
+
+    private fun getOpenFileIntent(file: File): Intent {
         val map: MimeTypeMap = MimeTypeMap.getSingleton()
         val ext: String = MimeTypeMap.getFileExtensionFromUrl(file.name)
         val type: String = map.getMimeTypeFromExtension(ext) ?: "*/*"
 
+        val data: Uri? = when{
+            type.startsWith("image") -> {
+                getImageContentUri(this, file)
+            }
+            type.startsWith("video") -> {
+                getVideoContentUri(this, file)
+            }
+            else -> return Intent()
+        }
+
         val intent = Intent(Intent.ACTION_VIEW)
-        val data: Uri = Uri.fromFile(file)
 
         intent.setDataAndType(data, type)
         return intent

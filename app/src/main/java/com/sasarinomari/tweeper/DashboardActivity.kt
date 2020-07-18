@@ -24,6 +24,7 @@ import com.sasarinomari.tweeper.Analytics.AnalyticsActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.Billing.BillingActivity
+import com.sasarinomari.tweeper.MediaDownload.MediaDownloadActivity
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.Spotlight
@@ -48,6 +49,9 @@ class DashboardActivity : BaseActivity() {
         }
         button_tweetReport.setOnClickListener {
             startActivity(Intent(this, AnalyticsActivity::class.java))
+        }
+        button_mediaDownload.setOnClickListener {
+            startActivity(Intent(this, MediaDownloadActivity::class.java))
         }
         button_removeFriends.setOnClickListener {
             startActivity(Intent(this, ChainBlockActivity::class.java))

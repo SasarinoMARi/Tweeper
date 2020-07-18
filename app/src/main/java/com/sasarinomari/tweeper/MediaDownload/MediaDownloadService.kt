@@ -16,10 +16,12 @@ import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
+import com.sasarinomari.tweeper.FirebaseLogger
 import com.sasarinomari.tweeper.Permission.PermissionHelper
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
 import twitter4j.MediaEntity
+import twitter4j.Status
 import java.io.File
 import java.lang.NullPointerException
 
@@ -29,6 +31,7 @@ class MediaDownloadService: BaseService() {
     }
 
     companion object {
+        private const val LOG_TAG = "MediaDownloadService"
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, MediaDownloadService::class.java.name)
     }
 
@@ -53,35 +56,60 @@ class MediaDownloadService: BaseService() {
 
 
     private fun downloadMedia(id: Long) {
+        Log.i(LOG_TAG, "id: $id")
         sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadStarted), silent = true)
-        val status = twitterAdapter.twitter.client.showStatus(id)
-        for (entitie in status.mediaEntities) {
-            when(entitie.type) {
-                "photo" -> {
-                    download(entitie.mediaURLHttps)
+        twitterAdapter.lookStatus(id, object: TwitterAdapter.FoundObjectInterface {
+            override fun onStart() { }
+
+            override fun onFinished(obj: Any) {
+                val status = obj as Status
+                if(status.mediaEntities.isEmpty()) {
+                    finish(); return
                 }
-                "animated_gif" -> {
-                    val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
-                    if(target!=null) {
-                        download(target.url)
-                        // TODO: 이것을 변환
-                    }
-                    else {
-                        // TODO: logigng
-                    }
-                }
-                "video" -> {
-                    val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
-                    if(target!=null) {
-                        download(target.url)
-                    }
-                    else {
-                        // TODO: logigng
+                for (entitie in status.mediaEntities) {
+                    when(entitie.type) {
+                        "photo" -> {
+                            download(entitie.mediaURLHttps)
+                        }
+                        "animated_gif" -> {
+                            val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
+                            if(target!=null) {
+                                download(target.url)
+                                // TODO: 이것을 변환
+                            }
+                            else {
+                                FirebaseLogger(this@MediaDownloadService)
+                                    .log("VideoVariantResultNull",
+                                        Pair("entitie.videoVariants", Gson().toJson(entitie.videoVariants)))
+                            }
+                        }
+                        "video" -> {
+                            val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
+                            if(target!=null) {
+                                download(target.url)
+                            }
+                            else {
+                                FirebaseLogger(this@MediaDownloadService)
+                                    .log("VideoVariantResultNull",
+                                        Pair("entitie.videoVariants", Gson().toJson(entitie.videoVariants)))
+                            }
+                        }
                     }
                 }
             }
-        }
-        Log.i("downloadMedia", status.text)
+
+            override fun onRateLimit() {
+                sendNotification(getString(R.string.MediaDownloader), getString(R.string.RateLimitWaiting))
+
+            }
+
+            override fun onNotFound() {
+                sendNotification(getString(R.string.MediaDownloader), getString(R.string.StatusNotFound),
+                    false, true, Intent(), NotificationId +1)
+                finish()
+            }
+
+        })
     }
 
     /**
@@ -104,9 +132,13 @@ class MediaDownloadService: BaseService() {
             Log.d("mediaDownload", "File downloaded to : $filePath")
 
             // 서비스 종료
-            this@MediaDownloadService.stopForeground(true)
-            this@MediaDownloadService.stopSelf()
+            finish()
         }
+    }
+
+    private fun finish() {
+        this@MediaDownloadService.stopForeground(true)
+        this@MediaDownloadService.stopSelf()
     }
 
     private fun getOpenFileIntent(filePath: String): Intent {

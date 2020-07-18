@@ -118,6 +118,17 @@
                     app:title="@string/TweetAnalytics" />
 
                 <com.sasarinomari.tweeper.View.DashboardCardView
+                    android:id="@+id/button_mediaDownload"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    app:description="@string/MediaDownloaderDescription"
+                    app:icon="@drawable/download"
+                    app:ovalColor="@color/bluegrey"
+                    app:title="@string/MediaDownloader" />
+
+                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_removeFriends"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

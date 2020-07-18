@@ -159,4 +159,10 @@
     <string name="FetchingStatus">트윗을 가져오는 중입니다.</string>
     <string name="FetchingMedia">미디어를 저장하는 중입니다 (%1$d\%%)</string>
     <string name="MediaDownloader">미디어 다운로더</string>
+    <string name="MediaDownloaderDescription">트윗에 포함된 이미지, GIF, 동영상을 다운로드해요.</string>
+    <string name="MediaDownloaderGuide">미디어 다운로더는 트위터 앱에서 공유하기를 눌러 사용할 수도 있어요!</string>
+    <string name="DownloaderUrlHint">다운로드할 트윗 URL</string>
+    <string name="Download">다운로드</string>
+    <string name="InvalidUrl">유효하지 않은 URL입니다. 트윗 URL을 입력해주세요.</string>
+    <string name="StatusNotFound">트윗을 조회할 수 없었습니다. 올바른 URL이 입력되었는지, 트윗지기에 로그인한 계정이 해당 트윗을 볼 수 있는지 확인해주세요.</string>
 </resources>

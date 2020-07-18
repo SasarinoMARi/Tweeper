@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/gradient_title"
+    android:paddingLeft="@dimen/activity_horizontal_padding"
+    android:paddingTop="@dimen/activity_vertical_padding"
+    android:paddingRight="@dimen/activity_horizontal_padding"
+    android:paddingBottom="@dimen/activity_vertical_padding"
+    tools:context=".MediaDownload.MediaDownloadActivity"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/fragment_title_with_desc"/>
+
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/noto_sans_light"
+        android:text="@string/MediaDownloaderGuide"
+        android:textColor="@color/white"
+        android:background="@color/lightBackground"
+        android:padding="15dp"
+        android:textSize="15sp"/>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/_input1"
+        android:layout_marginTop="30dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:hintTextAppearance="@style/WhitecolorText"
+        app:boxStrokeColor="@color/white"
+        android:theme="@style/WhiteTextInputLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/input_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:hint="@string/DownloaderUrlHint"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <include
+        android:layout_marginTop="50dp"
+        android:id="@+id/layout_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/fragment_card_button"/>
+
+</LinearLayout>

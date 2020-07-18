@@ -1,28 +1,22 @@
 package com.sasarinomari.tweeper.MediaDownload
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
-import android.webkit.MimeTypeMap
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import com.github.kittinunf.fuel.Fuel
-import com.sasarinomari.tweeper.Authenticate.AuthData
+import androidx.core.content.ContextCompat
+import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Permission.PermissionHelper
 import com.sasarinomari.tweeper.R
-import com.sasarinomari.tweeper.TwitterAdapter
-import twitter4j.MediaEntity
-import java.io.File
+import kotlinx.android.synthetic.main.activity_media_download.*
+import kotlinx.android.synthetic.main.fragment_card_button.view.*
+import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 
-open class MediaDownloadActivity : AppCompatActivity() {
+open class MediaDownloadActivity : BaseActivity() {
+
+    var layoutInitialized = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -41,9 +35,20 @@ open class MediaDownloadActivity : AppCompatActivity() {
                 /**
                  * 공유하기를 통해 오지 않은 경우 UI를 초기화하고 직접 url을 입력받습니다.
                  */
-                setContentView(R.layout.full_recycler_view)
+                setContentView(R.layout.activity_media_download)
+                layoutInitialized = true
 
-                downloadMedia("https://twitter.com/khm_bl/status/1284334328080732161?s=20")
+                layout_title.title_text.text = getString(R.string.MediaDownloader)
+                layout_title.title_description.text = getString(R.string.MediaDownloaderDescription)
+
+                layout_button.cardbutton_image.setOvalColor(ContextCompat.getColor(this@MediaDownloadActivity, R.color.bluegrey))
+                layout_button.cardbutton_image.setImageResource(R.drawable.download)
+                layout_button.cardbutton_text.text = getString(R.string.Download)
+                layout_button.setOnClickListener {
+                    val url = input_url.text.toString()
+                    downloadMedia(url)
+                    input_url.setText("")
+                }
             }
         }
     }
@@ -53,13 +58,22 @@ open class MediaDownloadActivity : AppCompatActivity() {
      * 잘못된 url로 요청되었을 경우.
      */
     private fun invalidUrl() {
-        TODO("Not yet implemented")
+        runOnUiThread {
+            if(layoutInitialized) {
+                da.error(getString(R.string.Error), getString(R.string.InvalidUrl)).show()
+            }
+            else {
+                Toast.makeText(this, getString(R.string.InvalidUrl), Toast.LENGTH_LONG).show()
+                finish()
+            }
+        }
     }
 
     /**
      * url로부터 status id만을 추출합니다.
      */
     private fun getStatusId(url: String): Long {
+        if(url.isEmpty()) return -1
         val b = url.substringAfterLast("/")
         val regex = """[0-9]+""".toRegex()
         val matchResult = regex.find(b)?.value ?: return -1
@@ -74,6 +88,7 @@ open class MediaDownloadActivity : AppCompatActivity() {
         val id = getStatusId(url)
         if (id == (-1).toLong()) {
             invalidUrl()
+            return
         }
 
         val i = Intent(this, MediaDownloadService::class.java)

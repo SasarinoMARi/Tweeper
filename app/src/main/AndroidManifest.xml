@@ -30,7 +30,8 @@
         <activity android:name=".ScheduledTask.ScheduleManageActivity"/>
 
         <!--Media Download-->
-        <activity android:name=".MediaDownload.MediaDownloadActivity">
+        <activity android:name=".MediaDownload.MediaDownloadActivity"
+            android:label="@string/MediaDownloader">
             <intent-filter>
                 <action android:name="android.intent.action.SEND"/>
                 <category android:name="android.intent.category.DEFAULT"/>

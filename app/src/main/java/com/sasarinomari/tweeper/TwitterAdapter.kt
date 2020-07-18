@@ -371,11 +371,34 @@ class TwitterAdapter {
                     lookup(screenName, activityInterface)
                 }
 
-                override fun onUserNotFound() {
+                override fun onNotFound() {
                     activityInterface.onNotFound()
                 }
             }.catch()
         }
+    }
+
+    fun lookStatus(id: Long, activityInterface: FoundObjectInterface) {
+        activityInterface.onStart()
+        try {
+            val user = twitter.client.showStatus(id)
+            activityInterface.onFinished(user)
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "v") {
+                override fun onRateLimitExceeded() {
+                    activityInterface.onRateLimit()
+                }
+
+                override fun onRateLimitReset() {
+                    lookStatus(id, activityInterface)
+                }
+
+                override fun onNotFound() {
+                    activityInterface.onNotFound()
+                }
+            }.catch()
+        }
+
     }
 
 }

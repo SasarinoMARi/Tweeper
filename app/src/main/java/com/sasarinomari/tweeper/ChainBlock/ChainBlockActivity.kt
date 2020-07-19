@@ -80,11 +80,15 @@ class ChainBlockActivity : BaseActivity() {
                     }
 
                     override fun onRateLimit() {
-                        da.error(getString(R.string.Error), getString(R.string.RateLimitError, "lookup")).show()
+                        runOnUiThread {
+                            p.dismissWithAnimation()
+                            da.error(getString(R.string.Error), getString(R.string.RateLimitError, "lookup")).show()
+                        }
                     }
 
                     override fun onNotFound() {
                         runOnUiThread {
+                            p.dismissWithAnimation()
                             input_ScreenName.text = null
                             da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
                         }

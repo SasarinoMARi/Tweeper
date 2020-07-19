@@ -1,5 +1,6 @@
 package com.sasarinomari.tweeper
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.sasarinomari.tweeper.Hetzer.HetzerActivity
@@ -11,11 +12,11 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
 import com.sasarinomari.tweeper.ChainBlock.BlockClearActivity
@@ -25,13 +26,14 @@ import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.Billing.BillingActivity
 import com.sasarinomari.tweeper.MediaDownload.MediaDownloadActivity
-import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.takusemba.spotlight.OnSpotlightListener
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.shape.Circle
 import kotlinx.android.synthetic.main.fragment_spotlight.view.*
-import twitter4j.TwitterFactory
+import twitter4j.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 class DashboardActivity : BaseActivity() {
     enum class Requests {
@@ -80,7 +82,9 @@ class DashboardActivity : BaseActivity() {
             runOnUiThread {
                 showTips()
             }
-        }.start()
+        }.start() else {
+            showNoticeDialog()
+        }
     }
 
 
@@ -102,7 +106,10 @@ class DashboardActivity : BaseActivity() {
             .setDuration(1000L)
             .setAnimation(DecelerateInterpolator(2f))
             .setOnSpotlightListener(object: OnSpotlightListener {
-                override fun onEnded() { setNotFirstrun() }
+                override fun onEnded() {
+                    showNoticeDialog()
+                    setNotFirstrun()
+                }
 
                 override fun onStarted() { }
             })
@@ -116,6 +123,41 @@ class DashboardActivity : BaseActivity() {
         first.setOnClickListener {
             spotlight.finish()
         }
+    }
+
+    private fun showNoticeDialog() {
+        val prefs = getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE)
+        val shownVersion = prefs.getInt("noticeRevision", -1)
+
+        val url = URL("https://gist.githubusercontent.com/SasarinoMARi/1f5c073492b9b07a87d75de34341c3d6/raw")
+        val urlConnection = url.openConnection() as HttpURLConnection
+
+        Thread {
+            try {
+                val json = urlConnection.inputStream.bufferedReader().readText()
+                val obj = JSONObject(json)
+                val version = obj.getInt("revision")
+                if(version > shownVersion) {
+                val text = obj.getString("text")
+                    runOnUiThread {
+                        MaterialDialog(this).show {
+                            title(text = getString(R.string.Notice))
+                            message(text = text)
+                            positiveButton {
+                                val edit = prefs.edit()
+                                edit.putInt("noticeRevision", version)
+                                edit.apply()
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                FirebaseLogger(this).log("NoticeDownloadFailed", Pair("StackTrace", e.message!!))
+            } finally {
+                urlConnection.disconnect()
+        }
+        }.start()
     }
 
     private fun initAds() {

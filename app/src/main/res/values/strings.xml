@@ -165,4 +165,5 @@
     <string name="Download">다운로드</string>
     <string name="InvalidUrl">유효하지 않은 URL입니다. 트윗 URL을 입력해주세요.</string>
     <string name="StatusNotFound">트윗을 조회할 수 없었습니다. 올바른 URL이 입력되었는지, 트윗지기에 로그인한 계정이 해당 트윗을 볼 수 있는지 확인해주세요.</string>
+    <string name="Converting">동영상을 GIF로 변환중이에요.</string>
 </resources>

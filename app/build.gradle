@@ -7,7 +7,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.sasarinomari.tweeper"
-        minSdkVersion 22
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 9
         versionName "1.1"
@@ -34,20 +34,31 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
     implementation project(':WebView')
+    implementation 'com.github.kittinunf.fuel:fuel:+' // Http 클라이언트
+    implementation 'com.google.code.gson:gson:2.8.6' // Json
+    implementation 'com.google.android.gms:play-services-ads:19.2.0' // 광고
+
+    // region Firebase
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
+    // endregion
+
+    // region In app 결제
+    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
+    // endregion
+
+    // region UI
     implementation "com.google.android.material:material:1.0.0"
-    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.afollestad.material-dialogs:core:3.1.1'
     implementation 'com.afollestad.material-dialogs:input:3.1.1'
     implementation 'com.afollestad.material-dialogs:bottomsheets:3.1.1'
     implementation 'com.github.elevenetc:textsurface:0.9.1'
-    implementation 'com.github.f0ris.sweetalert:library:1.5.6'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.android.gms:play-services-ads:19.2.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
-    implementation 'com.anjlab.android.iab.v3:library:1.0.44'
-    implementation 'com.github.takusemba:spotlight:+'
-    implementation 'com.github.kittinunf.fuel:fuel:+'
+    implementation 'com.github.f0ris.sweetalert:library:1.5.6' // 예쁜 다이얼로그
+    implementation 'com.github.takusemba:spotlight:+' // 스포트라이트 UI
+    implementation 'com.squareup.picasso:picasso:2.71828' // 쓰기편한 동적 이미지뷰
+    // endregion
+
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.3.2' // FFMPEG
 }

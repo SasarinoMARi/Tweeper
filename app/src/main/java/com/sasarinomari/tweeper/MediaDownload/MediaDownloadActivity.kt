@@ -15,12 +15,15 @@ import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 
 open class MediaDownloadActivity : BaseActivity() {
 
-    var layoutInitialized = false
+    private val permissions= arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+    private var layoutInitialized = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        PermissionHelper.activatePermission(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        PermissionHelper.activatePermission(this, permissions) {
             if(Intent.ACTION_SEND == intent.action) {
                 /**
                  * 공유하기를 통해 접근한 경우 인텐트에서 url을 추출해 작업을 시작합니다.
@@ -102,8 +105,7 @@ open class MediaDownloadActivity : BaseActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         // super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionHelper.onRequestPermissionsResult(this,
-            arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), requestCode, grantResults) {
+        PermissionHelper.onRequestPermissionsResult(this, permissions, requestCode, grantResults) {
             Toast.makeText(this, getString(R.string.PermissionDenied), Toast.LENGTH_LONG).show()
             Log.i("log", getString(R.string.PermissionDenied))
             finish()

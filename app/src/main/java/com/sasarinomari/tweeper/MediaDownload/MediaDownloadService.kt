@@ -9,6 +9,10 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
+import com.arthenica.mobileffmpeg.Config
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
+import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
+import com.arthenica.mobileffmpeg.FFmpeg
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
@@ -18,6 +22,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
 import twitter4j.Status
 import java.io.File
+
 
 class MediaDownloadService: BaseService() {
     enum class Parameters {
@@ -68,8 +73,18 @@ class MediaDownloadService: BaseService() {
                         "animated_gif" -> {
                             val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
                             if(target!=null) {
-                                download(target.url)
-                                // TODO: 이것을 변환
+                                download(target.url) { file ->
+                                    sendNotification(getString(R.string.MediaDownloader), getString(R.string.Converting), silent = true)
+                                    val newPath = convertWithFFMPEG(file)
+                                    val i = getOpenFileIntent(newPath)
+                                    sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
+                                        silent = false,
+                                        cancelable = true,
+                                        redirect = i,
+                                        id = NotificationId + 1
+                                    )
+                                    finish()
+                                }
                             }
                             else {
                                 FirebaseLogger(this@MediaDownloadService)
@@ -106,27 +121,51 @@ class MediaDownloadService: BaseService() {
         })
     }
 
+    private fun convertWithFFMPEG(file: File): File {
+        val newPath = File("${file.toString().substringBeforeLast(".")}.gif")
+        if(newPath.exists()) newPath.delete()
+        // val command = "-ss 30 -t 3 -i $file -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 -f gif $newPath"
+        val command = "-i $file $newPath"
+        val rc = FFmpeg.execute(command)
+        when (rc) {
+            RETURN_CODE_SUCCESS -> {
+                Log.i(Config.TAG, "Command execution completed successfully.")
+            }
+            RETURN_CODE_CANCEL -> {
+                Log.i(Config.TAG, "Command execution cancelled by user.")
+            }
+            else -> {
+                Log.i(
+                    Config.TAG,
+                    String.format("Command execution failed with rc=%d and the output below.", rc)
+                )
+                Config.printLastCommandOutput(Log.INFO)
+            }
+        }
+        return newPath
+    }
+
     /**
      * 실제 파일 다운로드 코드
      */
-    private fun download(url: String) {
+    private fun download(url: String, callback: (File)-> Unit = {
+        val i = getOpenFileIntent(it)
+        sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
+            silent = false,
+            cancelable = true,
+            redirect = i,
+            id = NotificationId + 1
+        )
+        finish()
+    }) {
         val fileName = url.substringAfterLast("/").substringBefore("?")
         val filePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString(), fileName)
         Fuel.download(url).fileDestination { _, _ -> filePath }.progress { readBytes, totalBytes ->
             val progress = readBytes.toFloat() / totalBytes.toFloat()
             restrainedNotification(getString(R.string.MediaDownloader), getString(R.string.FetchingMedia, progress.toInt()))
         }.response { _, _, _ ->
-            val i = getOpenFileIntent(filePath)
-            sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
-                silent = false,
-                cancelable = true,
-                redirect = i,
-                id = NotificationId + 1
-            )
             Log.d("mediaDownload", "File downloaded to : $filePath")
-
-            // 서비스 종료
-            finish()
+            callback(filePath)
         }
     }
 

@@ -8,6 +8,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.sasarinomari.tweeper.Billing.AdRemover
+import java.util.*
 
 class RewardedAdAdapter {
     interface RewardInterface {
@@ -42,16 +43,26 @@ class RewardedAdAdapter {
             rewardedAd!!.loadAd(AdRequest.Builder().build(), adLoadCallback)
         }
 
+        private val random = Random()
+        /**
+         * 양심에 따라 광고가 낮은 확률로 나오도록 설정
+         */
+        private fun luckey(): Boolean {
+            val r = random.nextInt(100)
+            return r > 20
+        }
+
         fun show(activity: Activity, ri: RewardInterface) {
             when {
                 AdRemover(activity).isAdRemoved() -> {
                     ri.onFinished()
                 }
-                /*
                 BuildConfig.DEBUG ->{
                     ri.onFinished()
                 }
-                 */
+                luckey() -> {
+                    ri.onFinished()
+                }
                 rewardedAd != null && rewardedAd!!.isLoaded -> {
                     val adCallback = object : RewardedAdCallback() {
                         var isCompleted: Boolean = false

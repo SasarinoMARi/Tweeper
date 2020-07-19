@@ -16,7 +16,7 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
             TwitterStatusCode.Unauthrized.code -> {
                 onNotFound()
             }
-            TwitterStatusCode.OK.code -> {
+            else -> {
                 when (te.errorCode) {
                     TwitterErrorCode.RateLlimitExceeded.code -> {
                         onRateLimitExceeded()
@@ -38,7 +38,6 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                     else -> throw te
                 }
             }
-            else -> throw te
         }
     }
 

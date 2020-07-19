@@ -112,6 +112,11 @@ class TwitterAdapter {
         fun onRateLimit()
         fun onNotFound()
     }
+    interface PostInterface {
+        fun onStart()
+        fun onFinished(obj: Any)
+        fun onRateLimit()
+    }
 
     fun blockUsers(targetUsersIds: ArrayList<Long>, apiInterface: IterableInterface, startIndex: Int = 0) {
         apiInterface.onStart()
@@ -398,7 +403,24 @@ class TwitterAdapter {
                 }
             }.catch()
         }
+    }
 
+    fun publish(text: String, activityInterface: PostInterface) {
+        activityInterface.onStart()
+        try {
+            val user = twitter.client.updateStatus(text)
+            activityInterface.onFinished(user)
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "v") {
+                override fun onRateLimitExceeded() {
+                    activityInterface.onRateLimit()
+                }
+
+                override fun onRateLimitReset() {
+                    publish(text, activityInterface)
+                }
+            }.catch()
+        }
     }
 
 }

@@ -166,4 +166,6 @@
     <string name="InvalidUrl">유효하지 않은 URL입니다. 트윗 URL을 입력해주세요.</string>
     <string name="StatusNotFound">트윗을 조회할 수 없었습니다. 올바른 URL이 입력되었는지, 트윗지기에 로그인한 계정이 해당 트윗을 볼 수 있는지 확인해주세요.</string>
     <string name="Converting">동영상을 GIF로 변환중이에요.</string>
+    <string name="StoreUrl">https://play.google.com/store/apps/details?id=com.sasarinomari.tweeper</string>
+    <string name="HetzerDoneTweet">트윗 청소 완료! 내가 원하는 트윗만 삭제가 완료되었어요. #트윗지기</string>
 </resources>

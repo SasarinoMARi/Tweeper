@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
+import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
 
@@ -51,9 +52,7 @@ class BlockClearService : BaseService() {
                                 id = NotificationId + 1
                             )
 
-                            // 서비스 종료
-                            this@BlockClearService.stopForeground(true)
-                            this@BlockClearService.stopSelf()
+                            finish()
                         }
 
                         override fun onIterate(listIndex: Int) {

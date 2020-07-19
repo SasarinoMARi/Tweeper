@@ -169,11 +169,6 @@ class MediaDownloadService: BaseService() {
         }
     }
 
-    private fun finish() {
-        this@MediaDownloadService.stopForeground(true)
-        this@MediaDownloadService.stopSelf()
-    }
-
     private fun getImageContentUri(context: Context, file: File): Uri? {
         val filePath = file.absolutePath
         val cursor: Cursor? = context.contentResolver.query(

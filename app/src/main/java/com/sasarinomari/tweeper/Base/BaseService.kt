@@ -155,4 +155,9 @@ abstract class BaseService: Service() {
     }
     // endregion
 
+    protected open fun finish() {
+        stopForeground(true)
+        stopSelf()
+    }
+
 }

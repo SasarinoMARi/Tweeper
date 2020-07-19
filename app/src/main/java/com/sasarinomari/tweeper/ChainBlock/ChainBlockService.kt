@@ -7,6 +7,7 @@ import com.google.gson.Gson
 import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
+import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.TwitterAdapter
 
@@ -200,7 +201,7 @@ class ChainBlockService : BaseService() {
         }
     }
 
-    private fun finish() {
+    override fun finish() {
         // 알림 송출
         sendNotification(
             strServiceName,
@@ -210,9 +211,7 @@ class ChainBlockService : BaseService() {
             id = NotificationId + 1
         )
 
-        // 서비스 종료
-        this.stopForeground(true)
-        this.stopSelf()
+        super.finish()
     }
 
     private fun ignoreingUsers(users: ArrayList<Long>, ignoreUsers: ArrayList<Long>?): ArrayList<Long> {

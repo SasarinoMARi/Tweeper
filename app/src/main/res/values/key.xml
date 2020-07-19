@@ -1,0 +1,13 @@
+<resources>
+    <!-- Twitter API Key -->
+    <string name="consumerKey"></string>
+    <string name="consumerSecret"></string>
+    <!-- Admob API Key -->
+    <string name="admob_app_id"></string>
+    <string name="banner_ad_unit_id"></string>
+    <string name="banner_ad_unit_id_for_test">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="reward_ad_unit_id"></string>
+    <string name="reward_ad_unit_id_for_test">ca-app-pub-3940256099942544/5224354917</string>
+    <!-- Google In App Billing Licence Key -->
+    <string name="gp_license"></string>
+</resources>

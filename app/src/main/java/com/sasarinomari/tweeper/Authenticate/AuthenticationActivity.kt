@@ -18,7 +18,7 @@ import java.net.URLDecoder
 import java.util.*
 
 class AuthenticationActivity : BaseActivity() {
-    private val twitterInstance = TwitterFactory().instance
+    private val twitterAdapter = TwitterAdapter()
     private var webView: BoomWebView? = null
     private lateinit var requestToken: RequestToken
 
@@ -28,8 +28,9 @@ class AuthenticationActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         initializeWebView()
         // Generate authentication url
+        twitterAdapter.twitter.initialize()
         Thread(Runnable{
-            requestToken = twitterInstance.oAuthRequestToken
+            requestToken = twitterAdapter.twitter.client.oAuthRequestToken
             runOnUiThread {
                 webView!!.loadUrl(requestToken.authorizationURL)
             }
@@ -59,9 +60,9 @@ class AuthenticationActivity : BaseActivity() {
                                 Thread(Runnable {
                                     try {
                                         val accessToken = if (pin.isNotEmpty()) {
-                                            twitterInstance.getOAuthAccessToken(requestToken, pin)
+                                            twitterAdapter.twitter.client.getOAuthAccessToken(requestToken, pin)
                                         } else {
-                                            twitterInstance.getOAuthAccessToken(requestToken)
+                                            twitterAdapter.twitter.client.getOAuthAccessToken(requestToken)
                                         }
                                         apiTest(accessToken)
                                     } catch (te: TwitterException) {
@@ -84,9 +85,9 @@ class AuthenticationActivity : BaseActivity() {
     }
 
     private fun apiTest(accessToken: AccessToken) {
-        val twitter = TwitterAdapter().initialize(accessToken)
+        twitterAdapter.initialize(accessToken)
         Thread {
-            twitter.getMe(object : TwitterAdapter.FetchObjectInterface {
+            twitterAdapter.getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() {}
 
                 override fun onFinished(obj: Any) {

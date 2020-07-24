@@ -40,9 +40,9 @@ class ScheduleManageActivity : AppCompatActivity() {
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.cardbutton_text.text = getString(R.string.TweetCleanerRun)
+                view.cardbutton_text.text = "트윗 청소기 예약"
                 view.setOnClickListener {
-
+                    alramTest(this@ScheduleManageActivity)
                 }
             }
         })
@@ -66,8 +66,9 @@ class ScheduleManageActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance();
         calendar.timeInMillis = System.currentTimeMillis();
         calendar.set(Calendar.HOUR_OF_DAY, 21)
-        calendar.set(Calendar.MINUTE, 32)
+        calendar.set(Calendar.MINUTE, 56)
 
+        Log.i("Schedule", calendar.toString())
         // setRepeating() lets you specify a precise custom interval--in this case,
         // 1 day
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, alarmIntent)

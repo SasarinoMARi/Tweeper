@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
 import com.sasarinomari.tweeper.MediaDownload.MediaDownloadActivity
+import com.sasarinomari.tweeper.ScheduledTask.ScheduleManageActivity
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import kotlinx.android.synthetic.main.activity_uitest.*
@@ -44,8 +45,13 @@ class UITestActivity : BaseActivity() {
         if(false) testBillingActivity()
         if(false) testFirebaseLogging()
         if(false) testSpotlight()
-        if(true) textMediaDownload()
+        if(false) textMediaDownload()
+        if(true) testScheduleTask()
+        
+    }
 
+    private fun testScheduleTask() {
+        startActivity(Intent(this, ScheduleManageActivity::class.java))
     }
 
     private fun textMediaDownload() {

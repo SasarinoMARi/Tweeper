@@ -47,8 +47,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
             DonationItems.donate1000.name,
             DonationItems.donate2000.name,
             DonationItems.donate5000.name,
-            DonationItems.donate8000.name,
-            DonationItems.donate13000.name
+            DonationItems.donate8000.name
         )).sortedWith(compareBy { it.priceLong }))
 
 

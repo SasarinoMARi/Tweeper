@@ -168,4 +168,6 @@
     <string name="Converting">동영상을 GIF로 변환중이에요.</string>
     <string name="StoreUrl">https://play.google.com/store/apps/details?id=com.sasarinomari.tweeper</string>
     <string name="HetzerDoneTweet">트윗 청소 완료! 내가 원하는 트윗만 삭제가 완료되었어요. #트윗지기</string>
+    <string name="AuthFailed">인증에 실패했습니다.</string>
+    <string name="AgreeForTweeper">트윗지기 사용을 위해서 트위터 앱 인증 버튼을 눌러 주세요.</string>
 </resources>

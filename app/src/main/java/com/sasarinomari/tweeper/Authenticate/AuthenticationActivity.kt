@@ -57,9 +57,14 @@ class AuthenticationActivity : BaseActivity() {
                                 Content.visibility = View.GONE
                                 val html = URLDecoder.decode(url, "UTF-8").substring(9)
                                 val pin = StringFormatter.extractionString( html, "<code>", "</code>" )
-                                Thread(Runnable {
+                                if(pin == null) {
+                                    da.message(getString(R.string.AuthFailed), getString(R.string.AgreeForTweeper)) {
+                                        finish()
+                                    }.show()
+                                }
+                                else Thread(Runnable {
                                     try {
-                                        val accessToken = if (pin.isNotEmpty()) {
+                                        val accessToken = if (!pin.isNullOrEmpty()) {
                                             twitterAdapter.twitter.client.getOAuthAccessToken(requestToken, pin)
                                         } else {
                                             twitterAdapter.twitter.client.getOAuthAccessToken(requestToken)

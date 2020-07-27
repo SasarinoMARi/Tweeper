@@ -114,6 +114,15 @@ class AuthenticationActivity : BaseActivity() {
                 override fun onRateLimit() {
                     da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
                 }
+
+
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
+                }
             })
         }.start()
     }

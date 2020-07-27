@@ -104,6 +104,14 @@ class HetzerService : BaseService() {
                                         override fun onStart() { }
                                         override fun onFinished(obj: Any) { finish() }
                                         override fun onRateLimit() { finish() }
+
+                                        override fun onUncaughtError() {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                        override fun onNetworkError() {
+                                            TODO("Not yet implemented")
+                                        }
                                     })
                                 }
                                 else finish()
@@ -120,6 +128,13 @@ class HetzerService : BaseService() {
                                 )
                             }
 
+                            override fun onUncaughtError() {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onNetworkError() {
+                                TODO("Not yet implemented")
+                            }
                         })
                     }
                 }
@@ -135,6 +150,13 @@ class HetzerService : BaseService() {
                     )
                 }
 
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
+                }
             })
         }
     }

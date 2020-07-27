@@ -89,34 +89,38 @@ class TwitterAdapter {
         return this
     }
 
-    interface IterableInterface {
+    // region Interfaces
+    interface BaseInterface {
         fun onStart()
+    }
+    interface ErrorInterface {
+        fun onUncaughtError()
+        fun onNetworkError()
+    }
+    interface IterableInterface : BaseInterface, ErrorInterface {
         fun onFinished()
         fun onIterate(listIndex: Int)
         fun onRateLimit(listIndex: Int)
     }
-    interface FetchListInterface {
-        fun onStart()
+    interface FetchListInterface : BaseInterface, ErrorInterface {
         fun onFinished(list: ArrayList<*>)
         fun onFetch(listSize: Int)
         fun onRateLimit(listSize: Int)
     }
-    interface FetchObjectInterface {
-        fun onStart()
+    interface FetchObjectInterface : BaseInterface, ErrorInterface {
         fun onFinished(obj: Any)
         fun onRateLimit()
     }
-    interface FoundObjectInterface {
-        fun onStart()
+    interface FoundObjectInterface : BaseInterface, ErrorInterface {
         fun onFinished(obj: Any)
         fun onRateLimit()
         fun onNotFound()
     }
-    interface PostInterface {
-        fun onStart()
+    interface PostInterface : BaseInterface, ErrorInterface{
         fun onFinished(obj: Any)
         fun onRateLimit()
     }
+    // endregion
 
     fun blockUsers(targetUsersIds: ArrayList<Long>, apiInterface: IterableInterface, startIndex: Int = 0) {
         apiInterface.onStart()
@@ -130,6 +134,10 @@ class TwitterAdapter {
             apiInterface.onFinished()
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "createBlock") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(cursor)
                 }
@@ -156,6 +164,10 @@ class TwitterAdapter {
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getFriendsIDs") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(list.count())
                 }
@@ -182,6 +194,10 @@ class TwitterAdapter {
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getFollowersIDs") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(list.count())
                 }
@@ -193,19 +209,23 @@ class TwitterAdapter {
         }
     }
 
-    fun getMe(activityInterface: FetchObjectInterface) {
-        activityInterface.onStart()
+    fun getMe(apiInterface: FetchObjectInterface) {
+        apiInterface.onStart()
         try {
             val me = twitter.client.showUser(twitter.client.id)
-            activityInterface.onFinished(me)
+            apiInterface.onFinished(me)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "showUser") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
-                    activityInterface.onRateLimit()
+                    apiInterface.onRateLimit()
                 }
 
                 override fun onRateLimitReset() {
-                    getMe(activityInterface)
+                    getMe(apiInterface)
                 }
             }.catch()
         }
@@ -225,6 +245,10 @@ class TwitterAdapter {
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getFriendsList") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(list.count())
                 }
@@ -250,6 +274,10 @@ class TwitterAdapter {
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getFollowersList") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(list.count())
                 }
@@ -276,6 +304,10 @@ class TwitterAdapter {
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getUserTimeline") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(list.count())
                 }
@@ -302,6 +334,10 @@ class TwitterAdapter {
             apiInterface.onFinished()
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "destroyStatus") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(cursor)
                 }
@@ -313,111 +349,131 @@ class TwitterAdapter {
         }
     }
 
-    fun getBlockedUsers(activityInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
-        activityInterface.onStart()
+    fun getBlockedUsers(apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
+        apiInterface.onStart()
         var cursor: Long = startIndex
         try {
             while (true) {
-                activityInterface.onFetch(list.count())
+                apiInterface.onFetch(list.count())
                 val users = twitter.client.getBlocksIDs(cursor)
                 list.addAll(users.iDs.toList())
                 if (users.hasNext()) cursor = users.nextCursor
                 else break
             }
-            activityInterface.onFinished(list)
+            apiInterface.onFinished(list)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getBlocksIDs") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
-                    activityInterface.onRateLimit(list.count())
+                    apiInterface.onRateLimit(list.count())
                 }
 
                 override fun onRateLimitReset() {
-                    getBlockedUsers(activityInterface, cursor, list)
+                    getBlockedUsers(apiInterface, cursor, list)
                 }
             }.catch()
         }
     }
 
-    fun unblockUsers(list: ArrayList<Long>, activityInterface: IterableInterface, startIndex: Int = 0) {
-        activityInterface.onStart()
+    fun unblockUsers(list: ArrayList<Long>, apiInterface: IterableInterface, startIndex: Int = 0) {
+        apiInterface.onStart()
         var cursor = 0
         try {
             for (i in startIndex until list.size) {
                 cursor = i
-                activityInterface.onIterate(i+1)
+                apiInterface.onIterate(i+1)
                 twitter.client.destroyBlock(list[i])
             }
-            activityInterface.onFinished()
+            apiInterface.onFinished()
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "createBlock") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
-                    activityInterface.onRateLimit(cursor + 1)
+                    apiInterface.onRateLimit(cursor + 1)
                 }
 
                 override fun onRateLimitReset() {
-                    unblockUsers(list, activityInterface, cursor)
+                    unblockUsers(list, apiInterface, cursor)
                 }
             }.catch()
         }
     }
 
-    fun lookup(screenName: String, activityInterface: FoundObjectInterface) {
-        activityInterface.onStart()
+    fun lookup(screenName: String, apiInterface: FoundObjectInterface) {
+        apiInterface.onStart()
         try {
             val user = twitter.client.showUser(screenName)
-            activityInterface.onFinished(user)
+            apiInterface.onFinished(user)
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "lookup") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
-                    activityInterface.onRateLimit()
+                    apiInterface.onRateLimit()
                 }
 
                 override fun onRateLimitReset() {
-                    lookup(screenName, activityInterface)
+                    lookup(screenName, apiInterface)
                 }
 
                 override fun onNotFound() {
-                    activityInterface.onNotFound()
+                    apiInterface.onNotFound()
                 }
             }.catch()
         }
     }
 
-    fun lookStatus(id: Long, activityInterface: FoundObjectInterface) {
-        activityInterface.onStart()
+    fun lookStatus(id: Long, apiInterface: FoundObjectInterface) {
+        apiInterface.onStart()
         try {
             val user = twitter.client.showStatus(id)
-            activityInterface.onFinished(user)
+            apiInterface.onFinished(user)
         } catch (te: TwitterException) {
-            object : TwitterExceptionHandler(te, "v") {
+            object : TwitterExceptionHandler(te, "lookStatus") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
-                    activityInterface.onRateLimit()
+                    apiInterface.onRateLimit()
                 }
 
                 override fun onRateLimitReset() {
-                    lookStatus(id, activityInterface)
+                    lookStatus(id, apiInterface)
                 }
 
                 override fun onNotFound() {
-                    activityInterface.onNotFound()
+                    apiInterface.onNotFound()
                 }
             }.catch()
         }
     }
 
-    fun publish(text: String, activityInterface: PostInterface) {
-        activityInterface.onStart()
+    fun publish(text: String, apiInterface: PostInterface) {
+        apiInterface.onStart()
         try {
             val user = twitter.client.updateStatus(text)
-            activityInterface.onFinished(user)
+            apiInterface.onFinished(user)
         } catch (te: TwitterException) {
-            object : TwitterExceptionHandler(te, "v") {
+            object : TwitterExceptionHandler(te, "publish") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
                 override fun onRateLimitExceeded() {
-                    activityInterface.onRateLimit()
+                    apiInterface.onRateLimit()
                 }
 
                 override fun onRateLimitReset() {
-                    publish(text, activityInterface)
+                    publish(text, apiInterface)
                 }
             }.catch()
         }

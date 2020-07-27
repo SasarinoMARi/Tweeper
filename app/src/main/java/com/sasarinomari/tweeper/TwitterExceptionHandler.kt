@@ -32,15 +32,16 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                             "thread interrupted" -> {
                                 Log.i(LOG_HEADER, "Thread Interrupted!")
                             }
-                            else -> throw te
+                            else -> onUncaughtError()
                         }
                     }
-                    else -> throw te
+                    else -> onUncaughtError()
                 }
             }
         }
     }
 
+    abstract fun onUncaughtError()
     abstract fun onRateLimitExceeded()
     abstract fun onRateLimitReset()
     open fun onNotFound() { }

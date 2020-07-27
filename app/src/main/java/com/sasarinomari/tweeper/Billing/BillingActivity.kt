@@ -81,6 +81,14 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                         override fun onRateLimit() { }
 
                         override fun onNotFound() { }
+
+                        override fun onUncaughtError() {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onNetworkError() {
+                            TODO("Not yet implemented")
+                        }
                     })
                 }.start()
             }

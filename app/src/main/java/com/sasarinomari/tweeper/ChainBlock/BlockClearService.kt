@@ -68,6 +68,14 @@ class BlockClearService : BaseService() {
                                 getString(R.string.Unblocking, listIndex, list.size)
                             )
                         }
+
+                        override fun onUncaughtError() {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onNetworkError() {
+                            TODO("Not yet implemented")
+                        }
                     })
                 }
 
@@ -80,6 +88,14 @@ class BlockClearService : BaseService() {
                         "$strServiceName $strRateLimitWaiting",
                         getString(R.string.FetchingUser, listSize)
                     )
+                }
+
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
                 }
             })
         }

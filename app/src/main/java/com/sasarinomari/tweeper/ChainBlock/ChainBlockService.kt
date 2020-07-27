@@ -94,12 +94,28 @@ class ChainBlockService : BaseService() {
                                     getString(R.string.FollowerPulling, listSize)
                                 )
                             }
+
+                            override fun onUncaughtError() {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onNetworkError() {
+                                TODO("Not yet implemented")
+                            }
                         })
                     }
                 }
 
                 override fun onRateLimit() {
                     sendNotification("$strServiceName $strRateLimitWaiting", "")
+                }
+
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
                 }
             })
         }
@@ -135,6 +151,14 @@ class ChainBlockService : BaseService() {
                                     getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
                                 )
                             }
+
+                            override fun onUncaughtError() {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onNetworkError() {
+                                TODO("Not yet implemented")
+                            }
                         })
                     }
                 }
@@ -148,6 +172,14 @@ class ChainBlockService : BaseService() {
                         "$strServiceName $strRateLimitWaiting",
                         getString(R.string.FetchingUser, listSize)
                     )
+                }
+
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
                 }
             })
         }
@@ -183,6 +215,14 @@ class ChainBlockService : BaseService() {
                                     getString(R.string.Blocking, followingsCount + listIndex + 1, followingsCount + followersCount)
                                 )
                             }
+
+                            override fun onUncaughtError() {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onNetworkError() {
+                                TODO("Not yet implemented")
+                            }
                         })
                     }
                 }
@@ -196,6 +236,14 @@ class ChainBlockService : BaseService() {
                         "$strServiceName $strRateLimitWaiting",
                         getString(R.string.FetchingUser, listSize)
                     )
+                }
+
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
                 }
             })
         }

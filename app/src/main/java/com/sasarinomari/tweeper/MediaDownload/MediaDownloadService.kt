@@ -118,6 +118,13 @@ class MediaDownloadService: BaseService() {
                 finish()
             }
 
+            override fun onUncaughtError() {
+                TODO("Not yet implemented")
+            }
+
+            override fun onNetworkError() {
+                TODO("Not yet implemented")
+            }
         })
     }
 

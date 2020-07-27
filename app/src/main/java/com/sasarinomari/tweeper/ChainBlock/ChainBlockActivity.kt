@@ -93,6 +93,14 @@ class ChainBlockActivity : BaseActivity() {
                             da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
                         }
                     }
+
+                    override fun onUncaughtError() {
+                        TODO("Not yet implemented")
+                    }
+
+                    override fun onNetworkError() {
+                        TODO("Not yet implemented")
+                    }
                 })
             }.start()
         }

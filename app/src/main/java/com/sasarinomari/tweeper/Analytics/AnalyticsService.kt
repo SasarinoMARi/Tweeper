@@ -107,6 +107,13 @@ class AnalyticsService : BaseService() {
                                             )
                                         }
 
+                                        override fun onUncaughtError() {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                        override fun onNetworkError() {
+                                            TODO("Not yet implemented")
+                                        }
                                     })
                                 }
                             }
@@ -122,6 +129,13 @@ class AnalyticsService : BaseService() {
                                 )
                             }
 
+                            override fun onUncaughtError() {
+                                TODO("Not yet implemented")
+                            }
+
+                            override fun onNetworkError() {
+                                TODO("Not yet implemented")
+                            }
                         })
                     }
                 }
@@ -130,6 +144,13 @@ class AnalyticsService : BaseService() {
                     sendNotification("$strServiceName $strRateLimitWaiting", "")
                 }
 
+                override fun onUncaughtError() {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNetworkError() {
+                    TODO("Not yet implemented")
+                }
             })
         }
 

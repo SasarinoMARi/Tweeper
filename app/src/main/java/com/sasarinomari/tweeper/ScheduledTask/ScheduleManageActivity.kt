@@ -106,6 +106,13 @@ class ScheduleManageActivity : AppCompatActivity() {
                             callback()
                         }
 
+                        override fun onUncaughtError() {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onNetworkError() {
+                            TODO("Not yet implemented")
+                        }
                     })
                 } catch (e: Exception) {
                     Log.i(this::class.java.name, "유저 id [$id]로의 로그인에 실패했습니다.")

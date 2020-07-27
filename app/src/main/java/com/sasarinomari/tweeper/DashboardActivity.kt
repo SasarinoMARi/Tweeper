@@ -182,7 +182,13 @@ class DashboardActivity : BaseActivity() {
         image_profilePicture.setImageResource(0)
 
         Thread {
-            TwitterAdapter().initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
+            /**
+             * 이유는 모르겠지만 아래 TwitterAdapter().initialize() 코드에서 Consumer 토큰 null 오류가 나므로
+             * 여기서 다시 초기화해보자..
+             */
+            TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
+            val token = AuthData.Recorder(this).getFocusedUser()!!.token!!
+            TwitterAdapter().initialize(token).getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() { }
 
                 override fun onFinished(obj: Any) {

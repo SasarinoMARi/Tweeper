@@ -6,6 +6,7 @@ import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.anjlab.android.iab.v3.BillingProcessor
@@ -22,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_default.view.*
 import kotlinx.android.synthetic.main.item_sku.view.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -43,13 +43,21 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
     override fun onBillingInitialized() {
         setContentView(R.layout.full_recycler_view)
 
-        val purchaseListingDetails: ArrayList<SkuDetails> = ArrayList(bp.getPurchaseListingDetails(arrayListOf(
-            DonationItems.donate1000.name,
-            DonationItems.donate2000.name,
-            DonationItems.donate5000.name,
-            DonationItems.donate8000.name
-        )).sortedWith(compareBy { it.priceLong }))
-
+        var purchaseListingDetails: ArrayList<SkuDetails>? = null
+        try {
+            purchaseListingDetails = ArrayList(bp.getPurchaseListingDetails(arrayListOf(
+                DonationItems.donate1000.name,
+                DonationItems.donate2000.name,
+                DonationItems.donate5000.name,
+                DonationItems.donate8000.name
+            )).sortedWith(compareBy { it.priceLong }))
+        } catch (ie: IllegalStateException) {
+            ie.printStackTrace()
+            da.error(getString(R.string.Error), getString(R.string.BillingInfoFetchFailed)) {
+                finish()
+            }.show()
+        }
+        if(purchaseListingDetails == null) return
 
         val adapter = RecyclerInjector()
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {
@@ -65,32 +73,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 view.sasarino_id.setOnClickListener {
                     TwitterAdapter.showProfile(this@BillingActivity, "SasarinoMARi")
                 }
-                Thread {
-                    TwitterAdapter().initialize(AuthData.Recorder(this@BillingActivity).getFocusedUser()!!.token!!).lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
-                        override fun onStart() { }
-
-                        override fun onFinished(obj: Any) {
-                            val me = obj as twitter4j.User
-                            runOnUiThread {
-                                Picasso.get()
-                                    .load(me.profileImageURLHttps.replace("normal.jpg", "200x200.jpg"))
-                                    .into(view.sasarino_profileImage)
-                            }
-                        }
-
-                        override fun onRateLimit() { }
-
-                        override fun onNotFound() { }
-
-                        override fun onUncaughtError() {
-                            TODO("Not yet implemented")
-                        }
-
-                        override fun onNetworkError() {
-                            TODO("Not yet implemented")
-                        }
-                    })
-                }.start()
+                lookupSelf(view.sasarino_profileImage)
             }
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_sku, purchaseListingDetails) {
@@ -129,6 +112,39 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
 
         root.layoutManager = LinearLayoutManager(this)
         root.adapter = adapter
+    }
+
+    private fun lookupSelf(view: ImageView) {
+        Thread {
+            TwitterAdapter().initialize(AuthData.Recorder(this@BillingActivity).getFocusedUser()!!.token!!).lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
+                override fun onStart() { }
+
+                override fun onFinished(obj: Any) {
+                    val me = obj as twitter4j.User
+                    runOnUiThread {
+                        Picasso.get()
+                            .load(me.profileImageURLHttps.replace("normal.jpg", "200x200.jpg"))
+                            .into(view.sasarino_profileImage)
+                    }
+                }
+
+                override fun onNotFound() { }
+
+                override fun onRateLimit() {
+                    this@BillingActivity.onRateLimit("lookup")
+                }
+
+                override fun onUncaughtError() {
+                    this@BillingActivity.onUncaughtError()
+                }
+
+                override fun onNetworkError() {
+                    this@BillingActivity.onNetworkError{
+                        lookupSelf(view)
+                    }
+                }
+            })
+        }.start()
     }
 
     /**
@@ -189,6 +205,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
+
     override fun onDestroy() {
         bp.release()
         super.onDestroy()

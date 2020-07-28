@@ -445,12 +445,7 @@ internal class HetzerConditionsActivity : BaseActivity() {
             true
         }
         menu.inflate(R.menu.hetzer_contition_item_menu)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            menu.gravity = Gravity.END
-        }
-        else {
-            // TODO
-        }
+        menu.gravity = Gravity.END
         menu.show()
     }
 

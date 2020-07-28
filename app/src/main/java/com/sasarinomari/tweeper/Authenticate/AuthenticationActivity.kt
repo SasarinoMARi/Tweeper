@@ -10,7 +10,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kr.booms.webview.BoomWebView
 import kr.booms.webview.BoomWebViewClientInterface
 import twitter4j.TwitterException
-import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
 import java.io.UnsupportedEncodingException
@@ -29,10 +28,21 @@ class AuthenticationActivity : BaseActivity() {
         initializeWebView()
         // Generate authentication url
         twitterAdapter.twitter.initialize()
+        openAuthPage()
+    }
+
+    private fun openAuthPage() {
         Thread(Runnable{
-            requestToken = twitterAdapter.twitter.client.oAuthRequestToken
-            runOnUiThread {
-                webView!!.loadUrl(requestToken.authorizationURL)
+            try {
+                requestToken = twitterAdapter.twitter.client.oAuthRequestToken
+                runOnUiThread {
+                    webView!!.loadUrl(requestToken.authorizationURL)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                this@AuthenticationActivity.onNetworkError {
+                    openAuthPage()
+                }
             }
         }).start()
     }
@@ -112,16 +122,20 @@ class AuthenticationActivity : BaseActivity() {
                 }
 
                 override fun onRateLimit() {
-                    da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
+                    this@AuthenticationActivity.onRateLimit("getMe") {
+                        finish()
+                    }
                 }
 
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@AuthenticationActivity.onUncaughtError()
                 }
 
                 override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                    this@AuthenticationActivity.onNetworkError {
+                        apiTest(accessToken)
+                    }
                 }
             })
         }.start()

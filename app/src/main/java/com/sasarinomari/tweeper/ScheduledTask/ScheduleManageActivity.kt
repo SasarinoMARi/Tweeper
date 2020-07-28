@@ -17,7 +17,6 @@ import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.FirebaseLogger
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
-import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.sasarinomari.tweeper.TwitterAdapter
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*

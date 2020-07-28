@@ -18,43 +18,45 @@ class MainActivity : BaseActivity() {
         RewardedAdAdapter.load(this)
 
         when (val loggedUser = AuthData.Recorder(this).getFocusedUser()) {
-            null -> {
-                doAuth()
-            }
-            else -> {
-                Thread {
-                    try {
-                        TwitterAdapter().initialize(loggedUser.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
-                            override fun onStart() {}
-
-                            override fun onFinished(obj: Any) {
-                                val me = obj as twitter4j.User
-                                loggedUser.user = User(me)
-                                AuthData.Recorder(this@MainActivity).setFocusedUser(loggedUser)
-                                openDashboard()
-                                finish()
-                            }
-
-                            override fun onRateLimit() {
-                                da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
-                            }
-
-                            override fun onUncaughtError() {
-                                TODO("Not yet implemented")
-                            }
-
-                            override fun onNetworkError() {
-                                TODO("Not yet implemented")
-                            }
-                        })
-                    } catch (e: Exception) {
-                        doAuth()
-                    }
-                }.start()
-            }
+            null -> doAuth()
+            else -> lookupSelf(loggedUser)
         }
 
         checkNotiPremission()
+    }
+
+    private fun lookupSelf(loggedUser: AuthData) {
+        Thread {
+            try {
+                TwitterAdapter().initialize(loggedUser.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
+                    override fun onStart() {}
+
+                    override fun onFinished(obj: Any) {
+                        val me = obj as twitter4j.User
+                        loggedUser.user = User(me)
+                        AuthData.Recorder(this@MainActivity).setFocusedUser(loggedUser)
+                        openDashboard()
+                        finish()
+                    }
+
+                    override fun onRateLimit() {
+                        this@MainActivity.onRateLimit("getMe") { finish() }
+                    }
+
+                    override fun onUncaughtError() {
+                        this@MainActivity.onUncaughtError()
+                    }
+
+                    override fun onNetworkError() {
+                        this@MainActivity.onNetworkError {
+                            lookupSelf(loggedUser)
+                        }
+                    }
+                })
+            } catch (e: Exception) {
+                doAuth()
+            }
+        }.start()
     }
 
     private fun checkNotiPremission() {

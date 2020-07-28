@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.sasarinomari.tweeper.Analytics.AnalyticsService
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.Billing.AdRemover
@@ -12,7 +11,6 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter
 import twitter4j.Status
-import java.lang.Exception
 
 class HetzerService : BaseService() {
     companion object {

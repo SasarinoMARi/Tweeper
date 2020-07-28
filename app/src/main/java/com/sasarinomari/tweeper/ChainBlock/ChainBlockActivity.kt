@@ -16,7 +16,6 @@ import com.sasarinomari.tweeper.RewardedAdAdapter
 import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chain_block.*
-import twitter4j.TwitterException
 import twitter4j.User
 import java.text.DecimalFormat
 
@@ -60,48 +59,54 @@ class ChainBlockActivity : BaseActivity() {
             }
 
             val screenN = input_ScreenName.text.toString()
+            lookupTarget(screenN)
+        }
+    }
+
+    private fun lookupTarget(screenN: String) {
+        runOnUiThread {
             val p = da.progress(null, getString(R.string.UserFetching))
             p.show()
             Thread {
-                TwitterAdapter().initialize(AuthData.Recorder(this@ChainBlockActivity).getFocusedUser()!!.token!!).lookup(screenN, object: TwitterAdapter.FoundObjectInterface {
-                    override fun onStart() { }
+                TwitterAdapter().initialize(AuthData.Recorder(this@ChainBlockActivity).getFocusedUser()!!.token!!)
+                    .lookup(screenN, object : TwitterAdapter.FoundObjectInterface {
+                        override fun onStart() {}
 
-                    override fun onFinished(obj: Any) {
-                        val user = obj as User
-                        runOnUiThread {
-                            p.dismissWithAnimation()
-                            if (user.isProtected) {
-                                input_ScreenName.text = null
-                                da.error(getString(R.string.Error), getString(R.string.UserProtected)).show()
-                            } else {
-                                phase2(user)
+                        override fun onFinished(obj: Any) {
+                            val user = obj as User
+                            runOnUiThread {
+                                p.dismissWithAnimation()
+                                if (user.isProtected) {
+                                    input_ScreenName.text = null
+                                    da.error(getString(R.string.Error), getString(R.string.UserProtected)).show()
+                                } else {
+                                    phase2(user)
+                                }
                             }
                         }
-                    }
 
-                    override fun onRateLimit() {
-                        runOnUiThread {
-                            p.dismissWithAnimation()
-                            da.error(getString(R.string.Error), getString(R.string.RateLimitError, "lookup")).show()
+                        override fun onRateLimit() {
+                            this@ChainBlockActivity.onRateLimit("lookup")
                         }
-                    }
 
-                    override fun onNotFound() {
-                        runOnUiThread {
-                            p.dismissWithAnimation()
-                            input_ScreenName.text = null
-                            da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
+                        override fun onNotFound() {
+                            runOnUiThread {
+                                p.dismissWithAnimation()
+                                input_ScreenName.text = null
+                                da.error(getString(R.string.Error), getString(R.string.UserNotFoundError)).show()
+                            }
                         }
-                    }
 
-                    override fun onUncaughtError() {
-                        TODO("Not yet implemented")
-                    }
+                        override fun onUncaughtError() {
+                            this@ChainBlockActivity.onUncaughtError()
+                        }
 
-                    override fun onNetworkError() {
-                        TODO("Not yet implemented")
-                    }
-                })
+                        override fun onNetworkError() {
+                            this@ChainBlockActivity.onNetworkError {
+                                lookupTarget(screenN)
+                            }
+                        }
+                    })
             }.start()
         }
     }

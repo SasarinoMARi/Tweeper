@@ -10,6 +10,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.DialogAdapter
 import com.sasarinomari.tweeper.FirebaseLogger
+import com.sasarinomari.tweeper.R
 
 abstract class BaseActivity : AppCompatActivity() {
     fun hideKeyboard() {
@@ -74,4 +75,38 @@ abstract class BaseActivity : AppCompatActivity() {
         prefs.apply()
     }
     //endregion
+
+
+    fun onRateLimit(apiName: String, callback: () -> Unit = { }) {
+        runOnUiThread {
+            da.error(getString(R.string.Error), getString(R.string.RateLimitError, apiName)) {
+                callback()
+            }.show()
+        }
+    }
+
+    fun onUncaughtError() {
+        runOnUiThread {
+            da.error(getString(R.string.Error), getString(R.string.UncaughtError)) {
+                finish()
+            }.show()
+        }
+    }
+
+    fun onNetworkError(retry: () -> Unit) {
+        runOnUiThread {
+            val d = da.error(getString(R.string.Error), getString(R.string.NetworkError))
+                .setConfirmText(getString(R.string.Yes))
+                .setCancelText(getString(R.string.No))
+            d.setConfirmClickListener {
+                it.dismissWithAnimation()
+                retry()
+            }
+            d.setCancelClickListener {
+                it.dismiss()
+                finish()
+            }
+            d.show()
+        }
+    }
 }

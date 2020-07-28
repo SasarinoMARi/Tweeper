@@ -6,7 +6,6 @@ import android.util.Log
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
-import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter

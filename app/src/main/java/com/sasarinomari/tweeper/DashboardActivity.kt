@@ -181,6 +181,10 @@ class DashboardActivity : BaseActivity() {
         text_ScreenName.text = ""
         image_profilePicture.setImageResource(0)
 
+        updateMyInfo()
+    }
+
+    private fun updateMyInfo() {
         Thread {
             /**
              * 이유는 모르겠지만 아래 TwitterAdapter().initialize() 코드에서 Consumer 토큰 null 오류가 나므로
@@ -203,15 +207,17 @@ class DashboardActivity : BaseActivity() {
                 }
 
                 override fun onRateLimit() {
-                    da.error(getString(R.string.Error), getString(R.string.RateLimitError, "getMe")).show()
+                    this@DashboardActivity.onRateLimit("getMe")
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@DashboardActivity.onUncaughtError()
                 }
 
                 override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                    this@DashboardActivity.onNetworkError{
+                        updateMyInfo()
+                    }
                 }
             })
         }.start()

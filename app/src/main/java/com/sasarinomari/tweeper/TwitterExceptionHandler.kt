@@ -32,6 +32,9 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                             "thread interrupted" -> {
                                 Log.i(LOG_HEADER, "Thread Interrupted!")
                             }
+                            "Unable to resolve host \"api.twitter.com\": No address associated with hostname" -> {
+                                onNetworkError()
+                            }
                             else -> onUncaughtError()
                         }
                     }
@@ -41,6 +44,7 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
         }
     }
 
+    abstract fun onNetworkError()
     abstract fun onUncaughtError()
     abstract fun onRateLimitExceeded()
     abstract fun onRateLimitReset()

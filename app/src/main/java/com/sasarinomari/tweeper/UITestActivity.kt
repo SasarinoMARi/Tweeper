@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
@@ -44,8 +45,13 @@ class UITestActivity : BaseActivity() {
         if(false) testBillingActivity()
         if(false) testFirebaseLogging()
         if(false) testSpotlight()
-        if(true) textMediaDownload()
+        if(false) textMediaDownload()
+        if(true) connectionCheck()
+    }
 
+    private fun connectionCheck() {
+        val result = TwitterAdapter.isConnected(this)
+        Log.i(LOG_TAG, result.toString())
     }
 
     private fun textMediaDownload() {

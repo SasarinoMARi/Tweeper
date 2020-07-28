@@ -1,11 +1,16 @@
 package com.sasarinomari.tweeper
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
+import android.os.Build
 import android.util.Log
 import twitter4j.*
 import twitter4j.auth.AccessToken
+
 
 class TwitterAdapter {
     companion object {
@@ -45,6 +50,37 @@ class TwitterAdapter {
                     )
                 )
             }
+        }
+
+        @SuppressLint("ObsoleteSdkInt")
+        fun isConnected(context: Context): Boolean {
+            var result = false
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val networkCapabilities = connectivityManager.activeNetwork ?: return false
+                val actNw =
+                    connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+                result = when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                connectivityManager.run {
+                    connectivityManager.activeNetworkInfo?.run {
+                        result = when (type) {
+                            ConnectivityManager.TYPE_WIFI -> true
+                            ConnectivityManager.TYPE_MOBILE -> true
+                            ConnectivityManager.TYPE_ETHERNET -> true
+                            else -> false
+                        }
+                    }
+                }
+            }
+
+            return result
         }
     }
 
@@ -134,16 +170,20 @@ class TwitterAdapter {
             apiInterface.onFinished()
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "createBlock") {
-                override fun onUncaughtError() {
-                    apiInterface.onUncaughtError()
-                }
-
                 override fun onRateLimitExceeded() {
                     apiInterface.onRateLimit(cursor)
                 }
 
                 override fun onRateLimitReset() {
                     blockUsers(targetUsersIds, apiInterface, cursor)
+                }
+
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
                 }
             }.catch()
         }
@@ -175,6 +215,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     getFriendsIds(targetUserId, apiInterface, cursor, list)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -205,6 +249,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     getFollowersIds(targetUserId, apiInterface, cursor, list)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -226,6 +274,10 @@ class TwitterAdapter {
 
                 override fun onRateLimitReset() {
                     getMe(apiInterface)
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
                 }
             }.catch()
         }
@@ -256,6 +308,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     getFriends(targetUserId, apiInterface, cursor, list)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -284,6 +340,10 @@ class TwitterAdapter {
 
                 override fun onRateLimitReset() {
                     getFollowers(targetUserId, apiInterface, cursor, list)
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
                 }
             }.catch()
         }
@@ -315,6 +375,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     getTweets(apiInterface, lastIndex, list)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -345,6 +409,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     destroyStatus(statuses, apiInterface, cursor)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -374,6 +442,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     getBlockedUsers(apiInterface, cursor, list)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -401,6 +473,10 @@ class TwitterAdapter {
                 override fun onRateLimitReset() {
                     unblockUsers(list, apiInterface, cursor)
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -426,6 +502,10 @@ class TwitterAdapter {
 
                 override fun onNotFound() {
                     apiInterface.onNotFound()
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
                 }
             }.catch()
         }
@@ -453,6 +533,10 @@ class TwitterAdapter {
                 override fun onNotFound() {
                     apiInterface.onNotFound()
                 }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
+                }
             }.catch()
         }
     }
@@ -474,6 +558,10 @@ class TwitterAdapter {
 
                 override fun onRateLimitReset() {
                     publish(text, apiInterface)
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError()
                 }
             }.catch()
         }

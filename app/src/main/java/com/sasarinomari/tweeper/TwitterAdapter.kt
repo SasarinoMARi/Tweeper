@@ -131,7 +131,7 @@ class TwitterAdapter {
     }
     interface ErrorInterface {
         fun onUncaughtError()
-        fun onNetworkError()
+        fun onNetworkError(retrySelf: ()->Unit)
     }
     interface IterableInterface : BaseInterface, ErrorInterface {
         fun onFinished()
@@ -183,7 +183,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { blockUsers(targetUsersIds, apiInterface, cursor) }
                 }
             }.catch()
         }
@@ -217,7 +217,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getFriendsIds(targetUserId, apiInterface, cursor, list) }
                 }
             }.catch()
         }
@@ -251,7 +251,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getFollowersIds(targetUserId, apiInterface, cursor, list) }
                 }
             }.catch()
         }
@@ -277,7 +277,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getMe(apiInterface) }
                 }
             }.catch()
         }
@@ -310,7 +310,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getFriends(targetUserId, apiInterface, cursor, list) }
                 }
             }.catch()
         }
@@ -343,7 +343,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getFollowers(targetUserId, apiInterface, cursor, list) }
                 }
             }.catch()
         }
@@ -377,7 +377,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getTweets(apiInterface, lastIndex, list) }
                 }
             }.catch()
         }
@@ -411,7 +411,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { destroyStatus(statuses, apiInterface, cursor) }
                 }
             }.catch()
         }
@@ -444,7 +444,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { getBlockedUsers(apiInterface, cursor, list) }
                 }
             }.catch()
         }
@@ -475,7 +475,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { apiInterface.onRateLimit(cursor + 1) }
                 }
             }.catch()
         }
@@ -505,7 +505,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { lookup(screenName, apiInterface) }
                 }
             }.catch()
         }
@@ -535,7 +535,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { lookStatus(id, apiInterface) }
                 }
             }.catch()
         }
@@ -561,7 +561,7 @@ class TwitterAdapter {
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError()
+                    apiInterface.onNetworkError { publish(text, apiInterface) }
                 }
             }.catch()
         }

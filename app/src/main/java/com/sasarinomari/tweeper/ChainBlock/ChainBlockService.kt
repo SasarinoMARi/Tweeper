@@ -94,11 +94,11 @@ class ChainBlockService : BaseService() {
                             }
 
                             override fun onUncaughtError() {
-                                TODO("Not yet implemented")
+                                this@ChainBlockService.onUncaughtError(strServiceName)
                             }
 
-                            override fun onNetworkError() {
-                                TODO("Not yet implemented")
+                            override fun onNetworkError(retrySelf: ()->Unit) {
+                                this@ChainBlockService.onNetworkError(strServiceName, { retrySelf() })
                             }
                         })
                     }
@@ -109,11 +109,11 @@ class ChainBlockService : BaseService() {
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@ChainBlockService.onUncaughtError(strServiceName)
                 }
 
-                override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                override fun onNetworkError(retrySelf: ()->Unit) {
+                    this@ChainBlockService.onNetworkError(strServiceName, { retrySelf() })
                 }
             })
         }
@@ -151,11 +151,11 @@ class ChainBlockService : BaseService() {
                             }
 
                             override fun onUncaughtError() {
-                                TODO("Not yet implemented")
+                                this@ChainBlockService.onUncaughtError(strServiceName)
                             }
 
-                            override fun onNetworkError() {
-                                TODO("Not yet implemented")
+                            override fun onNetworkError(retrySelf: ()->Unit) {
+                                this@ChainBlockService.onNetworkError(strServiceName, { retrySelf() })
                             }
                         })
                     }
@@ -173,11 +173,11 @@ class ChainBlockService : BaseService() {
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@ChainBlockService.onUncaughtError(strServiceName)
                 }
 
-                override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                override fun onNetworkError(retrySelf: ()->Unit) {
+                    this@ChainBlockService.onNetworkError(strServiceName, { retrySelf() })
                 }
             })
         }
@@ -215,11 +215,11 @@ class ChainBlockService : BaseService() {
                             }
 
                             override fun onUncaughtError() {
-                                TODO("Not yet implemented")
+                                this@ChainBlockService.onUncaughtError(strServiceName)
                             }
 
-                            override fun onNetworkError() {
-                                TODO("Not yet implemented")
+                            override fun onNetworkError(retrySelf: ()->Unit) {
+                                this@ChainBlockService.onNetworkError(strServiceName, { retrySelf() })
                             }
                         })
                     }
@@ -237,11 +237,11 @@ class ChainBlockService : BaseService() {
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@ChainBlockService.onUncaughtError(strServiceName)
                 }
 
-                override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                override fun onNetworkError(retrySelf: ()->Unit) {
+                    this@ChainBlockService.onNetworkError(strServiceName, { retrySelf() })
                 }
             })
         }

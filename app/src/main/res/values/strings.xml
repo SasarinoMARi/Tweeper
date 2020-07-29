@@ -174,4 +174,7 @@
     <string name="Sorry">죄송합니다.</string>
     <string name="NetworkError">네트워크 에러가 발생했습니다. 재시도 하시겠습니까?</string>
     <string name="BillingInfoFetchFailed">결제 정보를 불러오는데 실패했습니다.</string>
+    <string name="ReconnectWaiting">네트워크 오류가 발생했습니다.</string>
+    <string name="RetrySoon">잠시 후 재시도합니다.. (%1$d/%2$d회째)</string>
+    <string name="StopWithNetworkError">네트워크 오류로 인해 작업이 중단되었습니다.</string>
 </resources>

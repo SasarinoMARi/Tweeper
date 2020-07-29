@@ -109,7 +109,7 @@ class ScheduleManageActivity : AppCompatActivity() {
                             TODO("Not yet implemented")
                         }
 
-                        override fun onNetworkError() {
+                        override fun onNetworkError(retry: () -> Unit) {
                             TODO("Not yet implemented")
                         }
                     })

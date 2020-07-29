@@ -214,7 +214,7 @@ class DashboardActivity : BaseActivity() {
                     this@DashboardActivity.onUncaughtError()
                 }
 
-                override fun onNetworkError() {
+                override fun onNetworkError(retry: () -> Unit) {
                     this@DashboardActivity.onNetworkError{
                         updateMyInfo()
                     }

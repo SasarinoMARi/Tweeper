@@ -132,7 +132,7 @@ class AuthenticationActivity : BaseActivity() {
                     this@AuthenticationActivity.onUncaughtError()
                 }
 
-                override fun onNetworkError() {
+                override fun onNetworkError(retry: () -> Unit) {
                     this@AuthenticationActivity.onNetworkError {
                         apiTest(accessToken)
                     }

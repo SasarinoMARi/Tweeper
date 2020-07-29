@@ -68,11 +68,11 @@ class BlockClearService : BaseService() {
                         }
 
                         override fun onUncaughtError() {
-                            TODO("Not yet implemented")
+                            this@BlockClearService.onUncaughtError(strServiceName)
                         }
 
-                        override fun onNetworkError() {
-                            TODO("Not yet implemented")
+                        override fun onNetworkError(retrySelf: ()->Unit) {
+                            this@BlockClearService.onNetworkError(strServiceName, { retrySelf() })
                         }
                     })
                 }
@@ -89,11 +89,11 @@ class BlockClearService : BaseService() {
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@BlockClearService.onUncaughtError(strServiceName)
                 }
 
-                override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                override fun onNetworkError(retrySelf: ()->Unit) {
+                    this@BlockClearService.onNetworkError(strServiceName, { retrySelf() })
                 }
             })
         }

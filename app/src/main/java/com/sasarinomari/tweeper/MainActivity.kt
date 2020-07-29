@@ -47,7 +47,7 @@ class MainActivity : BaseActivity() {
                         this@MainActivity.onUncaughtError()
                     }
 
-                    override fun onNetworkError() {
+                    override fun onNetworkError(retry: () -> Unit) {
                         this@MainActivity.onNetworkError {
                             lookupSelf(loggedUser)
                         }

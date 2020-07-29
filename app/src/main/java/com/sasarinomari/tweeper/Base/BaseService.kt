@@ -160,4 +160,32 @@ abstract class BaseService: Service() {
         stopSelf()
     }
 
+    protected fun onUncaughtError(serviceName: String) {
+        sendNotification(serviceName, getString(R.string.UncaughtError),
+            silent = false,
+            cancelable = true,
+            id = NotificationId + 1
+        )
+        finish()
+    }
+
+
+    private val retryCountMax = 3
+    protected fun onNetworkError(serviceName: String, retry: () -> Unit, count: Int = 0) {
+        if(count <  retryCountMax) {
+            sendNotification("$serviceName ${getString(R.string.ReconnectWaiting)}}",
+                getString(R.string.RetrySoon, count+1, retryCountMax))
+            Thread {
+                Thread.sleep(1000 * 60 * 5)
+                retry()
+            }.start()
+        } else {
+            sendNotification(serviceName, getString(R.string.StopWithNetworkError),
+                silent = false,
+                cancelable = true,
+                id = NotificationId + 1
+            )
+            finish()
+        }
+    }
 }

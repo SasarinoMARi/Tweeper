@@ -107,11 +107,11 @@ class AnalyticsService : BaseService() {
                                         }
 
                                         override fun onUncaughtError() {
-                                            TODO("Not yet implemented")
+                                            this@AnalyticsService.onUncaughtError(strServiceName)
                                         }
 
-                                        override fun onNetworkError() {
-                                            TODO("Not yet implemented")
+                                        override fun onNetworkError(retrySelf: ()->Unit) {
+                                            this@AnalyticsService.onNetworkError(strServiceName, { retrySelf() })
                                         }
                                     })
                                 }
@@ -129,11 +129,11 @@ class AnalyticsService : BaseService() {
                             }
 
                             override fun onUncaughtError() {
-                                TODO("Not yet implemented")
+                                this@AnalyticsService.onUncaughtError(strServiceName)
                             }
 
-                            override fun onNetworkError() {
-                                TODO("Not yet implemented")
+                            override fun onNetworkError(retrySelf: ()->Unit) {
+                                this@AnalyticsService.onNetworkError(strServiceName, { retrySelf() })
                             }
                         })
                     }
@@ -144,11 +144,11 @@ class AnalyticsService : BaseService() {
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@AnalyticsService.onUncaughtError(strServiceName)
                 }
 
-                override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                override fun onNetworkError(retrySelf: ()->Unit) {
+                    this@AnalyticsService.onNetworkError(strServiceName, { retrySelf() })
                 }
             })
         }

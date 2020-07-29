@@ -104,11 +104,11 @@ class HetzerService : BaseService() {
                                         override fun onRateLimit() { finish() }
 
                                         override fun onUncaughtError() {
-                                            TODO("Not yet implemented")
+                                            this@HetzerService.onUncaughtError(strServiceName)
                                         }
 
-                                        override fun onNetworkError() {
-                                            TODO("Not yet implemented")
+                                        override fun onNetworkError(retrySelf: ()->Unit) {
+                                            this@HetzerService.onNetworkError(strServiceName, { retrySelf() })
                                         }
                                     })
                                 }
@@ -127,11 +127,11 @@ class HetzerService : BaseService() {
                             }
 
                             override fun onUncaughtError() {
-                                TODO("Not yet implemented")
+                                this@HetzerService.onUncaughtError(strServiceName)
                             }
 
-                            override fun onNetworkError() {
-                                TODO("Not yet implemented")
+                            override fun onNetworkError(retrySelf: ()->Unit) {
+                                this@HetzerService.onNetworkError(strServiceName, { retrySelf() })
                             }
                         })
                     }
@@ -149,11 +149,11 @@ class HetzerService : BaseService() {
                 }
 
                 override fun onUncaughtError() {
-                    TODO("Not yet implemented")
+                    this@HetzerService.onUncaughtError(strServiceName)
                 }
 
-                override fun onNetworkError() {
-                    TODO("Not yet implemented")
+                override fun onNetworkError(retrySelf: ()->Unit) {
+                    this@HetzerService.onNetworkError(strServiceName, { retrySelf() })
                 }
             })
         }

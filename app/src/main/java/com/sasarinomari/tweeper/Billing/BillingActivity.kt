@@ -138,7 +138,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                     this@BillingActivity.onUncaughtError()
                 }
 
-                override fun onNetworkError() {
+                override fun onNetworkError(retry: () -> Unit) {
                     this@BillingActivity.onNetworkError{
                         lookupSelf(view)
                     }

@@ -101,7 +101,7 @@ class ChainBlockActivity : BaseActivity() {
                             this@ChainBlockActivity.onUncaughtError()
                         }
 
-                        override fun onNetworkError() {
+                        override fun onNetworkError(retry: () -> Unit) {
                             this@ChainBlockActivity.onNetworkError {
                                 lookupTarget(screenN)
                             }

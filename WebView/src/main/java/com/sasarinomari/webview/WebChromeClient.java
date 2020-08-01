@@ -1,4 +1,4 @@
-package kr.booms.webview;
+package com.sasarinomari.webview;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +18,7 @@ import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
-class BoomWebChromeClient extends WebChromeClient
+class WebChromeClient extends android.webkit.WebChromeClient
 {
     static final String TYPE_IMAGE = "image/*";
     static final int INPUT_FILE_REQUEST_CODE = 1;
@@ -29,31 +27,31 @@ class BoomWebChromeClient extends WebChromeClient
     static ValueCallback< Uri[] > mFilePathCallback;
     static ValueCallback< Uri > mUploadMessage;
 
-    WebView webview;
+    android.webkit.WebView webview;
     String customAgent;
-    BoomWebChromeClientInterface callback;
+    WebChromeClientInterface callback;
 
-    public BoomWebChromeClient( String customAgent, BoomWebChromeClientInterface callback )
+    public WebChromeClient(String customAgent, WebChromeClientInterface callback )
     {
         this.customAgent = customAgent;
         this.callback = callback;
     }
 
     @Override
-    public void onCloseWindow( WebView w )
+    public void onCloseWindow(android.webkit.WebView w )
     {
         super.onCloseWindow( w );
     }
 
     @Override
-    public boolean onCreateWindow( WebView view, boolean dialog, boolean userGesture, Message resultMsg )
+    public boolean onCreateWindow(android.webkit.WebView view, boolean dialog, boolean userGesture, Message resultMsg )
     {
         this.webview = view;
 
-        BoomWebView.applyWebSettings( view, customAgent );
+        WebView.applyWebSettings( view, customAgent );
 
         view.setWebChromeClient( this );
-        WebView.WebViewTransport transport = ( WebView.WebViewTransport ) resultMsg.obj;
+        android.webkit.WebView.WebViewTransport transport = ( android.webkit.WebView.WebViewTransport ) resultMsg.obj;
         transport.setWebView( view );
         resultMsg.sendToTarget( );
         return false;
@@ -89,8 +87,8 @@ class BoomWebChromeClient extends WebChromeClient
 
     // For Android Version 5.0+
     // Ref: https://github.com/GoogleChrome/chromium-webview-samples/blob/master/input-file-example/app/src/main/java/inputfilesample/android/chrome/google/com/inputfilesample/MainFragment.java
-    public boolean onShowFileChooser( WebView webView,
-                                      ValueCallback< Uri[] > filePathCallback, WebChromeClient.FileChooserParams fileChooserParams )
+    public boolean onShowFileChooser(android.webkit.WebView webView,
+                                     ValueCallback< Uri[] > filePathCallback, android.webkit.WebChromeClient.FileChooserParams fileChooserParams )
     {
         System.out.println( "WebViewActivity A>5, OS Version : " + Build.VERSION.SDK_INT + "\t onSFC(WV,VCUB,FCP), n=3" );
         if ( mFilePathCallback != null )

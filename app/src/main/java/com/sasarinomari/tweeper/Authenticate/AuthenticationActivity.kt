@@ -7,8 +7,8 @@ import com.sasarinomari.tweeper.*
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import kotlinx.android.synthetic.main.activity_main.*
-import kr.booms.webview.BoomWebView
-import kr.booms.webview.BoomWebViewClientInterface
+import com.sasarinomari.webview.WebView
+import com.sasarinomari.webview.WebViewClientInterface
 import twitter4j.TwitterException
 import twitter4j.auth.AccessToken
 import twitter4j.auth.RequestToken
@@ -18,7 +18,7 @@ import java.util.*
 
 class AuthenticationActivity : BaseActivity() {
     private val twitterAdapter = TwitterAdapter()
-    private var webView: BoomWebView? = null
+    private var webView: WebView? = null
     private lateinit var requestToken: RequestToken
 
 
@@ -48,8 +48,8 @@ class AuthenticationActivity : BaseActivity() {
     }
 
     private fun initializeWebView() {
-        webView = BoomWebView.createWithContext(Content, "Sasarino", { _, _ -> },
-            object : BoomWebViewClientInterface {
+        webView = WebView.createWithContext(Content, "Sasarino", { _, _ -> },
+            object : WebViewClientInterface {
                 override fun onPageFinished(url: String) {
                     if (url=="https://api.twitter.com/oauth/authorize" ||
                         url == "https://twitter.com/oauth/authorize") {

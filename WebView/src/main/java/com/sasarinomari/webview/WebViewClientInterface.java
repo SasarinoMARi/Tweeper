@@ -1,6 +1,6 @@
-package kr.booms.webview;
+package com.sasarinomari.webview;
 
-public interface BoomWebViewClientInterface
+public interface WebViewClientInterface
 {
     void onPageFinished( String url );
     boolean shouldOverrideUrlLoading( String url );

@@ -1,4 +1,4 @@
-package kr.booms.webview;
+package com.sasarinomari.webview;
 
 import android.app.Activity;
 import android.content.Context;

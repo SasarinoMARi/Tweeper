@@ -1,4 +1,4 @@
-package kr.booms.webview;
+package com.sasarinomari.webview;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;

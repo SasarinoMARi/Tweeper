@@ -1,4 +1,4 @@
-package kr.booms.webview;
+package com.sasarinomari.webview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,21 +10,20 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.DownloadListener;
 import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 /**
  * Created by MARi on 2018-01-26.
  */
 
-public class BoomWebView
+public class WebView
 {
     // region Instance
 
-    private WebView mainView;
-    private WebView popupView;
+    private android.webkit.WebView mainView;
+    private android.webkit.WebView popupView;
 
-    private BoomWebView( )
+    private WebView( )
     {
 
     }
@@ -122,17 +121,17 @@ public class BoomWebView
 
     // region Instance Factory
 
-    public static BoomWebView createWithContext( RelativeLayout holder, String customAgent, BoomWebChromeClientInterface webChromeClientInterface, BoomWebViewClientInterface webViewClientInterface )
+    public static WebView createWithContext(RelativeLayout holder, String customAgent, WebChromeClientInterface webChromeClientInterface, WebViewClientInterface webViewClientInterface )
     {
-        BoomWebView instance = new BoomWebView( );
+        WebView instance = new WebView( );
 
-        WebView main = new WebView( holder.getContext( ) );
+        android.webkit.WebView main = new android.webkit.WebView( holder.getContext( ) );
         main.setLayoutParams( new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT ) );
         holder.addView( main );
         instance.mainView = main;
         applyWebviewConfigurations( instance.mainView, customAgent, webChromeClientInterface, webViewClientInterface );
 
-        WebView popup = new WebView( holder.getContext( ) );
+        android.webkit.WebView popup = new android.webkit.WebView( holder.getContext( ) );
         popup.setLayoutParams( new RelativeLayout.LayoutParams( RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT ) );
         holder.addView( popup );
         popup.setVisibility( View.GONE );
@@ -156,7 +155,7 @@ public class BoomWebView
 
     // region WebView Configurations Applier
 
-    static void applyWebviewConfigurations( WebView webview, String customAgent, BoomWebChromeClientInterface webChromeClientInterface, BoomWebViewClientInterface webViewClientInterface )
+    static void applyWebviewConfigurations(android.webkit.WebView webview, String customAgent, WebChromeClientInterface webChromeClientInterface, WebViewClientInterface webViewClientInterface )
     {
         if ( webview == null )
             return;
@@ -168,12 +167,12 @@ public class BoomWebView
         applyDefaultJavascriptInterface( webview );
     }
 
-    public static void applyDefaultJavascriptInterface( WebView webview )
+    public static void applyDefaultJavascriptInterface(android.webkit.WebView webview )
     {
-        webview.addJavascriptInterface( new BoomWebViewInterface( webview ), "BoomWebViewInterface" );
+        webview.addJavascriptInterface( new WebViewInterface( webview ), "BoomWebViewInterface" );
     }
 
-    public static void applyWebSettings( WebView webview, String customAgent )
+    public static void applyWebSettings(android.webkit.WebView webview, String customAgent )
     {
         WebSettings set = webview.getSettings( );
         set.setJavaScriptEnabled( true );
@@ -198,17 +197,17 @@ public class BoomWebView
         }
     }
 
-    public static void applyWebChromeClient( WebView webview, String customAgent, BoomWebChromeClientInterface webChromeClientInterface )
+    public static void applyWebChromeClient(android.webkit.WebView webview, String customAgent, WebChromeClientInterface webChromeClientInterface )
     {
-        webview.setWebChromeClient( new BoomWebChromeClient( customAgent, webChromeClientInterface ) );
+        webview.setWebChromeClient( new WebChromeClient( customAgent, webChromeClientInterface ) );
     }
 
-    public static void applyWebViewClient( WebView webview, BoomWebViewClientInterface callback )
+    public static void applyWebViewClient(android.webkit.WebView webview, WebViewClientInterface callback )
     {
-        webview.setWebViewClient( new BoomWebViewClient( callback ) );
+        webview.setWebViewClient( new WebViewClient( callback ) );
     }
 
-    public static void applyDownloadListener( final WebView webview )
+    public static void applyDownloadListener( final android.webkit.WebView webview )
     {
         webview.setDownloadListener( new DownloadListener( )
         {
@@ -227,7 +226,7 @@ public class BoomWebView
 
     public static void onActivityResult( Context context, int requestCode, int resultCode, Intent data )
     {
-        BoomWebChromeClient.onActivityResult( context, requestCode, resultCode, data );
+        WebChromeClient.onActivityResult( context, requestCode, resultCode, data );
     }
 
     public void saveState( Bundle outState )

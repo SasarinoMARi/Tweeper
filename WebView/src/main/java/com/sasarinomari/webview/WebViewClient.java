@@ -1,4 +1,4 @@
-package kr.booms.webview;
+package com.sasarinomari.webview;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -6,20 +6,19 @@ import android.net.Uri;
 import android.provider.Browser;
 import android.util.Log;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 /**
  * Created by MARi on 2018-01-26.
  */
 
 
-class BoomWebViewClient extends WebViewClient
+class WebViewClient extends android.webkit.WebViewClient
 {
     private final static String TAG = "BoomWebViewClient";
-    BoomWebViewClientInterface callback = null;
+    WebViewClientInterface callback = null;
     private String redirectUrl;
 
-    public BoomWebViewClient( BoomWebViewClientInterface callback )
+    public WebViewClient(WebViewClientInterface callback )
     {
         this.callback = callback;
     }

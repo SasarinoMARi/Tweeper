@@ -44,6 +44,7 @@ class MediaDownloadService: BaseService() {
 
         val statusId = intent.getLongExtra(Parameters.StatusId.name, -1)
         if(statusId == (-1).toLong()) throw NullPointerException()
+        TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
         twitterAdapter.initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!)
 
         runOnManagedThread {

@@ -5,6 +5,6 @@ import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 class RecentByCount(statement: Boolean, minute: Int) : ConditionObject(statement, minute) {
     override fun checkCondition(tweet: Status): Boolean {
-        return tweet.id < parameter as Int && statement
+        return tweet.id < parameter as Int == statement
     }
 }

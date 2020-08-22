@@ -5,6 +5,6 @@ import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 class FavoriteByMe(statement: Boolean) : ConditionObject(statement, null) {
     override fun checkCondition(tweet: Status): Boolean {
-        return tweet.isFavorited && statement
+        return tweet.isFavorited == statement
     }
 }

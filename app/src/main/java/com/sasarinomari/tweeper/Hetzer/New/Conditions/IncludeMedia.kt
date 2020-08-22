@@ -5,6 +5,6 @@ import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 class IncludeMedia(statement: Boolean) : ConditionObject(statement, null) {
     override fun checkCondition(tweet: Status): Boolean {
-        return tweet.mediaEntities!!.isNotEmpty() && statement
+        return tweet.mediaEntities.isNotEmpty() == statement
     }
 }

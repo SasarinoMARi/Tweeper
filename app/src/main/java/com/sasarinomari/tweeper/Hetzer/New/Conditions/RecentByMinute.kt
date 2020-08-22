@@ -9,6 +9,6 @@ class RecentByMinute(statement: Boolean, minute: Int) : ConditionObject(statemen
         val divider = 1000 * 60
         val tweetMinuteStamp = tweet.createdAt.time / divider + min
         val safeMinuteStamp = System.currentTimeMillis() / divider
-        return tweetMinuteStamp >= safeMinuteStamp && statement
+        return tweetMinuteStamp >= safeMinuteStamp == statement
     }
 }

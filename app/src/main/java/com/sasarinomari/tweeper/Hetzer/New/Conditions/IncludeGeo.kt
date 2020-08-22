@@ -5,6 +5,6 @@ import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 class IncludeGeo(statement: Boolean) : ConditionObject(statement, null) {
     override fun checkCondition(tweet: Status): Boolean {
-        return tweet.place != null && statement
+        return tweet.place != null == statement
     }
 }

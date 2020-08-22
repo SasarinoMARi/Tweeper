@@ -5,6 +5,6 @@ import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 class RetweetCount(statement: Boolean, retweetCount: Int) : ConditionObject(statement, retweetCount) {
     override fun checkCondition(tweet: Status): Boolean {
-        return tweet.retweetCount >= parameter as Int && statement
+        return tweet.retweetCount >= parameter as Int == statement
     }
 }

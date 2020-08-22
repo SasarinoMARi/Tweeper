@@ -73,6 +73,10 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />
 
+
+        <!-- Test -->
+        <activity android:name=".Hetzer.New.ActivitySelectHetzerType"/>
+
     </application>
 
 </manifest>

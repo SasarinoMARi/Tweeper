@@ -177,4 +177,8 @@
     <string name="ReconnectWaiting">네트워크 오류가 발생했습니다.</string>
     <string name="RetrySoon">잠시 후 재시도합니다.. (%1$d/%2$d회째)</string>
     <string name="StopWithNetworkError">네트워크 오류로 인해 작업이 중단되었습니다.</string>
+    <string name="Whitelist">화이트리스트</string>
+    <string name="Blacklist">블랙리스트</string>
+    <string name="WhitelistDesc">기본적으로 모든 트윗을 삭제합니다.\n지정한 조건에 부합하는 트윗만 남깁니다.</string>
+    <string name="BlacklistDesc">기본적으로 모든 트윗을 남깁니다.\n지정한 조건에 부합하는 트윗만 삭제합니다.</string>
 </resources>

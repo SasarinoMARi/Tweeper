@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Hetzer.New.ActivitySelectHetzerType">
+
+    <Button
+        android:id="@+id/button_whitelist"
+        android:layout_width="150dp"
+        android:text="WhiteList"
+        android:textAllCaps="false"
+        android:layout_height="150dp"/>
+
+    <Button
+        android:id="@+id/button_blacklist"
+        android:layout_width="150dp"
+        android:text="BlackList"
+        android:textAllCaps="false"
+        android:layout_height="150dp"/>
+</LinearLayout>

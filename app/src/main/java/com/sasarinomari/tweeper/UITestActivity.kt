@@ -7,12 +7,15 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ListView
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
+import com.sasarinomari.tweeper.Hetzer.New.ActivitySelectHetzerType
 import com.sasarinomari.tweeper.MediaDownload.MediaDownloadActivity
 import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
@@ -39,14 +42,41 @@ class UITestActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_uitest)
 
-        if(false) testTextSufrace()
-        if(false) testRecyclerInjector()
-        if(false) testRewardAd()
-        if(false) testBillingActivity()
-        if(false) testFirebaseLogging()
-        if(false) testSpotlight()
-        if(false) textMediaDownload()
-        if(true) connectionCheck()
+        val list = ListView(this)
+        setContentView(list)
+
+        val values = arrayOf(
+            "Text Surface Test",
+            "Recycler Injector Test",
+            "Reward Ad Test",
+            "Billing Activity Test",
+            "Firebase Logging Test",
+            "Spotlight Test",
+            "Media Download Test",
+            "Connection Check",
+            "New Hetzer Test"
+        )
+
+        list.adapter = ArrayAdapter(this,
+            android.R.layout.simple_list_item_1, android.R.id.text1, values
+        )
+        list.setOnItemClickListener { _, _, position, _ ->
+            when(position) {
+                0 -> testTextSufrace()
+                1 -> testRecyclerInjector()
+                2 -> testRewardAd()
+                3 -> testBillingActivity()
+                4 -> testFirebaseLogging()
+                5 -> testSpotlight()
+                6 -> textMediaDownload()
+                7 -> connectionCheck()
+                8 -> testNewHetzer()
+            }
+        }
+    }
+
+    private fun testNewHetzer() {
+        startActivity(Intent(this, ActivitySelectHetzerType::class.java))
     }
 
     private fun connectionCheck() {

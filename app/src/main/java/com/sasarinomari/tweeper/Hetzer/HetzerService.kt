@@ -1,5 +1,6 @@
 package com.sasarinomari.tweeper.Hetzer
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.google.gson.Gson
@@ -10,6 +11,7 @@ import com.sasarinomari.tweeper.Billing.AdRemover
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter
+import com.sasarinomari.webview.WebViewLoginAssistant
 import twitter4j.Status
 
 class HetzerService : BaseService() {
@@ -75,7 +77,15 @@ class HetzerService : BaseService() {
 
                     runOnManagedThread {
                         twitterAdapter.destroyStatus(targetStatus, object : TwitterAdapter.IterableInterface {
-                            override fun onStart() {}
+                            override fun onStart() {
+                                val simpleTweets = ArrayList<com.sasarinomari.tweeper.SimplizatedClass.Status>()
+                                for (status in targetStatus) {
+                                    simpleTweets.add(com.sasarinomari.tweeper.SimplizatedClass.Status((status)))
+                                }
+                                val pref = context.getSharedPreferences("tempStatuses", Activity.MODE_PRIVATE).edit()
+                                pref.putString("tweets", Gson().toJson(simpleTweets))
+                                pref.apply()
+                            }
 
                             override fun onFinished() {
                                 // 리포트 작성

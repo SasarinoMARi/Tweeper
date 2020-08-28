@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ListView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Base.BaseActivity
@@ -46,6 +47,7 @@ class UITestActivity : BaseActivity() {
         setContentView(list)
 
         val values = arrayOf(
+            "Launch App",
             "Text Surface Test",
             "Recycler Injector Test",
             "Reward Ad Test",
@@ -60,17 +62,18 @@ class UITestActivity : BaseActivity() {
         list.adapter = ArrayAdapter(this,
             android.R.layout.simple_list_item_1, android.R.id.text1, values
         )
+        list.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
         list.setOnItemClickListener { _, _, position, _ ->
             when(position) {
-                0 -> testTextSufrace()
-                1 -> testRecyclerInjector()
-                2 -> testRewardAd()
-                3 -> testBillingActivity()
-                4 -> testFirebaseLogging()
-                5 -> testSpotlight()
-                6 -> textMediaDownload()
-                7 -> connectionCheck()
-                8 -> testNewHetzer()
+                1 -> testTextSufrace()
+                2 -> testRecyclerInjector()
+                3 -> testRewardAd()
+                4 -> testBillingActivity()
+                5 -> testFirebaseLogging()
+                6 -> testSpotlight()
+                7 -> textMediaDownload()
+                8 -> connectionCheck()
+                9 -> testNewHetzer()
             }
         }
     }

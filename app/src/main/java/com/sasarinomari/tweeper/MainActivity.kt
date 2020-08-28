@@ -17,6 +17,11 @@ class MainActivity : BaseActivity() {
         TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
         RewardedAdAdapter.load(this)
 
+        if(BuildConfig.DEBUG) {
+            startActivity(Intent(this, UITestActivity::class.java))
+            return
+        }
+
         when (val loggedUser = AuthData.Recorder(this).getFocusedUser()) {
             null -> doAuth()
             else -> lookupSelf(loggedUser)

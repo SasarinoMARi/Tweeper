@@ -77,7 +77,9 @@
     <string name="HetzerConditions_13">위치 정보를 포함한 트윗</string>
     <string name="HetzerConditions_14">위치 정보를 포함하지 않은 트윗</string>
     <string name="HetzerConditions_15">최근 %1$s개 까지의 트윗</string>
+    <string name="HetzerConditions_21">최근 %1$s개 이외의 트윗</string>
     <string name="HetzerConditions_16">최근 %1$s분 이내의 트윗</string>
+    <string name="HetzerConditions_22">최근 %1$s분 이외의 트윗</string>
     <string name="HetzerConditions_17">%1$s회 이상 인용 받은 트윗</string>
     <string name="HetzerConditions_18">%1$s회 이하 인용 받은 트윗</string>
     <string name="HetzerConditions_19">%1$s회 이상 멘션 받은 트윗</string>

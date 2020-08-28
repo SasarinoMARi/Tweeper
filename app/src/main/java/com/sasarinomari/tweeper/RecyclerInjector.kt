@@ -26,6 +26,9 @@ class RecyclerInjector : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val count: Int get() {
             return if (!visible) 0 else if(isList) _list!!.size else 1
         }
+        val list: ArrayList<*>? get() {
+            return _list
+        }
 
         open fun createViewHolder(view: View) : RecyclerView.ViewHolder {
             return object: RecyclerView.ViewHolder(view) { }
@@ -48,6 +51,10 @@ class RecyclerInjector : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun removeListItem(listItemIndex: Int) {
             if(!isList) return
             this._list!!.removeAt(listItemIndex)
+        }
+        fun foreach(method: (Any) -> Unit) {
+            if(!isList) return
+            for (item in _list!!) method(item)
         }
         // endregion
     }

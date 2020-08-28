@@ -76,6 +76,7 @@
 
         <!-- Test -->
         <activity android:name=".Hetzer.New.ActivitySelectHetzerType"/>
+        <activity android:name=".Hetzer.New.AddNewConditionActivity"/>
 
     </application>
 

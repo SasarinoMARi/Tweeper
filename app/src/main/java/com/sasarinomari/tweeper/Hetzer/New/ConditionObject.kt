@@ -1,12 +1,17 @@
 package com.sasarinomari.tweeper.Hetzer.New
 
+import android.content.Context
+import com.sasarinomari.tweeper.Hetzer.New.Conditions.*
+import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.SimplizatedClass.Status
 
 abstract class ConditionObject(val statement: Boolean,
-                               protected val parameter: Any?) {
+                               val parameter: Any?) {
     public fun check(tweet:Status): Boolean {
         return statement && checkCondition(tweet)
     }
+
+    abstract fun toString(context: Context): String
 
     protected abstract fun checkCondition(tweet:Status): Boolean
 }

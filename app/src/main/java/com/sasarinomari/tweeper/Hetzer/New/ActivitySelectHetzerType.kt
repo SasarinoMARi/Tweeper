@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Hetzer.New.Conditions.FavoriteByMe
 import com.sasarinomari.tweeper.Hetzer.New.Conditions.RetweetByMe
 import com.sasarinomari.tweeper.R
@@ -14,7 +15,9 @@ import com.sasarinomari.tweeper.SimplizatedClass.Status
 import kotlinx.android.synthetic.main.activity_select_hetzer_type.*
 import java.util.*
 
-class ActivitySelectHetzerType : AppCompatActivity() {
+class ActivitySelectHetzerType : BaseActivity() {
+    private enum class Requests { AddCondition }
+
     private val LOG_TAG = "HetzerTest"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +50,10 @@ class ActivitySelectHetzerType : AppCompatActivity() {
         }
 
         button_addCondition.setOnClickListener {
-            startActivity(Intent(this@ActivitySelectHetzerType, AddNewConditionActivity::class.java))
+            val i = Intent(this@ActivitySelectHetzerType, AddNewConditionActivity::class.java)
+            i.putExtra(AddNewConditionActivity.Parameters.HetzerAction.name, Hetzer.Action.Save.name)
+            i.putExtra(AddNewConditionActivity.Parameters.IgnoreClassName.name, arrayOf<String>())
+            startActivityForResult(i, Requests.AddCondition.ordinal)
         }
     }
 
@@ -82,4 +88,15 @@ class ActivitySelectHetzerType : AppCompatActivity() {
         return collections
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
+        when(resultCode) {
+            Requests.AddCondition.ordinal -> {
+                if(resultCode != RESULT_OK) return
+                val newCondition = result!!.getStringExtra(AddNewConditionActivity.Results.ConditionObject.name)!!
+
+            }
+            else -> super.onActivityResult(requestCode, resultCode, result)
+        }
+
+    }
 }

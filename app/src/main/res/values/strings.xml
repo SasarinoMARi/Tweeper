@@ -3,7 +3,8 @@
     <string name="app_name">트윗지기</string>
     <string name="TweetCleaner">트윗 청소기</string>
     <string name="DeleteOption">삭제 옵션</string>
-    <string name="DeleteOptionPlease">지우지 않고 남겨둘 트윗을 지정하세요.</string>
+    <string name="Hetzer_PlzSelSaveTweets">지우지 않고 남겨둘 트윗을 지정하세요.</string>
+    <string name="Hetzer_PlzSelDelTweets">지울 트윗을 지정하세요.</string>
     <string name="WhichTweetDoNotRemove">어떤 트윗을 남겨둘까요?</string>
     <string name="AddCondition">조건 추가</string>
     <string name="OK">확인</string>
@@ -183,4 +184,17 @@
     <string name="Blacklist">블랙리스트</string>
     <string name="WhitelistDesc">기본적으로 모든 트윗을 삭제합니다.\n지정한 조건에 부합하는 트윗만 남깁니다.</string>
     <string name="BlacklistDesc">기본적으로 모든 트윗을 남깁니다.\n지정한 조건에 부합하는 트윗만 삭제합니다.</string>
+    <string name="Condition_FavCount_Positive_Label">마음이 몇 개 이상일 때</string>
+    <string name="Condition_FavCount_Negative_Label">마음이 몇 개 이하일 때</string>
+    <string name="Condition_Label_Positive_Attachment">트윗을 남길까요?</string>
+    <string name="Condition_Label_Negative_Attachment">트윗을 지울까요?</string>
+    <string name="Condition_RetweetCount_Positive_Label">리트윗이 몇 개 이상일 때</string>
+    <string name="Condition_RetweetCount_Negative_Label">리트윗이 몇 개 이하일 때</string>
+    <string name="Condition_Keyword_Positive_Label">어떤 키워드를 포함했을 때</string>
+    <string name="Condition_Keyword_Negative_Label">어떤 키워드를 포함하지 않았을 때</string>
+    <string name="Condition_RecentMin_Positive_Label">최근 몇 분 이내의 트윗일 때</string>
+    <string name="Condition_RecentMin_Negative_Label">최근 몇 분 이후의 트윗일 때</string>
+    <string name="Condition_RecentCount_Positive_Label">최근 몇 개 이내의 트윗일 때</string>
+    <string name="Condition_RecentCount_Negative_Label">최근 몇 개 이후의 트윗일 때</string>
+    <string name="NeedRequrement">입력되지 않았거나 잘못된 값이 있어요.</string>
 </resources>

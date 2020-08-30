@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
             android:fontFamily="@font/noto_sans_light"
-            android:text="@string/DeleteOptionPlease"
+            android:text="@string/Hetzer_PlzSelDelTweets"
             android:textColor="@color/white"
             android:textSize="15sp" />
 

@@ -34,6 +34,13 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "android_client_info": {
+          "package_name": "com.sasarinomari.tweeper.dev"
+        }
+      }
     }
   ],
   "configuration_version": "1"

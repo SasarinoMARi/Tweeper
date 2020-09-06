@@ -35,7 +35,6 @@ class MediaDownloadService: BaseService() {
 
     companion object {
         private const val LOG_TAG = "MediaDownloadService"
-        internal const val PrefAttributeName = "gifs"
         fun checkServiceRunning(context: Context) = BaseService.checkServiceRunning(context, MediaDownloadService::class.java.name)
         
         fun convertWithFFMPEG(file: File): File {
@@ -68,7 +67,6 @@ class MediaDownloadService: BaseService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (super.onStartCommand(intent!!, flags, startId) == START_NOT_STICKY) return START_NOT_STICKY
 
-
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", silent = true))
 
         val statusId = intent.getLongExtra(Parameters.StatusId.name, -1)
@@ -83,6 +81,9 @@ class MediaDownloadService: BaseService() {
         return START_REDELIVER_INTENT
     }
 
+    /**
+     * Status ID로 트윗을 조회한 뒤 안에있는 미디어 객체의 다운로드를 요청합니다.
+     */
     private fun downloadMedia(id: Long) {
         Log.i(LOG_TAG, "id: $id")
         sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadStarted), silent = true)
@@ -102,19 +103,7 @@ class MediaDownloadService: BaseService() {
                         "animated_gif" -> {
                             val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
                             if(target!=null) {
-                                download(target.url, true) { file ->
-                                    // Q 이상에서 수행되지 않는 코드
-                                    sendNotification(getString(R.string.MediaDownloader), getString(R.string.Converting), silent = true)
-                                    val newPath = convertWithFFMPEG(file)
-                                    val i = getOpenFileIntent(newPath)
-                                    sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
-                                        silent = false,
-                                        cancelable = true,
-                                        redirect = i,
-                                        id = NotificationId + 1
-                                    )
-                                    finish()
-                                }
+                                download(target.url, true)
                             }
                             else {
                                 FirebaseLogger(this@MediaDownloadService)
@@ -162,45 +151,27 @@ class MediaDownloadService: BaseService() {
     /**
      * 실제 파일 다운로드 코드
      */
-    private fun download(url: String, isGif: Boolean = false, callback: (File)-> Unit = {
-        val i = getOpenFileIntent(it)
-        sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
-            silent = false,
-            cancelable = true,
-            redirect = i,
-            id = NotificationId + 1
-        )
-        finish()
-    }) {
+    private fun download(url: String, isGif: Boolean = false) {
         val fileName = url.substringAfterLast("/").substringBefore("?")
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            val filePath = File(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString(), fileName)
-            Fuel.download(url).fileDestination { _, _ -> filePath }.progress { readBytes, totalBytes ->
-                val progress = readBytes.toFloat() / totalBytes.toFloat()
-                restrainedNotification(getString(R.string.MediaDownloader), getString(R.string.FetchingMedia, progress.toInt()))
-            }.response { _, _, _ ->
-                Log.d("mediaDownload", "File downloaded to : $filePath")
-                callback(filePath)
-            }
-        } else {
-            val request = DownloadManager.Request(Uri.parse(url))
-                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-                .setRequiresCharging(false) // 충전 중일 때만 다운로드 받도록 설정 해제
-                .setAllowedOverMetered(true) // 데이터 네트워크에서의 다운로드 허용
-                .setAllowedOverRoaming(true) // 로밍 네트워크에서의 다운로드 허용
-                .setVisibleInDownloadsUi(true)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
 
-            val downloadId = (getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-            if(isGif) {
-                DownloadReceiver.add(this, Pair(downloadId,
-                    File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName).toString()))
-            }
-            finish()
+        val request = DownloadManager.Request(Uri.parse(url))
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            .setRequiresCharging(false) // 충전 중일 때만 다운로드 받도록 설정 해제
+            .setAllowedOverMetered(true) // 데이터 네트워크에서의 다운로드 허용
+            .setAllowedOverRoaming(true) // 로밍 네트워크에서의 다운로드 허용
+            .setVisibleInDownloadsUi(true)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+
+        val downloadId = (getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+        if(isGif) {
+            // TODO: 수정
+            DownloadReceiver.add(this, Pair(downloadId,
+                File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName).toString()))
         }
-
+        finish()
     }
 
+    
     private fun getImageContentUri(context: Context, file: File): Uri? {
         val filePath = file.absolutePath
         val cursor: Cursor? = context.contentResolver.query(
@@ -245,7 +216,6 @@ class MediaDownloadService: BaseService() {
             }
         }
     }
-
     private fun getOpenFileIntent(file: File): Intent {
         val map: MimeTypeMap = MimeTypeMap.getSingleton()
         val ext: String = MimeTypeMap.getFileExtensionFromUrl(file.name)

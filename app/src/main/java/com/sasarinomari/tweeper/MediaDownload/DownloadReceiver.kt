@@ -41,6 +41,11 @@ class DownloadReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        return
+        /**
+         * Download Manager 사용 시 GIF 변환을 여기서 처리해야 할 것 같은데...
+         * 일단 제대로 동작 안함. 수정 요
+         */
         val id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
         if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == intent.action) {
             val gifList = fetch(context)

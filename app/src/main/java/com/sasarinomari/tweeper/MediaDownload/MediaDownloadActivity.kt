@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.google.android.material.textfield.TextInputLayout
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Permission.PermissionHelper
 import com.sasarinomari.tweeper.R
@@ -22,7 +23,6 @@ open class MediaDownloadActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         PermissionHelper.activatePermission(this, permissions) {
             if(Intent.ACTION_SEND == intent.action) {
                 /**
@@ -39,6 +39,7 @@ open class MediaDownloadActivity : BaseActivity() {
                  * 공유하기를 통해 오지 않은 경우 UI를 초기화하고 직접 url을 입력받습니다.
                  */
                 setContentView(R.layout.activity_media_download)
+                setDefaultBoxColor(ContextCompat.getColor(this, R.color.white))
                 layoutInitialized = true
 
                 layout_title.title_text.text = getString(R.string.MediaDownloader)
@@ -53,6 +54,19 @@ open class MediaDownloadActivity : BaseActivity() {
                     input_url.setText("")
                 }
             }
+        }
+    }
+
+    private fun setDefaultBoxColor(color: Int) {
+        try {
+            val defaultStrokeColorField = TextInputLayout::class.java.getDeclaredField("defaultStrokeColor")
+            defaultStrokeColorField.isAccessible = true
+            defaultStrokeColorField.set(_input1, color)
+            val defaultTextColorFiled = TextInputLayout::class.java.getDeclaredField("defaultTextColor")
+            defaultTextColorFiled.isAccessible = true
+            defaultTextColorFiled.set(input_url, color)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

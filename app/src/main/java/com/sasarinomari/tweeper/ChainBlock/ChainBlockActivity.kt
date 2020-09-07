@@ -1,6 +1,7 @@
 package com.sasarinomari.tweeper.ChainBlock
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
@@ -16,6 +18,8 @@ import com.sasarinomari.tweeper.RewardedAdAdapter
 import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_chain_block.*
+import kotlinx.android.synthetic.main.activity_chain_block._input1
+import kotlinx.android.synthetic.main.activity_media_download.*
 import twitter4j.User
 import java.text.DecimalFormat
 
@@ -25,8 +29,21 @@ class ChainBlockActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = ContextCompat.getColor(this, R.color.warning)
         setContentView(R.layout.activity_chain_block)
-
+        setDefaultBoxColor(ContextCompat.getColor(this, R.color.white))
         phase1()
+    }
+
+    private fun setDefaultBoxColor(color: Int) {
+        try {
+            val defaultStrokeColorField = TextInputLayout::class.java.getDeclaredField("defaultStrokeColor")
+            defaultStrokeColorField.isAccessible = true
+            defaultStrokeColorField.set(_input1, color)
+            val defaultTextColorFiled = TextInputLayout::class.java.getDeclaredField("defaultTextColor")
+            defaultTextColorFiled.isAccessible = true
+            defaultTextColorFiled.set(input_url, color)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     // 타깃 유저 지정 단계

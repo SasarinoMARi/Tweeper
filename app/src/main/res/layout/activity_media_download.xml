@@ -38,19 +38,15 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:hintTextAppearance="@style/WhitecolorText"
-        app:boxStrokeColor="@color/white"
-        android:theme="@style/WhiteTextInputLayout"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_gravity="center_horizontal">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/input_url"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
             android:hint="@string/DownloaderUrlHint"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:textColor="@color/white" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

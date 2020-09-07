@@ -54,12 +54,9 @@
             android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:boxStrokeColor="@color/white"
             app:layout_constraintBottom_toTopOf="@id/button_next"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:hintTextAppearance="@style/WhitecolorText"
-            android:theme="@style/WhiteTextInputLayout"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText

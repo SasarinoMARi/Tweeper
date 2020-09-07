@@ -4,13 +4,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/colorPrimaryDark</item>
+        <item name="android:textColorHint">@color/white</item>
     </style>
 
-    <style name="WhiteTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeColor">#fff</item>
-        <item name="boxStrokeWidth">2dp</item>
-    </style>
-    <style name="WhitecolorText" parent="TextAppearance.AppCompat" >
-        <item name="android:textColor">@color/white</item>
-    </style>
 </resources>

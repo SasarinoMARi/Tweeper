@@ -1,40 +1,60 @@
 package com.sasarinomari.tweeper.MediaDownload
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
+import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
+import com.sasarinomari.tweeper.FirebaseLogger
 import com.sasarinomari.tweeper.Permission.PermissionHelper
 import com.sasarinomari.tweeper.R
+import com.sasarinomari.tweeper.TwitterAdapter
 import kotlinx.android.synthetic.main.activity_media_download.*
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 open class MediaDownloadActivity : BaseActivity() {
 
-    private val permissions= arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    private val permissions = arrayOf(
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
+    private enum class Requests {
+        WriteFile
+    }
 
     private var layoutInitialized = false
 
+    private val twitterAdapter = TwitterAdapter()
+    private val targetUrls = ArrayList<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
+        twitterAdapter.initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!)
         PermissionHelper.activatePermission(this, permissions) {
-            if(Intent.ACTION_SEND == intent.action) {
+            if (Intent.ACTION_SEND == intent.action) {
                 /**
                  * 공유하기를 통해 접근한 경우 인텐트에서 url을 추출해 작업을 시작합니다.
                  */
-                if("text/plain" == intent.type) {
-                    val url = intent.getStringExtra(Intent.EXTRA_TEXT)?:return@activatePermission
-                    downloadMedia(url)
-                    finish()
+                if ("text/plain" == intent.type) {
+                    val url = intent.getStringExtra(Intent.EXTRA_TEXT) ?: return@activatePermission
+                    startMediaDownloadProcess(url)
                 }
-            }
-            else {
+            } else {
                 /**
                  * 공유하기를 통해 오지 않은 경우 UI를 초기화하고 직접 url을 입력받습니다.
                  */
@@ -50,7 +70,7 @@ open class MediaDownloadActivity : BaseActivity() {
                 layout_button.cardbutton_text.text = getString(R.string.Download)
                 layout_button.setOnClickListener {
                     val url = input_url.text.toString()
-                    downloadMedia(url)
+                    startMediaDownloadProcess(url)
                     input_url.setText("")
                 }
             }
@@ -76,10 +96,9 @@ open class MediaDownloadActivity : BaseActivity() {
      */
     private fun invalidUrl() {
         runOnUiThread {
-            if(layoutInitialized) {
+            if (layoutInitialized) {
                 da.error(getString(R.string.Error), getString(R.string.InvalidUrl)).show()
-            }
-            else {
+            } else {
                 Toast.makeText(this, getString(R.string.InvalidUrl), Toast.LENGTH_LONG).show()
                 finish()
             }
@@ -90,7 +109,7 @@ open class MediaDownloadActivity : BaseActivity() {
      * url로부터 status id만을 추출합니다.
      */
     private fun getStatusId(url: String): Long {
-        if(url.isEmpty()) return -1
+        if (url.isEmpty()) return -1
         val b = url.substringAfterLast("/")
         val regex = """[0-9]+""".toRegex()
         val matchResult = regex.find(b)?.value ?: return -1
@@ -100,16 +119,64 @@ open class MediaDownloadActivity : BaseActivity() {
     /**
      * url로 파일을 다운로드하는 메인 코드
      */
-    private fun downloadMedia(url: String) {
+    private fun startMediaDownloadProcess(url: String) {
         Log.i("downloadMedia", url)
+
         val id = getStatusId(url)
         if (id == (-1).toLong()) {
             invalidUrl()
             return
         }
 
+        Thread {
+            MediaTool.lookup(twitterAdapter, id, object : MediaTool.LookupInterface {
+                override fun onMediaEmpty() {
+                    finish()
+                }
+
+                override fun onGottenUrls(mediaUrls: Array<String>, mediaType: MediaTool.MediaType?) {
+                    for (fileUrl in mediaUrls) {
+                        val fileName = fileUrl.substringAfterLast("/").substringBefore("?")
+                        val extension = fileName.substringAfterLast(".")
+                        val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+                        Log.d("MediaDownloadActivity", "mimeType: $mimeType")
+
+                        val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+                        intent.addCategory(Intent.CATEGORY_OPENABLE)
+                        intent.type = mimeType
+                        intent.putExtra(Intent.EXTRA_TITLE, fileName)
+                        targetUrls.add(fileUrl) // 어떤 url이 목표인지 찾기 불가능
+                        startActivityForResult(intent, Requests.WriteFile.ordinal)
+
+                        // TODO: 이하 GIF 변환 코드
+                        /*
+                        download(fileUrl){ file ->
+                            sendNotification(getString(R.string.MediaDownloader), getString(R.string.Converting), silent = true)
+                            val newPath = convertWithFFMPEG(file)
+                            val i = getOpenFileIntent(newPath)
+                            sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
+                                silent = false,
+                                cancelable = true,
+                                redirect = i,
+                                id = NotificationId + 1
+                            )
+                            finish()
+                        }
+                        */
+                    }
+                }
+
+                override fun onNeedFirebaseLog(title: String, content: Pair<String, String>) {
+                    FirebaseLogger(this@MediaDownloadActivity).log(title, content)
+                }
+            })
+        }.start()
+    }
+
+    @Deprecated("서비스 말고 전면 액티비티에서 다운로드받고 끝내자")
+    fun openDownloadService(statusId: Long) {
         val i = Intent(this, MediaDownloadService::class.java)
-        i.putExtra(MediaDownloadService.Parameters.StatusId.name, id)
+        i.putExtra(MediaDownloadService.Parameters.StatusId.name, statusId)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(i)
         } else {
@@ -125,5 +192,44 @@ open class MediaDownloadActivity : BaseActivity() {
             finish()
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == Requests.WriteFile.ordinal) {
+            if (resultCode != RESULT_OK) {
+                finish()
+                return
+            }
+
+            try {
+                val foStream = contentResolver.openOutputStream(data!!.data!!)!!
+                downloadFile(targetUrls[0]) { input ->
+                    val b = BitmapFactory.decodeStream(input)
+                    b.compress(Bitmap.CompressFormat.JPEG, 100, foStream);
+                    foStream.flush()
+                    foStream.close()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        } else super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    /**
+     * 실제 파일 다운로드 코드
+     */
+    private fun downloadFile(url: String, callback: (InputStream) -> Unit) {
+        Thread {
+            try {
+                val connection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                callback(connection.inputStream)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, getString(R.string.DownloadFailed), Toast.LENGTH_LONG).show()
+            }
+        }.start()
+    }
+
 
 }

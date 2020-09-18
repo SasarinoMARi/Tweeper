@@ -177,4 +177,5 @@
     <string name="ReconnectWaiting">네트워크 오류가 발생했습니다.</string>
     <string name="RetrySoon">잠시 후 재시도합니다.. (%1$d/%2$d회째)</string>
     <string name="StopWithNetworkError">네트워크 오류로 인해 작업이 중단되었습니다.</string>
+    <string name="DownloadFailed">다운로드에 실패했습니다.</string>
 </resources>

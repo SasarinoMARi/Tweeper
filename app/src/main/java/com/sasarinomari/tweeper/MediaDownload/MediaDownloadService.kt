@@ -85,72 +85,44 @@ class MediaDownloadService: BaseService() {
      * Status ID로 트윗을 조회한 뒤 안에있는 미디어 객체의 다운로드를 요청합니다.
      */
     private fun downloadMedia(id: Long) {
+        /*
         Log.i(LOG_TAG, "id: $id")
-        sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadStarted), silent = true)
-        twitterAdapter.lookStatus(id, object: TwitterAdapter.FoundObjectInterface {
-            override fun onStart() { }
-
-            override fun onFinished(obj: Any) {
-                val status = obj as Status
-                if(status.mediaEntities.isEmpty()) {
-                    finish(); return
-                }
-                for (entitie in status.mediaEntities) {
-                    when(entitie.type) {
-                        "photo" -> {
-                            download(entitie.mediaURLHttps)
-                        }
-                        "animated_gif" -> {
-                            val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
-                            if(target!=null) {
-                                download(target.url, true)
-                            }
-                            else {
-                                FirebaseLogger(this@MediaDownloadService)
-                                    .log("VideoVariantResultNull",
-                                        Pair("entitie.videoVariants", Gson().toJson(entitie.videoVariants)))
-                            }
-                        }
-                        "video" -> {
-                            val target = entitie.videoVariants.maxBy{ v -> v.bitrate }
-                            if(target!=null) {
-                                download(target.url)
-                            }
-                            else {
-                                FirebaseLogger(this@MediaDownloadService)
-                                    .log("VideoVariantResultNull",
-                                        Pair("entitie.videoVariants", Gson().toJson(entitie.videoVariants)))
-                            }
-                        }
-                    }
-                }
-            }
-
-            override fun onRateLimit() {
-                sendNotification(getString(R.string.MediaDownloader), getString(R.string.RateLimitWaiting))
-
-            }
-
-            override fun onNotFound() {
-                sendNotification(getString(R.string.MediaDownloader), getString(R.string.StatusNotFound),
-                    false, true, Intent(), NotificationId +1)
+        sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadStarted), silen                    val newPath = convertWithFFMPEG(file)
+t = true)
+        MediaTool.lookup(twitterAdapter, id, object: MediaTool.LookupInterface {
+            override fun onMediaEmpty() {
                 finish()
             }
 
-            override fun onUncaughtError() {
-                TODO("Not yet implemented")
+            override fun onGottenUrls(fileUrl: String) {
+                download(fileUrl)
             }
 
-            override fun onNetworkError(retry: () -> Unit) {
-                TODO("Not yet implemented")
+            override fun onDownloadGif(fileUrl: String) {
+                download(fileUrl){ file ->
+                    sendNotification(getString(R.string.MediaDownloader), getString(R.string.Converting), silent = true)
+                    val i = getOpenFileIntent(newPath)
+                    sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
+                        silent = false,
+                        cancelable = true,
+                        redirect = i,
+                        id = NotificationId + 1
+                    )
+                    finish()
+                }
+            }
+            override fun onNeedFirebaseLog(title: String, content: Pair<String, String>) {
+                FirebaseLogger(this@MediaDownloadService).log(title, content)
             }
         })
+         */
     }
 
 
     /**
      * 실제 파일 다운로드 코드
      */
+    /*
     private fun download(url: String, isGif: Boolean = false) {
         val fileName = url.substringAfterLast("/").substringBefore("?")
 
@@ -170,7 +142,65 @@ class MediaDownloadService: BaseService() {
         }
         finish()
     }
+     */
 
+    private fun download(url: String, callback: (File)-> Unit = {
+        val i = getOpenFileIntent(it)
+        sendNotification(getString(R.string.MediaDownloader), getString(R.string.DownloadCompleted),
+            silent = false,
+            cancelable = true,
+            redirect = i,
+            id = NotificationId + 1
+        )
+        finish()
+    }) {
+        val fileName = url.substringAfterLast("/").substringBefore("?")
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            val filePath = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
+            Fuel.download(url).fileDestination { _, _ -> filePath }.progress { readBytes, totalBytes ->
+                val progress = readBytes.toFloat() / totalBytes.toFloat()
+                restrainedNotification(getString(R.string.MediaDownloader), getString(R.string.FetchingMedia, progress.toInt()))
+            }.response { _, _, _ ->
+                Log.d("mediaDownload", "File downloaded to : $filePath")
+                callback(filePath)
+            }
+        } else {
+            // 이거 우선 Activity로 옮기자
+            val mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substringAfterLast("."));
+            Log.d(LOG_TAG, "mimeType: $mimeType")
+
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = mimeType
+            intent.putExtra(Intent.EXTRA_TITLE, fileName)
+
+            (this.applicationContext as MediaDownloadActivity).startActivityForResult(intent, 0)
+        }
+    }
+
+    private fun convertWithFFMPEG(file: File): File {
+        val newPath = File("${file.toString().substringBeforeLast(".")}.gif")
+        if(newPath.exists()) newPath.delete()
+        // val command = "-ss 30 -t 3 -i $file -vf \"fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 -f gif $newPath"
+        val command = "-i $file $newPath"
+        val rc = FFmpeg.execute(command)
+        when (rc) {
+            RETURN_CODE_SUCCESS -> {
+                Log.i(Config.TAG, "Command execution completed successfully.")
+            }
+            RETURN_CODE_CANCEL -> {
+                Log.i(Config.TAG, "Command execution cancelled by user.")
+            }
+            else -> {
+                Log.i(
+                    Config.TAG,
+                    String.format("Command execution failed with rc=%d and the output below.", rc)
+                )
+                Config.printLastCommandOutput(Log.INFO)
+            }
+        }
+        return newPath
+    }
     
     private fun getImageContentUri(context: Context, file: File): Uri? {
         val filePath = file.absolutePath

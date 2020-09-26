@@ -42,13 +42,6 @@
         <service
             android:name=".MediaDownload.MediaDownloadService"
             android:exported="true" />
-        <receiver
-            android:name=".MediaDownload.DownloadReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:enabled="true" android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-            </intent-filter>
-        </receiver>
 
         <!--Hetzer-->
         <activity android:name=".Hetzer.HetzerActivity" />

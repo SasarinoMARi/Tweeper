@@ -170,7 +170,7 @@
     <string name="HetzerDoneTweet">트윗 청소 완료! 내가 원하는 트윗만 삭제가 완료되었어요. #트윗지기</string>
     <string name="AuthFailed">인증에 실패했습니다.</string>
     <string name="AgreeForTweeper">트윗지기 사용을 위해서 트위터 앱 인증 버튼을 눌러 주세요.</string>
-    <string name="UncaughtError">알 수 없는 에러가 발생했습니다.</string>
+    <string name="UncaughtError">죄송합니다. 알 수 없는 에러가 발생했습니다.</string>
     <string name="Sorry">죄송합니다.</string>
     <string name="NetworkError">네트워크 에러가 발생했습니다. 재시도 하시겠습니까?</string>
     <string name="BillingInfoFetchFailed">결제 정보를 불러오는데 실패했습니다.</string>

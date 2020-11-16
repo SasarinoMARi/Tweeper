@@ -138,11 +138,15 @@ class MediaDownloadService: BaseService() {
             }
 
             override fun onUncaughtError() {
-                TODO("Not yet implemented")
+                sendNotification(getString(R.string.MediaDownloader), getString(R.string.UncaughtError),
+                    false, true, Intent(), NotificationId +1)
+                finish()
             }
 
             override fun onNetworkError(retry: () -> Unit) {
-                TODO("Not yet implemented")
+                sendNotification(getString(R.string.MediaDownloader), getString(R.string.NetworkError),
+                    false, true, Intent(), NotificationId +1)
+                finish()
             }
         })
     }

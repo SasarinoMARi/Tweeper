@@ -186,12 +186,28 @@ class DashboardActivity : BaseActivity() {
 
     private fun updateMyInfo() {
         Thread {
-            /**
-             * 이유는 모르겠지만 아래 TwitterAdapter().initialize() 코드에서 Consumer 토큰 null 오류가 나므로
-             * 여기서 다시 초기화해보자..
-             */
             TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
-            val token = AuthData.Recorder(this).getFocusedUser()!!.token!!
+            val recoder = AuthData.Recorder(this)
+            var token = recoder.getFocusedUser()?.token
+            if(token == null) {
+                /**
+                 * 최근 유저 불러오기에 실패했을 경우
+                 * 1. 인덱스가 가장 앞인 유저를 불러옵니다.
+                 * 2. 더 이상 유저가 없을 경우 인증 화며으로 이동합니다.
+                 */
+                val users = recoder.getUsers()
+                if(users.isNotEmpty()) {
+                    for (user in users) {
+                        if(user.token!=null) token = user.token; break
+                    }
+                }
+                if(users.isEmpty() || token == null){
+                    runOnUiThread {
+                        startActivityForResult(Intent(this, TokenManagementActivity::class.java), Requests.Switch.ordinal)
+                    }
+                    return@Thread
+                }
+            }
             TwitterAdapter().initialize(token).getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() { }
 

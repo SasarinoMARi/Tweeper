@@ -40,6 +40,11 @@ class ChainBlockService : BaseService() {
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
         val user = Gson().fromJson(intent.getStringExtra(Parameters.User.name), AuthData::class.java)
+        if(user?.token == null) {
+            sendNotification(getString(R.string.Chainblock), getString(R.string.AuthFailed),
+                silent = false, cancelable = true, id = NotificationId+2)
+            return START_NOT_STICKY
+        }
         twitterAdapter.initialize(user.token!!)
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))

@@ -35,6 +35,7 @@ class AnalyticsActivity : BaseActivity() {
         val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
         val reports = ReportInterface<Any>(userId, reportPrefix).getReports(this, AnalyticsReport()) as ArrayList<AnalyticsReport>
         reports.sortBy { x -> x.date }
+        reports.reverse()
 
         val adapter = RecyclerInjector()
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {

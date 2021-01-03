@@ -227,7 +227,12 @@ class DashboardActivity : BaseActivity() {
                 }
 
                 override fun onUncaughtError() {
-                    this@DashboardActivity.onUncaughtError()
+                    runOnUiThread {
+                        da.error("로그인에 실패했습니다.", "계정 선택 화면으로 이동합니다.") {
+                                startActivityForResult(Intent(this@DashboardActivity,
+                                    TokenManagementActivity::class.java), Requests.Switch.ordinal)
+                        }.show()
+                    }
                 }
 
                 override fun onNetworkError(retry: () -> Unit) {

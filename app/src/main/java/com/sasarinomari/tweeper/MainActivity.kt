@@ -2,6 +2,7 @@ package com.sasarinomari.tweeper
 
 import android.os.Bundle
 import android.content.Intent
+import android.widget.Toast
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
@@ -44,7 +45,11 @@ class MainActivity : BaseActivity() {
                     }
 
                     override fun onUncaughtError() {
-                        this@MainActivity.onUncaughtError()
+                        runOnUiThread {
+                            da.error("로그인에 실패했습니다.", "계정 선택 화면으로 이동합니다.") {
+                                doAuth()
+                            }.show()
+                        }
                     }
 
                     override fun onNetworkError(retry: () -> Unit) {

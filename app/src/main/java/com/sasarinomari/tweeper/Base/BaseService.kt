@@ -91,7 +91,7 @@ abstract class BaseService: Service() {
         val pendingIntent = PendingIntent.getActivity(this, 0, redirect, PendingIntent.FLAG_UPDATE_CURRENT)
         val builder = if (silent) silentChannelBuilder else defaultChannelBuilder
 
-        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setSmallIcon(R.drawable.ic_stat_icon)
         builder.setContentTitle(title)
         builder.setContentText(text)
         builder.setContentIntent(pendingIntent)

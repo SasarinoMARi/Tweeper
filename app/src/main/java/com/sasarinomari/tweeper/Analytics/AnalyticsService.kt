@@ -9,6 +9,7 @@ import com.sasarinomari.tweeper.Base.BaseService
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter
+import java.lang.Exception
 
 class AnalyticsService : BaseService() {
     enum class Parameters {
@@ -64,23 +65,41 @@ class AnalyticsService : BaseService() {
                                                 context,
                                                 lastReportIndex,
                                                 AnalyticsReport()
-                                            ) as AnalyticsReport else null
+                                            ) as AnalyticsReport? else null
                                             val report = AnalyticsReport(me, followings, followers, recentReport)
                                             report.id = lastReportIndex + 1
-                                            ri.writeReport(context, report.id, report)
 
-                                            // 알림 송출
-                                            val redirect = Intent(context, AnalyticsReportActivity::class.java)
-                                            redirect.putExtra(AnalyticsReportActivity.Parameters.ReportId.name, report.id)
-                                            sendNotification(
-                                                strServiceName,
-                                                getString(R.string.AnalyticsDone),
+                                            try {
+                                                ri.writeReport(context, report.id, report)
+
+                                                // 알림 송출
+                                                val redirect = Intent(context, AnalyticsReportActivity::class.java)
+                                                redirect.putExtra(AnalyticsReportActivity.Parameters.ReportId.name, report.id)
+                                                sendNotification(
+                                                    strServiceName,
+                                                    getString(R.string.AnalyticsDone),
+                                                    silent = false,
+                                                    cancelable = true,
+                                                    redirect = redirect,
+                                                    id = NotificationId + 1
+                                                )
+                                                context.sendActivityRefrashNotification(AnalyticsActivity::class.java.name)
+                                            } catch (ome: OutOfMemoryError) {
+                                                sendNotification(strServiceName,
+                                                getString(R.string.Error_OutOfMemory),
                                                 silent = false,
                                                 cancelable = true,
-                                                redirect = redirect,
-                                                id = NotificationId + 1
-                                            )
-                                            context.sendActivityRefrashNotification(AnalyticsActivity::class.java.name)
+                                                redirect = Intent(),
+                                                id = NotificationId + 1)
+                                            } catch (e: Exception) {
+                                                sendNotification(strServiceName,
+                                                    getString(R.string.Error),
+                                                    silent = false,
+                                                    cancelable = true,
+                                                    redirect = Intent(),
+                                                    id = NotificationId + 1)
+                                            }
+
 
                                             /*
                                             if(!AdRemover(context).isAdRemoved()) {

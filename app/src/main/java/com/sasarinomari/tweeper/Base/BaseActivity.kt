@@ -93,6 +93,14 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    fun onNoRequirement() {
+        runOnUiThread {
+            da.error(getString(R.string.Error), getString(R.string.Error_NoParameter)) {
+                finish()
+            }.show()
+        }
+    }
+
     fun onNetworkError(retry: () -> Unit) {
         runOnUiThread {
             val d = da.error(getString(R.string.Error), getString(R.string.NetworkError))

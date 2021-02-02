@@ -13,6 +13,7 @@ import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SimplizatedClass.User
+import com.sasarinomari.tweeper.Tweeper
 import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
@@ -23,14 +24,14 @@ import kotlinx.android.synthetic.main.item_user_unfollow.view.*
 
 class FollowManagementActivity: BaseActivity() {
     enum class Parameters {
-        Followings, Followers
+        DataHolderKey
     }
 
     enum class Results {
         UnfollowedUsers, BlockUnblockedUsers
     }
 
-    val twitterAdapter = TwitterAdapter()
+    private val twitterAdapter = TwitterAdapter()
 
     private val unfollowedUserIds = ArrayList<Long>()
     private val blockUnblockedUserIds = ArrayList<Long>()
@@ -54,8 +55,10 @@ class FollowManagementActivity: BaseActivity() {
         twitterAdapter.initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!)
 
         // Report 읽어오는 코드
-        val followings = Gson().fromJson(intent.getStringExtra(Parameters.Followings.name), object : TypeToken<ArrayList<User>>() { }.type) as ArrayList<User>
-        val followers = Gson().fromJson(intent.getStringExtra(Parameters.Followers.name), object : TypeToken<ArrayList<User>>() { }.type) as ArrayList<User>
+        val rawReport = intent.getStringExtra(Parameters.DataHolderKey.name)?: return onNoRequirement()
+        val report = Tweeper.DataHolder.getData(rawReport) as AnalyticsReport
+        val followings= report.followings
+        val followers = report.followers
 
         val traitors = getDifference(followings, followers)
         val fans = getDifference(followers, followings)

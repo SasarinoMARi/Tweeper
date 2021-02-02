@@ -103,6 +103,9 @@ class TwitterAdapter {
 
         fun initialize() {
             val t = TwitterFactory().instance
+            if(t==null) {
+-                Log.i("Hello", "Mr.Bug!")
+            }
             t.setOAuthConsumer(consumerKey, consumerSecret)
             this.client = t
         }
@@ -285,6 +288,7 @@ class TwitterAdapter {
 
     fun getFriends(targetUserId: Long, apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<User> = ArrayList()) {
         apiInterface.onStart()
+        /*
         var cursor: Long = startIndex
         try {
             while (true) {
@@ -293,6 +297,39 @@ class TwitterAdapter {
                 list.addAll(users)
                 if (users.hasNext()) cursor = users.nextCursor
                 else break
+            }
+            apiInterface.onFinished(list)
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "getFriendsList") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
+                override fun onRateLimitExceeded() {
+                    apiInterface.onRateLimit(list.count())
+                }
+
+                override fun onRateLimitReset() {
+                    getFriends(targetUserId, apiInterface, cursor, list)
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError { getFriends(targetUserId, apiInterface, cursor, list) }
+                }
+            }.catch()
+        }
+         */
+
+
+        var cursor: Long = startIndex
+        try {
+            while (true) {
+                apiInterface.onFetch(list.count())
+                val users = twitter.client.getFriendsList(targetUserId, cursor, 200, true, true)
+                // for (i in 0 .. 500) list.addAll(users)
+                list.addAll(users)
+                if (users.hasNext()) cursor = users.nextCursor
+                break;
             }
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {

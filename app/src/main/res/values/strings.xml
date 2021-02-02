@@ -178,4 +178,5 @@
     <string name="RetrySoon">잠시 후 재시도합니다.. (%1$d/%2$d회째)</string>
     <string name="StopWithNetworkError">네트워크 오류로 인해 작업이 중단되었습니다.</string>
     <string name="InitializeFailed">서비스를 시작하지 못했습니다.</string>
+    <string name="Error_OutOfMemory">죄송합니다! 메모리 한계를 초과해서 작업에 실패했습니다. 개발자가 최적화를 잘못했나 봐요.</string>
 </resources>

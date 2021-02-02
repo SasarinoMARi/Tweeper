@@ -16,6 +16,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.SimplizatedClass.User
 import com.sasarinomari.tweeper.Report.ReportInterface
+import com.sasarinomari.tweeper.Tweeper
 import com.sasarinomari.tweeper.TwitterAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
@@ -48,28 +49,46 @@ class AnalyticsReportActivity : BaseActivity() {
         return true
     }
 
-    private var userId: Long = -1
-    private var report: AnalyticsReport? = null
-    private var previousReport: AnalyticsReport? = null
-
     private var reportUpdated = false
 
+    private val reportIndex : Int by lazy { intent.getIntExtra(Parameters.ReportId.name, -1) }
+    private val previousReportIndex : Int by lazy { reportIndex - 1 }
+    private val userId : Long by lazy { AuthData.Recorder(this).getFocusedUser()!!.user!!.id }
+
+    private val dataHolderKeyCurrentReport : String by lazy { "anal$reportIndex" }
+    private val dataHolderKeyPrevReport: String by lazy {"anal$previousReportIndex"}
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // 여기서 공용 메모리에 올려둔 리포트 삭제
+        Tweeper.DataHolder.dropData(dataHolderKeyCurrentReport)
+        Tweeper.DataHolder.dropData(dataHolderKeyPrevReport)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.full_recycler_view)
         if(!checkRequirements()) return
 
-        val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
-        val previousReportIndex = reportIndex - 1
-        userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
+
         val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
         val _classTemp = AnalyticsReport()
-        report = ri.readReport(this, reportIndex, _classTemp) as AnalyticsReport?
-        previousReport = ri.readReport(this, previousReportIndex, _classTemp) as AnalyticsReport?
 
+        val report = ri.readReport(this, reportIndex, _classTemp) as AnalyticsReport?
         if(report == null) {
             da.error(getString(R.string.Error), getString(R.string.Error_WrongParameter)) { finish() }; return
         }
+        Tweeper.DataHolder.loadData(dataHolderKeyCurrentReport, report)
+
+        val previousReport = ri.readReport(this, previousReportIndex, _classTemp) as AnalyticsReport?
+        if(previousReport != null) Tweeper.DataHolder.loadData(dataHolderKeyPrevReport, previousReport)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val report = Tweeper.DataHolder.getData(dataHolderKeyCurrentReport) as AnalyticsReport
+        val previousReport = Tweeper.DataHolder.getData(dataHolderKeyPrevReport) as AnalyticsReport?
 
         // Recycler 어댑터 작성하는 코드
         val adapter = RecyclerInjector()
@@ -134,9 +153,10 @@ class AnalyticsReportActivity : BaseActivity() {
                 view.card_oval.setImageResource(R.drawable.account_multiple_remove)
                 view.card_oval.setOvalColor(ContextCompat.getColor(this@AnalyticsReportActivity, R.color.purple))
                 view.setOnClickListener {
+                    val holderKey = "Analytics"
+                    Tweeper.DataHolder.loadData(holderKey, report!!)
                     val intent = Intent(this@AnalyticsReportActivity, FollowManagementActivity::class.java)
-                    intent.putExtra(FollowManagementActivity.Parameters.Followings.name, Gson().toJson(report!!.followings))
-                    intent.putExtra(FollowManagementActivity.Parameters.Followers.name, Gson().toJson(report!!.followers))
+                    intent.putExtra(FollowManagementActivity.Parameters.DataHolderKey.name, holderKey)
                     startActivityForResult(intent, RequestCodes.FollowManagement.ordinal)
                 }
             }
@@ -203,6 +223,11 @@ class AnalyticsReportActivity : BaseActivity() {
         root.adapter = adapter
     }
 
+    override fun onPause() {
+        super.onPause()
+        root.adapter = null
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when(requestCode) {
             RequestCodes.FollowManagement.ordinal -> {
@@ -214,9 +239,12 @@ class AnalyticsReportActivity : BaseActivity() {
                 val unfollowedUserIds = Gson().fromJson(data.getStringExtra(FollowManagementActivity.Results.UnfollowedUsers.name), type) as ArrayList<Long>
                 val bloackUnblockedUserIds = Gson().fromJson(data.getStringExtra(FollowManagementActivity.Results.BlockUnblockedUsers.name), type) as ArrayList<Long>
 
+                val report = Tweeper.DataHolder.getData(dataHolderKeyCurrentReport) as AnalyticsReport
+                val previousReport = Tweeper.DataHolder.getData(dataHolderKeyPrevReport) as AnalyticsReport?
+
                 // 언팔, 블언블 한 유저를 report에 반영
-                val followings = report!!.followings
-                val followers = report!!.followers
+                val followings = report.followings
+                val followers = report.followers
                 for(id in unfollowedUserIds) {
                     followings.removeAll { user -> user.id == id }
                 }
@@ -224,13 +252,13 @@ class AnalyticsReportActivity : BaseActivity() {
                     followings.removeAll { user -> user.id == id }
                     followers.removeAll { user -> user.id == id }
                 }
-                report!!.followings = followings
-                report!!.followers = followers
+                report.followings = followings
+                report.followers = followers
 
                 // 반영한 report를 저장
                 val ri = ReportInterface<AnalyticsReport>(userId, AnalyticsReport.prefix)
-                if(previousReport!=null) report!!.setDeffrence(previousReport!!)
-                ri.writeReport(this, report!!.id, report!!)
+                if(previousReport!=null) report.setDeffrence(previousReport)
+                ri.writeReport(this, report.id, report)
                 reportUpdated = true
                 recreate()
             }

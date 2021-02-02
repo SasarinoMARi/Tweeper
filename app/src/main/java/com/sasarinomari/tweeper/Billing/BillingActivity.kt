@@ -66,16 +66,16 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
                 view.title_description.text = getString(R.string.DonateDesc)
             }
        })
-        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_sasarinomari) {
-            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.sasarino_profileImage.background = ShapeDrawable(OvalShape())
-                view.sasarino_profileImage.clipToOutline = true
-                view.sasarino_id.setOnClickListener {
-                    TwitterAdapter.showProfile(this@BillingActivity, "SasarinoMARi")
-                }
-                lookupSelf(view.sasarino_profileImage)
-            }
-        })
+//        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_sasarinomari) {
+//            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+//                view.sasarino_profileImage.background = ShapeDrawable(OvalShape())
+//                view.sasarino_profileImage.clipToOutline = true
+//                view.sasarino_id.setOnClickListener {
+//                    TwitterAdapter.showProfile(this@BillingActivity, "SasarinoMARi")
+//                }
+//                lookupSelf(view.sasarino_profileImage)
+//            }
+//        })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_sku, purchaseListingDetails) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {

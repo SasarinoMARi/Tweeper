@@ -138,12 +138,12 @@
     <string name="BlockClearRunning">블락 일괄 해제 작업을 시작할게요.</string>
     <string name="SelectMoreThanOne">팔로잉과 팔로워 중 하나 이상의 대상을 선택해주세요!</string>
     <string name="IgnoreMyFollowing">내가 팔로잉하는 사람은 블락 대상에서 제외하기</string>
-    <string name="Donate">개발자에게 기부하기</string>
-    <string name="DonateDesc">개발자에게 기부하고 인앱 광고를 제거하세요.</string>
+    <string name="Donate">후원하기</string>
+    <string name="DonateDesc">개발자에게 후원하고 인앱 광고를 제거하세요.</string>
     <string name="duplicateService_BlockClear">블락 일괄 해제는 한 번에 하나만 실행할 수 있어요.</string>
     <string name="skuPostfix">(트윗지기)</string>
     <string name="Notice">알림</string>
-    <string name="PurchaseHistoryRestored">구매 내역이 복원되었습니다!</string>
+    <string name="PurchaseHistoryRestored">구매 내역이 복원되었습니다.</string>
     <string name="Thanks">감사합니다!</string>
     <string name="Purchased">결제가 완료되었습니다.</string>
     <string name="tutorial_changeAccount">계정 변경하기</string>

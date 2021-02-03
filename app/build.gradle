@@ -9,8 +9,8 @@ android {
         applicationId "com.sasarinomari.tweeper"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 20
-        versionName "1.282"
+        versionCode 21
+        versionName "1.2821"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -37,6 +37,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
 
     implementation project(':WebView')
     implementation 'com.github.kittinunf.fuel:fuel:+' // Http 클라이언트

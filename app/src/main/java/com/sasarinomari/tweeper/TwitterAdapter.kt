@@ -8,8 +8,13 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import twitter4j.*
 import twitter4j.auth.AccessToken
+import kotlin.coroutines.CoroutineContext
 
 
 class TwitterAdapter {
@@ -192,6 +197,41 @@ class TwitterAdapter {
         }
     }
 
+    /*
+    fun getFriendsIdsOnce(targetUserId: Long, apiInterface: FetchListInterface, cursor: Long = -1) {
+        apiInterface.onStart()
+        try {
+            while (true) {
+                apiInterface.onFetch(list.count())
+                val users = twitter.client.getFriendsIDs(targetUserId, cursor, 5000)
+                list.addAll(users.iDs.toList())
+                Log.i(LOG_TAG, "Count of Collected Users: ${list.count()}")
+                if (users.hasNext()) cursor = users.nextCursor
+                else break
+            }
+            apiInterface.onFinished(list)
+        } catch (te: TwitterException) {
+            object : TwitterExceptionHandler(te, "getFriendsIDs") {
+                override fun onUncaughtError() {
+                    apiInterface.onUncaughtError()
+                }
+
+                override fun onRateLimitExceeded() {
+                    apiInterface.onRateLimit(list.count())
+                }
+
+                override fun onRateLimitReset() {
+                    getFriendsIds(targetUserId, apiInterface, cursor, list)
+                }
+
+                override fun onNetworkError() {
+                    apiInterface.onNetworkError { getFriendsIds(targetUserId, apiInterface, cursor, list) }
+                }
+            }.catch()
+        }
+    }
+     */
+
     fun getFriendsIds(targetUserId: Long, apiInterface: FetchListInterface, startIndex: Long = -1, list: ArrayList<Long> = ArrayList()) {
         apiInterface.onStart()
         var cursor: Long = startIndex
@@ -329,7 +369,7 @@ class TwitterAdapter {
                 // for (i in 0 .. 500) list.addAll(users)
                 list.addAll(users)
                 if (users.hasNext()) cursor = users.nextCursor
-                break;
+                else break
             }
             apiInterface.onFinished(list)
         } catch (te: TwitterException) {

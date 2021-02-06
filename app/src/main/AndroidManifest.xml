@@ -77,6 +77,11 @@
             android:name=".ChainBlock.BlockClearService"
             android:exported="true" />
 
+        <receiver
+            android:name=".Analytics.AnalyticsNotificationReceiver"
+            android:exported="true">
+        </receiver>
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id" />

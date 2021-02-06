@@ -1,9 +1,13 @@
 package com.sasarinomari.tweeper.Analytics
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,6 +20,7 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.RewardedAdAdapter
+import com.sasarinomari.tweeper.Tweeper
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
@@ -24,6 +29,8 @@ import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_tweet_report.view.*
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class AnalyticsActivity : BaseActivity() {
@@ -75,6 +82,40 @@ class AnalyticsActivity : BaseActivity() {
                                 })
                             }.show()
                     }
+                }
+            }
+        })
+        adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_card_button) {
+            override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
+                view.cardbutton_image.setOvalColor(ContextCompat.getColor(this@AnalyticsActivity, R.color.purple))
+                view.cardbutton_image.setImageResource(R.drawable.calendar_edit)
+                view.cardbutton_text.text = "아홉 시에 예약 작업 등록하기"
+                view.setOnClickListener {
+                    val intent = Intent(this@AnalyticsActivity, AnalyticsNotificationReceiver::class.java)
+                    val bundle = Bundle()
+                    bundle.putString(AnalyticsService.Parameters.User.name,
+                        Gson().toJson(AuthData.Recorder(this@AnalyticsActivity).getFocusedUser()!!))
+                    intent.putExtra(AnalyticsNotificationReceiver.Parameters.Bundle.name, bundle)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        this@AnalyticsActivity, Tweeper.RequestCodes.ScheduledAnalytics.ordinal, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+                    val alarmManager = getSystemService(Context.ALARM_SERVICE) as? AlarmManager
+                    if (pendingIntent != null && alarmManager != null) {
+                        alarmManager.cancel(pendingIntent)
+                    }
+                    else {
+                        Log.e("AnalyricsActivity", "알람 등록에 실패했습니다.")
+                        return@setOnClickListener
+                    }
+
+                    val calendar: Calendar = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, 21)
+                        set(Calendar.MINUTE, 0)
+                        set(Calendar.SECOND, 0)
+                    }
+
+                    alarmManager.setRepeating(AlarmManager.RTC, calendar.timeInMillis, 1000 * 60 * 60 * 24, pendingIntent)
+                    Log.i("AnalyticsNotificationReceiver", "알람 설정됨!: {${calendar}}")
                 }
             }
         })

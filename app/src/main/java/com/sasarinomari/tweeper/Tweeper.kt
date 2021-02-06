@@ -3,6 +3,10 @@ package com.sasarinomari.tweeper
 import android.app.Application
 
 class Tweeper : Application() {
+    enum class RequestCodes {
+        ScheduledAnalytics
+    }
+
     companion object DataHolder {
         private var map : HashMap<String, Any> = hashMapOf()
         fun loadData(key: String, data: Any) {

@@ -58,7 +58,7 @@ class ReportListFragment(private val intent: Intent,
 
         val reportPrefix = intent.getStringExtra(Parameters.ReportPrefix.name)!!
         val userId = AuthData.Recorder(context!!).getFocusedUser()!!.user!!.id
-        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithNameAndCreatedDate(this.context!!)
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithName(this.context!!)
         if (reports.isEmpty()) {
             rootView.layout_noReport.visibility = View.VISIBLE
             rootView.listView.visibility = View.GONE

@@ -1,15 +1,10 @@
 package com.sasarinomari.tweeper.Report
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Tweeper
 import java.io.File
-import java.io.FileOutputStream
-import java.nio.file.Paths
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -86,30 +81,33 @@ class ReportInterface<T>(private val userId: Long, private val prefix: String) {
     /**
      * 제너릭스 없이 실행 가능
      */
-    fun getReportsWithNameAndCreatedDate(context: Context): ArrayList<Pair<String, Date>> {
-        val list = ArrayList<Pair<String, Date>>()
+    fun getReportsWithName(context: Context): ArrayList<String> {
+        val list = ArrayList<String>()
         for (item in getPath(context).list()!!) {
-            list.add(Pair(item, Date(File(item).lastModified())))
+            list.add(item)
         }
+        list.reverse()
         return list
     }
 
 
     fun getReports(context: Context): ArrayList<T> {
         val list = ArrayList<T>()
-        val names = getReportsWithNameAndCreatedDate(context)
+        val names = getReportsWithName(context)
         for(name in names) {
-            val report = readReport(context, name.first.removePrefix(prefix).toInt())
+            val report = readReport(context, name.removePrefix(prefix).toInt())
             if(report != null) list.add(report)
         }
         return list
     }
-    fun getReports(context: Context, cls: Any): ArrayList<Any> {
+    fun getReports(context: Context, cls: Any, maxCount: Int = 10): ArrayList<Any> {
         val list = ArrayList<Any>()
-        val names = getReportsWithNameAndCreatedDate(context)
+        val names = getReportsWithName(context)
+        val max = if(names.size<maxCount) names.size else maxCount
         for(name in names) {
-            val report = readReport(context, name.first.removePrefix(prefix).toInt(), cls)
+            val report = readReport(context, name.removePrefix(prefix).toInt(), cls)
             if(report != null) list.add(report)
+            if(list.count() >= max) break
         }
         return list
     }

@@ -33,7 +33,7 @@ class HetzerActivity : BaseActivity() {
 
         val reportPrefix = HetzerReport.prefix
         val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
-        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithNameAndCreatedDate(this)
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithName(this)
         reports.reverse()
 
         val adapter = RecyclerInjector()

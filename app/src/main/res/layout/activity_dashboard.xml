@@ -97,17 +97,6 @@
                 app:layout_constraintTop_toBottomOf="@id/image_profilePicture">
 
                 <com.sasarinomari.tweeper.View.DashboardCardView
-                    android:id="@+id/button_erase"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    app:description="@string/TweetCleanerDescription"
-                    app:icon="@drawable/comment_remove"
-                    app:ovalColor="@color/sky"
-                    app:title="@string/TweetCleaner" />
-
-                <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_tweetReport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -117,6 +106,17 @@
                     app:icon="@drawable/chart_areaspline"
                     app:ovalColor="@color/mint"
                     app:title="@string/TweetAnalytics" />
+
+                <com.sasarinomari.tweeper.View.DashboardCardView
+                    android:id="@+id/button_erase"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    app:description="@string/TweetCleanerDescription"
+                    app:icon="@drawable/comment_remove"
+                    app:ovalColor="@color/sky"
+                    app:title="@string/TweetCleaner" />
 
                 <com.sasarinomari.tweeper.View.DashboardCardView
                     android:id="@+id/button_mediaDownload"

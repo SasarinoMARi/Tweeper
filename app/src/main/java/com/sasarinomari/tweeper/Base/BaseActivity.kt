@@ -2,6 +2,7 @@ package com.sasarinomari.tweeper.Base
 
 import android.content.Context
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -64,13 +65,15 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     //region FirstRun
+    protected val activityPreference : SharedPreferences by lazy {
+        getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE)
+    }
     protected fun isFirstRunThisActivity() : Boolean {
-        val prefs = getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE)
-        val flag = prefs.getInt("flag", 0)
+        val flag = activityPreference.getInt("flag", 0)
         return flag == 0
     }
     protected fun setNotFirstrun(){
-        val prefs = getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE).edit()
+        val prefs = activityPreference.edit()
         prefs.putInt("flag", 1)
         prefs.apply()
     }

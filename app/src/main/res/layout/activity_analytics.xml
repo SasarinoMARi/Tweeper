@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_title_and_desc"
+        layout="@layout/fragment_title_with_desc" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="40dp"
+        android:layout_weight="1"
+        android:background="@drawable/roundrect_white_border"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <include
+            android:id="@+id/layout_column_header"
+            layout="@layout/fragment_column_header" />
+
+        <include
+            android:id="@+id/layout_recyclerview"
+            layout="@layout/full_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/checkbox_setScheduled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:buttonTint="@color/white"
+            android:fontFamily="@font/noto_sans_regular"
+            android:text="@string/SetScheduledAnalytics"
+            android:checked="true" />
+
+        <include
+            android:id="@+id/layout_button"
+            layout="@layout/view_rounded_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp" />
+
+    </LinearLayout>
+</LinearLayout>

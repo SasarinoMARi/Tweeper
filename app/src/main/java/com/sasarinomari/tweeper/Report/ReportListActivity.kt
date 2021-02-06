@@ -52,7 +52,7 @@ class ReportListActivity : BaseActivity() {
 
         val reportPrefix = intent.getStringExtra(Parameters.ReportPrefix.name)!!
         val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
-        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithNameAndCreatedDate(this)
+        val reports = ReportInterface<Any>(userId, reportPrefix).getReportsWithName(this)
         if (reports.isEmpty()) {
             layout_noReport.visibility = View.VISIBLE
             listView.visibility = View.GONE

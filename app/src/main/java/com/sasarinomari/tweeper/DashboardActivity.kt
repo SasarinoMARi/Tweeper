@@ -217,7 +217,7 @@ class DashboardActivity : BaseActivity() {
                         text_Name.text = me.name
                         text_ScreenName.text = me.screenName
                         Picasso.get()
-                            .load(me.profileImageURLHttps.replace("normal.jpg", "200x200.jpg"))
+                            .load(me.biggerProfileImageURLHttps)
                             .into(image_profilePicture)
                     }
                 }

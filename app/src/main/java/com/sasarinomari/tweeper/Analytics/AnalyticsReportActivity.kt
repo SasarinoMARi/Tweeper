@@ -103,17 +103,17 @@ class AnalyticsReportActivity : BaseActivity() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_tweet_report) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                view.text_date.text = SimpleDateFormat(getString(R.string.Format_Date)).format(report!!.date)
-                view.text_time.text = SimpleDateFormat(getString(R.string.Format_Time)).format(report!!.date)
+                view.text_date.text = SimpleDateFormat(getString(R.string.Format_Date)).format(report.date)
+                view.text_time.text = SimpleDateFormat(getString(R.string.Format_Time)).format(report.date)
 
                 setDiffrenceView(
-                    report!!.tweetCount, report!!.tweetCountVar,
+                    report.tweetCount, report.tweetCountVar,
                     view.text_tweetCount, view.image_tweetCount_Arrow, view.text_tweetCount_Value)
                 setDiffrenceView(
-                    report!!.followings.count(), report!!.followingsVar,
+                    report.followings.count(), report.followingsVar,
                     view.text_friendCount, view.image_friendCount_Arrow, view.text_friendCount_Value)
                 setDiffrenceView(
-                    report!!.followers.count(), report!!.followersVar,
+                    report.followers.count(), report.followersVar,
                     view.text_followerCount, view.image_followerCount_Arrow, view.text_FollowerCount_Value)
             }
 
@@ -154,7 +154,7 @@ class AnalyticsReportActivity : BaseActivity() {
                 view.card_oval.setOvalColor(ContextCompat.getColor(this@AnalyticsReportActivity, R.color.purple))
                 view.setOnClickListener {
                     val holderKey = "Analytics"
-                    Tweeper.DataHolder.loadData(holderKey, report!!)
+                    Tweeper.DataHolder.loadData(holderKey, report)
                     val intent = Intent(this@AnalyticsReportActivity, FollowManagementActivity::class.java)
                     intent.putExtra(FollowManagementActivity.Parameters.DataHolderKey.name, holderKey)
                     startActivityForResult(intent, RequestCodes.FollowManagement.ordinal)
@@ -163,10 +163,10 @@ class AnalyticsReportActivity : BaseActivity() {
         })
 
         if(previousReport != null) {
-            val newFriends = getDiffrence(report!!.followings, previousReport!!.followings)
-            val noMoreFriends = getDiffrence(previousReport!!.followings, report!!.followings)
-            val newFollowers = getDiffrence(report!!.followers, previousReport!!.followers)
-            val noMoreFollowers = getDiffrence(previousReport!!.followers, report!!.followers)
+            val newFriends = getDiffrence(report.followings, previousReport.followings)
+            val noMoreFriends = getDiffrence(previousReport.followings, report.followings)
+            val newFollowers = getDiffrence(report.followers, previousReport.followers)
+            val noMoreFollowers = getDiffrence(previousReport.followers, report.followers)
 
             if(newFriends.isNotEmpty()) {
                 adapter.addSpace(3)

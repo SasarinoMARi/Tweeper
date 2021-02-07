@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
+import com.sasarinomari.tweeper.BuildConfig
 import com.sasarinomari.tweeper.Tweeper
 import java.util.*
 
@@ -57,19 +58,24 @@ class AnalyticsNotificationReceiver : BroadcastReceiver() {
             // 체크 해제된 경우 알람 해제
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (pendingIntent != null) alarmManager.cancel(pendingIntent)
-            Log.d("Schedule", "알람을 해제했습니다.")
+            if(BuildConfig.DEBUG) Log.d("Schedule", "알람을 해제했습니다.")
 
             if (checked) {
                 val calendar: Calendar = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, 21)
+                    set(Calendar.HOUR_OF_DAY, 1)
                     set(Calendar.MINUTE, 0)
                     set(Calendar.SECOND, 0)
                 }
+                /**
+                 * 오늘 이미 9시가 지났다면 내일 아홉시에 실행하기
+                 */
+                if(calendar.after(Calendar.getInstance())) {
+                    calendar.add(Calendar.DAY_OF_YEAR, 1)
+                }
 
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, 1000 * 60 * 60 * 24, pendingIntent)
-                Log.e("Schedule", "알람을 등록했습니다.")
+                if(BuildConfig.DEBUG) Log.e("Schedule", "알람을 등록했습니다.")
             } else {
-                Log.e("Schedule", "알람 등록에 실패했습니다.")
                 checked = false
 
                 // 아마 무한재귀 걸릴 듯? 나중에 짬나면 처리하던가 하자

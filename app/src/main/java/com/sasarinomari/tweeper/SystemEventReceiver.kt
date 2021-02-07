@@ -14,7 +14,7 @@ class SystemEventReceiver : BroadcastReceiver() {
                 /**
                  * 재부팅됨
                  */
-                Log.d("SystemEventReceiver", "단말기 재부팅됨!")
+                if(BuildConfig.DEBUG) Log.d("SystemEventReceiver", "단말기 재부팅됨!")
                 val analyticsScheduled = AnalyticsNotificationReceiver.isApplied(context)
                 AnalyticsNotificationReceiver.apply(context, analyticsScheduled)
             }

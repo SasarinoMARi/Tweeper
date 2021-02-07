@@ -195,13 +195,8 @@ class AnalyticsReportActivity : BaseActivity() {
                     override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawHeader(view, getString(R.string.NewFollowers), adapter, viewType) }
                 })
                 adapter.add(object : RecyclerInjector.RecyclerFragment(R.layout.item_simpleuser, newFollowers) {
-                    override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                        drawUserItem(view, item)
-                    }
-
-                    override fun onClickListItem(item: Any?) {
-                        onClickUserItem(item)
-                    }
+                    override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) { drawUserItem(view, item) }
+                    override fun onClickListItem(item: Any?) { onClickUserItem(item) }
                 })
             }
             if(noMoreFollowers.isNotEmpty()) {

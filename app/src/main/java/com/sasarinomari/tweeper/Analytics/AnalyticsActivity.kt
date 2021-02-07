@@ -87,43 +87,9 @@ class AnalyticsActivity : BaseActivity() {
         /**
          * 체크박스 체크 상태 변경 이벤트
          */
-        checkbox_setScheduled.isChecked = activityPreference.getBoolean("scheduleEnabled", false)
+        checkbox_setScheduled.isChecked = AnalyticsNotificationReceiver.isApplied(this)
         checkbox_setScheduled.setOnCheckedChangeListener { _, checked ->
-            var checked = checked
-
-            val intent = Intent(this@AnalyticsActivity, AnalyticsNotificationReceiver::class.java)
-            val bundle = Bundle()
-            bundle.putString(AnalyticsService.Parameters.User.name,
-                Gson().toJson(AuthData.Recorder(this@AnalyticsActivity).getFocusedUser()!!))
-            intent.putExtra(AnalyticsNotificationReceiver.Parameters.Bundle.name, bundle)
-            val pendingIntent = PendingIntent.getBroadcast(
-                this@AnalyticsActivity, Tweeper.RequestCodes.ScheduledAnalytics.ordinal, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-            // 체크 해제된 경우 알람 해제
-            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            if (pendingIntent != null) alarmManager.cancel(pendingIntent)
-            Log.d("Schedule", "알람을 해제했습니다.")
-
-            if (checked) {
-                val calendar: Calendar = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, 21)
-                    set(Calendar.MINUTE, 0)
-                    set(Calendar.SECOND, 0)
-                }
-
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, 1000 * 60 * 60 * 24, pendingIntent)
-                Log.e("Schedule", "알람을 등록했습니다.")
-            } else {
-                Log.e("Schedule", "알람 등록에 실패했습니다.")
-                checked = false
-
-                // 아마 무한재귀 걸릴 듯? 나중에 짬나면 처리하던가 하자
-                // checkbox_setScheduled.isChecked = false
-            }
-
-            val edit = activityPreference.edit()
-            edit.putBoolean("scheduleEnabled", checked)
-            edit.apply()
+            AnalyticsNotificationReceiver.apply(this@AnalyticsActivity, checked)
         }
 
 
@@ -196,6 +162,7 @@ class AnalyticsActivity : BaseActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = adapter
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == RESULT_OK) recreate()

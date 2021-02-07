@@ -65,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     //region FirstRun
-    protected val activityPreference : SharedPreferences by lazy {
+    val activityPreference : SharedPreferences by lazy {
         getSharedPreferences("fr${this::class.java.name}", Context.MODE_PRIVATE)
     }
     protected fun isFirstRunThisActivity() : Boolean {

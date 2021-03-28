@@ -33,7 +33,7 @@ class HetzerService : BaseService() {
 
         val j = intent.getStringExtra(Parameters.User.name)!!
         val user = Gson().fromJson(j, AuthData::class.java)!!
-        twitterAdapter.twitter.initialize(user.token!!)
+        twitterAdapter.twitter.initialize(this, user.token!!)
 
         startForeground(
             NotificationId,

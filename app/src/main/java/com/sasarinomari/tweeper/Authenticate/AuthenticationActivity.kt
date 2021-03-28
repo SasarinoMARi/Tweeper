@@ -27,7 +27,7 @@ class AuthenticationActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
         initializeWebView()
         // Generate authentication url
-        twitterAdapter.twitter.initialize()
+        twitterAdapter.twitter.initialize(this)
         openAuthPage()
     }
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
@@ -87,8 +88,14 @@ class AnalyticsReportActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        val report = Tweeper.DataHolder.getData(dataHolderKeyCurrentReport) as AnalyticsReport
+        val report = Tweeper.DataHolder.getData(dataHolderKeyCurrentReport) as AnalyticsReport?
         val previousReport = Tweeper.DataHolder.getData(dataHolderKeyPrevReport) as AnalyticsReport?
+
+        if(report == null) {
+            Toast.makeText(this, "리포트를 불러오는데 문제가 발생했습니다.", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
 
         // Recycler 어댑터 작성하는 코드
         val adapter = RecyclerInjector()

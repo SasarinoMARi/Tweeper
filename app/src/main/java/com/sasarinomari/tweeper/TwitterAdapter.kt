@@ -106,7 +106,8 @@ class TwitterAdapter {
         lateinit var client: Twitter
             private set
 
-        fun initialize() {
+        fun initialize(context: Context) {
+            setOAuthConsumer(context)
             val t = TwitterFactory().instance
             if(t==null) {
 -                Log.i("Hello", "Mr.Bug!")
@@ -119,8 +120,8 @@ class TwitterAdapter {
             this.client = twitter
         }
 
-        fun initialize(accessToken: AccessToken) {
-            initialize()
+        fun initialize(context: Context, accessToken: AccessToken) {
+            initialize(context)
             client.oAuthAccessToken = accessToken
         }
     }
@@ -129,7 +130,7 @@ class TwitterAdapter {
 
     fun initialize(context: Context, accessToken: AccessToken) : TwitterAdapter {
         TwitterInterface.setOAuthConsumer(context)
-        twitter.initialize(accessToken)
+        twitter.initialize(context, accessToken)
         Log.i(LOG_TAG, "Logged in with ${accessToken.screenName}")
         return this
     }

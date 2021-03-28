@@ -21,7 +21,10 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                     TwitterErrorCode.RateLlimitExceeded.code -> {
                         onRateLimitExceeded()
                         Log.i(LOG_HEADER, "Rate Limit Exceeded:\n\t[API] $apiEndPoint\n\tSeconds Until Reset: ${te.rateLimitStatus.secondsUntilReset}")
-                        Thread.sleep((1000 * te.rateLimitStatus.secondsUntilReset).toLong())
+
+                        if(te.rateLimitStatus.secondsUntilReset > 0)
+                            Thread.sleep((1000 * te.rateLimitStatus.secondsUntilReset).toLong())
+
                         onRateLimitReset()
                     }
                     TwitterErrorCode.UserNotFound.code -> {

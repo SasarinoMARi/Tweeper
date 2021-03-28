@@ -79,7 +79,7 @@ class HetzerActivity : BaseActivity() {
             }
 
             override fun onClickListItem(item: Any?) {
-                val reportIndex = (item as Pair<*, *>).first.toString().removePrefix(reportPrefix).toInt()
+                val reportIndex = (item as String).toString().removePrefix(reportPrefix).toInt()
                 val intent = Intent(this@HetzerActivity, HetzerReportActivity::class.java)
                 intent.putExtra(HetzerReportActivity.Parameters.ReportId.name, reportIndex)
                 startActivity(intent)

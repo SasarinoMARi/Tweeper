@@ -100,7 +100,7 @@ class AuthenticationActivity : BaseActivity() {
     }
 
     private fun apiTest(accessToken: AccessToken) {
-        twitterAdapter.initialize(accessToken)
+        twitterAdapter.initialize(this, accessToken)
         Thread {
             twitterAdapter.getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() {}

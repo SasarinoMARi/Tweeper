@@ -28,7 +28,7 @@ class BlockClearService : BaseService() {
         strRateLimitWaiting = getString(R.string.RateLimitWaiting)
 
         val user = Gson().fromJson(intent.getStringExtra(Parameters.User.name), AuthData::class.java)
-        twitterAdapter.initialize(user.token!!)
+        twitterAdapter.initialize(this, user.token!!)
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
 

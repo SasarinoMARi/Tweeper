@@ -2,7 +2,6 @@ package com.sasarinomari.tweeper
 
 import android.os.Bundle
 import android.content.Intent
-import android.widget.Toast
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Authenticate.TokenManagementActivity
 import com.sasarinomari.tweeper.Base.BaseActivity
@@ -29,7 +28,7 @@ class MainActivity : BaseActivity() {
     private fun lookupSelf(loggedUser: AuthData) {
         Thread {
             try {
-                TwitterAdapter().initialize(loggedUser.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
+                TwitterAdapter().initialize(this, loggedUser.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
                     override fun onStart() {}
 
                     override fun onFinished(obj: Any) {

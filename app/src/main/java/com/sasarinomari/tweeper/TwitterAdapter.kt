@@ -127,7 +127,8 @@ class TwitterAdapter {
 
     var twitter = TwitterInterface()
 
-    fun initialize(accessToken: AccessToken) : TwitterAdapter {
+    fun initialize(context: Context, accessToken: AccessToken) : TwitterAdapter {
+        TwitterInterface.setOAuthConsumer(context)
         twitter.initialize(accessToken)
         Log.i(LOG_TAG, "Logged in with ${accessToken.screenName}")
         return this

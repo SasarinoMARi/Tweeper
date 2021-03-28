@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
@@ -52,7 +51,7 @@ class FollowManagementActivity: BaseActivity() {
         setContentView(R.layout.full_recycler_view)
         if(!checkRequirements()) return
 
-        twitterAdapter.initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!)
+        twitterAdapter.initialize(this, AuthData.Recorder(this).getFocusedUser()!!.token!!)
 
         // Report 읽어오는 코드
         val rawReport = intent.getStringExtra(Parameters.DataHolderKey.name)?: return onNoRequirement()

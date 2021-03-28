@@ -208,7 +208,7 @@ class DashboardActivity : BaseActivity() {
                     return@Thread
                 }
             }
-            TwitterAdapter().initialize(token).getMe(object : TwitterAdapter.FetchObjectInterface {
+            TwitterAdapter().initialize(this, token).getMe(object : TwitterAdapter.FetchObjectInterface {
                 override fun onStart() { }
 
                 override fun onFinished(obj: Any) {

@@ -5,19 +5,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
-import androidx.core.content.ContextCompat
 import com.arthenica.mobileffmpeg.Config
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_CANCEL
 import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
-import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseService
@@ -72,7 +68,7 @@ class MediaDownloadService: BaseService() {
         val statusId = intent.getLongExtra(Parameters.StatusId.name, -1)
         if(statusId == (-1).toLong()) throw NullPointerException()
         TwitterAdapter.TwitterInterface.setOAuthConsumer(this)
-        twitterAdapter.initialize(AuthData.Recorder(this).getFocusedUser()!!.token!!)
+        twitterAdapter.initialize(this, AuthData.Recorder(this).getFocusedUser()!!.token!!)
 
         runOnManagedThread {
             downloadMedia(statusId)

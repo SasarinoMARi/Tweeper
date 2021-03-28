@@ -94,7 +94,7 @@ class ScheduleManageActivity : AppCompatActivity() {
         private fun login(context: Context, id: Long, callback: ()-> Unit) {
             Thread {
                 try {
-                    TwitterAdapter().initialize(AuthData.Recorder(context).getFocusedUser()!!.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
+                    TwitterAdapter().initialize(context, AuthData.Recorder(context).getFocusedUser()!!.token!!).getMe(object : TwitterAdapter.FetchObjectInterface {
                         override fun onStart() {}
 
                         override fun onFinished(obj: Any) {

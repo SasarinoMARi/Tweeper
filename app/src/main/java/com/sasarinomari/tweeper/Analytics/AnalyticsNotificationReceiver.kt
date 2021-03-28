@@ -41,14 +41,18 @@ class AnalyticsNotificationReceiver : BroadcastReceiver() {
             return pref.getBoolean("scheduleEnabled", false)
         }
 
-        fun apply(context: Context, checked: Boolean) {
+        fun apply(context: Context, checked: Boolean) : Boolean {
             var checked = checked
+            val user = AuthData.Recorder(context).getFocusedUser() ?: return false
+            /**
+             * getFocusedUser에서 null 반환하는 경우가 들어와서 예외처리함. 대체 왜지?
+             */
 
             val intent = Intent(context, AnalyticsNotificationReceiver::class.java)
             val bundle = Bundle()
             bundle.putString(
                 AnalyticsService.Parameters.User.name,
-                Gson().toJson(AuthData.Recorder(context).getFocusedUser()!!)
+                Gson().toJson(user)
             )
             intent.putExtra(AnalyticsNotificationReceiver.Parameters.Bundle.name, bundle)
             val pendingIntent = PendingIntent.getBroadcast(
@@ -85,6 +89,8 @@ class AnalyticsNotificationReceiver : BroadcastReceiver() {
             val edit = context.getSharedPreferences("AnalyticsNotificationReceiver", Context.MODE_PRIVATE).edit()
             edit.putBoolean("scheduleEnabled", checked)
             edit.apply()
+
+            return true
         }
     }
 }

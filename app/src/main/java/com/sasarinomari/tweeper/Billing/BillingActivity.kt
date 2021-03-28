@@ -2,8 +2,6 @@ package com.sasarinomari.tweeper.Billing
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -116,7 +114,7 @@ open class BillingActivity : BaseActivity(), BillingProcessor.IBillingHandler {
 
     private fun lookupSelf(view: ImageView) {
         Thread {
-            TwitterAdapter().initialize(AuthData.Recorder(this@BillingActivity).getFocusedUser()!!.token!!).lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
+            TwitterAdapter().initialize(this, AuthData.Recorder(this@BillingActivity).getFocusedUser()!!.token!!).lookup("SasarinoMARi", object : TwitterAdapter.FoundObjectInterface {
                 override fun onStart() { }
 
                 override fun onFinished(obj: Any) {

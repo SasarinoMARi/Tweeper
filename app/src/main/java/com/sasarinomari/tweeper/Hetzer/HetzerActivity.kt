@@ -18,7 +18,9 @@ import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
+import kotlinx.android.synthetic.main.item_default.*
 import kotlinx.android.synthetic.main.item_default.view.*
+import kotlinx.android.synthetic.main.item_default.view.defaultitem_description
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -70,9 +72,10 @@ class HetzerActivity : BaseActivity() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.item_default, reports) {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
-                item as Pair<*, *>
-                view.defaultitem_title.text = getString(R.string.TweetCleanerReport) + ' ' + (item.first.toString().removePrefix(reportPrefix).toInt() + 1)
-                view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.second as Date)
+                item as String
+                view.defaultitem_title.text = getString(R.string.TweetCleanerReport) + ' ' + (item.toString().removePrefix(reportPrefix).toInt() + 1)
+                // view.defaultitem_description.text = SimpleDateFormat(getString(R.string.Format_DateTime)).format(item.second as Date)
+                view.defaultitem_description.visibility = View.GONE // 보고서 객체에 추가 후 수정 필요
             }
 
             override fun onClickListItem(item: Any?) {

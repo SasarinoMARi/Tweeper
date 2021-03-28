@@ -45,7 +45,7 @@ class ChainBlockService : BaseService() {
                 silent = false, cancelable = true, id = NotificationId+2)
             return START_NOT_STICKY
         }
-        twitterAdapter.initialize(user.token!!)
+        twitterAdapter.initialize(this, user.token!!)
 
         startForeground(NotificationId, createNotification(getString(R.string.app_name), "Initializing...", false))
 

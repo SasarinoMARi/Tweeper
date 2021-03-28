@@ -1,7 +1,6 @@
 package com.sasarinomari.tweeper.ChainBlock
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -85,7 +84,7 @@ class ChainBlockActivity : BaseActivity() {
             val p = da.progress(null, getString(R.string.UserFetching))
             p.show()
             Thread {
-                TwitterAdapter().initialize(AuthData.Recorder(this@ChainBlockActivity).getFocusedUser()!!.token!!)
+                TwitterAdapter().initialize(this, AuthData.Recorder(this@ChainBlockActivity).getFocusedUser()!!.token!!)
                     .lookup(screenN, object : TwitterAdapter.FoundObjectInterface {
                         override fun onStart() {}
 

@@ -9,8 +9,8 @@ android {
         applicationId "com.sasarinomari.tweeper"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 23
-        versionName "1.2823"
+        versionCode 24
+        versionName "1.24:210329"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -66,7 +66,7 @@ class AnalyticsNotificationReceiver : BroadcastReceiver() {
 
             if (checked) {
                 val calendar: Calendar = Calendar.getInstance().apply {
-                    set(Calendar.HOUR_OF_DAY, 1)
+                    set(Calendar.HOUR_OF_DAY, 21)
                     set(Calendar.MINUTE, 0)
                     set(Calendar.SECOND, 0)
                 }

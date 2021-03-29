@@ -40,16 +40,19 @@ class AnalyticsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_analytics)
 
+        layout_title_and_desc.title_text.text = getString(R.string.TweetAnalytics)
+        layout_title_and_desc.title_description.text = getString(R.string.TweetAnalyticsDesc)
+        layout_column_header.column_title.text = getString(R.string.AnalyticsReports)
+        layout_column_header.column_description.text = getString(R.string.TouchToDetail)
+
+        /**
+         * 보고서 목록 불러오는 코드
+         */
         val reportPrefix = AnalyticsReport.prefix
         val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
         val reports = ReportInterface<Any>(userId, reportPrefix).getReports(this, AnalyticsReport()) as ArrayList<AnalyticsReport>
         reports.sortBy { x -> x.date }
         reports.reverse()
-
-        layout_title_and_desc.title_text.text = getString(R.string.TweetAnalytics)
-        layout_title_and_desc.title_description.text = getString(R.string.TweetAnalyticsDesc)
-        layout_column_header.column_title.text = getString(R.string.AnalyticsReports)
-        layout_column_header.column_description.text = getString(R.string.TouchToDetail)
 
         /**
          * 버튼 클릭 이벤트 설정

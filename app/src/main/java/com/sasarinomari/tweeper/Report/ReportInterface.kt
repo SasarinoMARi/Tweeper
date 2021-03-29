@@ -86,6 +86,11 @@ class ReportInterface<T>(private val userId: Long, private val prefix: String) {
         for (item in getPath(context).list()!!) {
             list.add(item)
         }
+
+        /**
+         * 리포트 이름이 Report로 끝나지 않으면 정렬이 동작하지 않음.
+         */
+        list.sortBy { x -> x.substringAfter("Report").toIntOrNull() }
         list.reverse()
         return list
     }

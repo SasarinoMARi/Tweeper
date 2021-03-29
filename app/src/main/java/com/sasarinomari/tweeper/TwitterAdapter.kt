@@ -324,6 +324,10 @@ class TwitterAdapter {
                 override fun onNetworkError() {
                     apiInterface.onNetworkError { getMe(apiInterface) }
                 }
+
+                override fun onNotFound() {
+                    apiInterface.onUncaughtError()
+                }
             }.catch()
         }
     }

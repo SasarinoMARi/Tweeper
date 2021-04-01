@@ -8,13 +8,8 @@ import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 import twitter4j.*
 import twitter4j.auth.AccessToken
-import kotlin.coroutines.CoroutineContext
 
 
 class TwitterAdapter {
@@ -164,6 +159,11 @@ class TwitterAdapter {
     }
     interface PostInterface : BaseInterface, ErrorInterface{
         fun onFinished(obj: Any)
+        fun onRateLimit()
+    }
+
+    interface FetchListStepInterface : BaseInterface, ErrorInterface {
+        fun onFetch(list: List<*>)
         fun onRateLimit()
     }
     // endregion
@@ -432,19 +432,42 @@ class TwitterAdapter {
         }
     }
 
-    fun getTweets(apiInterface: FetchListInterface, startIndex: Int = 1, list: ArrayList<Status> = ArrayList()) {
+    /**
+     * 가장 최근 트윗 20개를 가져옵니다.
+     * 만약 maxId가 지정되어있다면 해당 트윗 이전에 작성한 트윗부터 불러옵니다.
+     */
+    fun getTweets(apiInterface: FetchListStepInterface, maxId: Long = 0) {
         apiInterface.onStart()
-        var lastIndex = startIndex
+
         try {
-            for (i in startIndex..Int.MAX_VALUE) {
-                apiInterface.onFetch(list.count())
-                val paging = Paging(i, 20)
-                val statuses = twitter.client.getUserTimeline(paging)
-                list.addAll(statuses)
-                lastIndex = i
-                if (statuses.size == 0) break
+            /**
+             * 페이징
+             */
+            val numberOfFetch = 20
+            val paging = Paging(1, numberOfFetch)
+            if(maxId > 0) paging.maxId = maxId
+
+            val statuses = twitter.client.getUserTimeline(paging)
+
+            /**
+             * 분명 뒤에 트윗 더 있는데 중간에 못불러오는 트윗이 존재함.
+             * 해당 경우의 예외 처리 코드
+             *
+             * 가져온 트윗이 numberOfFetch와 같으면 ok
+             * numberOfFetch보다 적으면 이 페이지가 마지막인지 확인하기 위해 몇 더 호출함
+             */
+            for(loop_page in 2 until 20) {
+                if(statuses.size >= numberOfFetch) {
+                    break
+                }
+
+                val loop_Paging = Paging(loop_page, numberOfFetch)
+                if(maxId > 0) loop_Paging.maxId = maxId
+                val loop_Status = twitter.client.getUserTimeline(loop_Paging)
+                statuses.addAll(loop_Status)
             }
-            apiInterface.onFinished(list)
+            apiInterface.onFetch(statuses)
+
         } catch (te: TwitterException) {
             object : TwitterExceptionHandler(te, "getUserTimeline") {
                 override fun onUncaughtError() {
@@ -452,15 +475,15 @@ class TwitterAdapter {
                 }
 
                 override fun onRateLimitExceeded() {
-                    apiInterface.onRateLimit(list.count())
+                    apiInterface.onRateLimit()
                 }
 
                 override fun onRateLimitReset() {
-                    getTweets(apiInterface, lastIndex, list)
+                    getTweets(apiInterface, maxId)
                 }
 
                 override fun onNetworkError() {
-                    apiInterface.onNetworkError { getTweets(apiInterface, lastIndex, list) }
+                    apiInterface.onNetworkError { getTweets(apiInterface, maxId) }
                 }
             }.catch()
         }
@@ -468,7 +491,6 @@ class TwitterAdapter {
 
     fun destroyStatus(statuses: ArrayList<Status>, apiInterface: IterableInterface, startIndex: Int = 0) {
         apiInterface.onStart()
-        // TODO : 이미 트윗이 지워진 경우 등 예외상황에 잘 동작하는지 확인할 필요 있음
         var cursor = 0
         try {
             val statusCount = statuses.count()
@@ -476,6 +498,7 @@ class TwitterAdapter {
                 cursor = i
                 val status = statuses[i]
                 apiInterface.onIterate(cursor)
+                Log.d(LOG_TAG, "destroy status: ${status.text.substring(0, 20)}")
                 if(!BuildConfig.DEBUG) twitter.client.destroyStatus(status.id)
             }
             apiInterface.onFinished()
@@ -495,6 +518,14 @@ class TwitterAdapter {
 
                 override fun onNetworkError() {
                     apiInterface.onNetworkError { destroyStatus(statuses, apiInterface, cursor) }
+                }
+
+                override fun onNotFound() {
+                    /**
+                     * 이미 삭제된 등의 이유로 찾을 수 없을 경우
+                     * 생략하고 다음 루프로
+                     */
+                    destroyStatus(statuses, apiInterface, cursor + 1)
                 }
             }.catch()
         }

@@ -10,8 +10,8 @@
     <string name="OnlyNumberAllowed">숫자만 입력해주세요!</string>
     <string name="Cancel">취소</string>
     <string name="Delete">삭제</string>
-    <string name="TweetPulling">내 트윗 목록을 불러오는 중입니다. (현재 %1$d트윗)</string>
-    <string name="TweetRemoving">트윗을 삭제하는 중입니다. (%1$d/%2$d)</string>
+    <string name="TweetPulling">내 트윗 목록을 불러오는 중입니다.\n(현재 %1$d개의 트윗이 삭제됨)</string>
+    <string name="TweetRemoving">트윗을 삭제하는 중입니다.\n(현재 %1$d개의 트윗이 삭제됨)</string>
     <string name="Done">완료!</string>
     <string name="Hetzer_Done">조건에 맞는 트윗이 모두 삭제되었습니다.</string>
     <string name="CleanTweet">이 조건으로 실행하기</string>

@@ -12,6 +12,9 @@ import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.Report.ReportInterface
 import com.sasarinomari.tweeper.TwitterAdapter
 import twitter4j.Status
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class HetzerService : BaseService() {
     private val strServiceName: String by lazy { getString(R.string.TweetCleaner) }
@@ -28,7 +31,7 @@ class HetzerService : BaseService() {
     }
 
     enum class Parameters {
-        User, HetzerConditions
+        User, Logics
     }
 
     private val statuses_removed = ArrayList<Status>()      // 삭제된 트윗
@@ -53,9 +56,9 @@ class HetzerService : BaseService() {
         /**
          * 트윗청소기 필터 생성
          */
-        val json = intent.getStringExtra(Parameters.HetzerConditions.name)!!
-        val typeToken = object : TypeToken<HashMap<Int, Any>>() {}.type
-        val conditions = Gson().fromJson(json, typeToken) as HashMap<Int, Any>
+        val json = intent.getStringExtra(Parameters.Logics.name)!!
+        val typeToken = object : TypeToken<ArrayList<LogicPair>>() {}.type
+        val conditions = Gson().fromJson(json, typeToken) as ArrayList<LogicPair>
         hetzer = Hetzer(conditions)
 
         /**
@@ -125,9 +128,9 @@ class HetzerService : BaseService() {
             for (i in 0 until tweets.count()) {
                 val item = tweets[i]
                 if (hetzer.filter(item, i)) {
-                    statuses_passed.add(item)
-                } else {
                     targets.add(item)
+                } else {
+                    statuses_passed.add(item)
                 }
             }
         }
@@ -237,7 +240,8 @@ class HetzerService : BaseService() {
         val ri = ReportInterface<HetzerReport>(twitterAdapter.twitter.id, HetzerReport.prefix)
         val report = HetzerReport(targetStatus, passedStatuses)
         report.id = ri.getReportCount(this) + 1
-        ri.writeReport(this, report.id, report)
+        report.date = Date()
+        ri.writeReportWithDate(this, report.id, report)
         return report.id
     }
 }

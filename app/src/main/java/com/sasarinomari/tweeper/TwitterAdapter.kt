@@ -498,8 +498,8 @@ class TwitterAdapter {
                 cursor = i
                 val status = statuses[i]
                 apiInterface.onIterate(cursor)
-                Log.d(LOG_TAG, "destroy status: ${status.text.substring(0, 20)}")
-                if(!BuildConfig.DEBUG) twitter.client.destroyStatus(status.id)
+                Log.d(LOG_TAG, "destroy status: ${if(status.text.length > 20)status.text.substring(0, 20) else status.text}")
+                if(!BuildConfig.DEBUG || true) twitter.client.destroyStatus(status.id)
             }
             apiInterface.onFinished()
         } catch (te: TwitterException) {

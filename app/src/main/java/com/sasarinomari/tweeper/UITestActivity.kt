@@ -2,34 +2,22 @@ package com.sasarinomari.tweeper
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import android.widget.*
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.sasarinomari.tweeper.Analytics.AnalyticsReport
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.Billing.BillingActivity
+import com.sasarinomari.tweeper.Hetzer.LogicpairTypeSelectActivity
 import com.sasarinomari.tweeper.MediaDownload.MediaDownloadActivity
 import com.sasarinomari.tweeper.Report.ReportInterface
-import com.takusemba.spotlight.Spotlight
-import com.takusemba.spotlight.Target
 import kotlinx.android.synthetic.main.fragment_card_button.view.*
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
-import su.levenetc.android.textsurface.Text
-import su.levenetc.android.textsurface.TextBuilder
-import su.levenetc.android.textsurface.animations.*
-import su.levenetc.android.textsurface.contants.Align.*
-import su.levenetc.android.textsurface.contants.Direction
-import su.levenetc.android.textsurface.contants.Pivot
-import su.levenetc.android.textsurface.contants.Side
-import kotlin.random.Random
 
 
 class UITestActivity : BaseActivity() {
@@ -48,7 +36,8 @@ class UITestActivity : BaseActivity() {
             "test Firebase Logging",
             "test Media Download",
             "check Connection",
-            "load Analytics Reports"
+            "load Analytics Reports",
+            "LogicPair"
         )
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, menus)
@@ -62,8 +51,13 @@ class UITestActivity : BaseActivity() {
                 4-> textMediaDownload()
                 5-> connectionCheck()
                 6-> reportLoadTest()
+                7-> textLogicPair()
             }
         }
+    }
+
+    private fun textLogicPair() {
+        startActivity(Intent(this, LogicpairTypeSelectActivity::class.java))
     }
 
     private fun reportLoadTest() {

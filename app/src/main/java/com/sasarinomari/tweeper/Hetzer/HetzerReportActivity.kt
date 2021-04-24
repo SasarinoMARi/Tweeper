@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.full_recycler_view.*
 import kotlinx.android.synthetic.main.item_default.view.*
 import java.text.SimpleDateFormat
+import java.util.*
 
 class HetzerReportActivity : BaseActivity() {
     enum class Parameters {
@@ -39,12 +40,9 @@ class HetzerReportActivity : BaseActivity() {
         setContentView(R.layout.full_recycler_view)
         if(!checkRequirements()) return
 
-        val reportIndex = intent.getIntExtra(Parameters.ReportId.name, -1)
-        if(reportIndex == -1)
-            da.error(null, getString(R.string.Error_WrongParameter)) { finish() }.show()
         val userId = AuthData.Recorder(this).getFocusedUser()!!.user!!.id
         val report = ReportInterface<HetzerReport>(userId, HetzerReport.prefix)
-            .readReport(this,  reportIndex, HetzerReport()) as HetzerReport?
+            .readReport(this, intent.getStringExtra(Parameters.ReportId.name), HetzerReport()) as HetzerReport?
 
         if(report == null) {
             da.error(getString(R.string.Error), getString(R.string.Error_WrongParameter)) { finish() }; return
@@ -55,7 +53,12 @@ class HetzerReportActivity : BaseActivity() {
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_title_with_desc) {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.title_text.text = getString(R.string.TweetCleanerReport)
-                view.title_description.text = getString(R.string.TweetCleanerReportDesc)
+                view.title_description.text = if(report.date.after(Date(1577804400))) {
+                    val dateFormat = SimpleDateFormat("yyyy년 mm월 dd일 hh시 MM분", Locale.KOREA)
+                    dateFormat.format(report.date)
+                } else {
+                    getString(R.string.UnknownTime)
+                }
             }
         })
         adapter.add(object: RecyclerInjector.RecyclerFragment(R.layout.fragment_column_header) {

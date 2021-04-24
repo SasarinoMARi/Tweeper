@@ -4,31 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/lightBackground"
     android:layout_marginBottom="2dp"
-    android:orientation="vertical">
+    android:background="@color/lightBackground"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/listitem_horizontal_padding"
-        android:paddingTop="@dimen/listitem_vertical_padding"
-        android:paddingRight="@dimen/listitem_horizontal_padding"
-        android:paddingBottom="@dimen/listitem_vertical_padding">
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/card_title"
+            android:id="@+id/text_subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:fontFamily="@font/noto_sans_light"
-            android:text="Text"
-            android:textColor="@color/white"
-            tools:ignore="HardcodedText" />
-
+            android:fontFamily="@font/noto_sans_regular"
+            android:text="@string/LogicPairSubject_Delete"
+            android:textColor="@color/white" />
 
         <ImageView
-            android:id="@+id/button_more"
+            android:id="@+id/button_logicpair_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -37,4 +33,13 @@
             android:padding="5dp"
             android:src="@drawable/dots_vertical" />
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
 </LinearLayout>

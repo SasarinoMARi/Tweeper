@@ -11,10 +11,11 @@ class HetzerReport {
     }
 
     companion object {
-        const val prefix = "hetzerReport"
+        const val prefix = "hrv2_" // hetzer report version 2 _
     }
 
     var id: Int = -1
     var removedStatuses = ArrayList<Status>()
     var savedStatuses = ArrayList<Status>()
+    var date = Date(0)
 }

@@ -263,7 +263,15 @@ class DashboardActivity : BaseActivity() {
             }
             Requests.Hetzer.ordinal -> {
                 if(resultCode == RESULT_OK) {
-                    da.message(getString(R.string.Done), getString(R.string.HetzerRunning)).show()
+                    /**
+                     * 스레드에서 오류나면 여기서도 팅김
+                     */
+                    try{
+                        da.message(getString(R.string.Done), getString(R.string.HetzerRunning)).show()
+                    }
+                    catch (e:Exception){
+                        e.printStackTrace()
+                    }
                 }
             }
             Requests.Billing.ordinal -> {

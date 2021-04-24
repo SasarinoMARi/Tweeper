@@ -2,24 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sasarinomari.tweeper">
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
+        android:name=".Tweeper"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:icon"
-        android:name=".Tweeper">
+        tools:replace="android:icon">
+        <activity android:name=".Hetzer.LogicPairEditActivity"></activity>
+        <activity android:name=".Hetzer.LogicpairTypeSelectActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,62 +25,45 @@
         <activity android:name=".UITestActivity" />
         <activity android:name=".Authenticate.TokenManagementActivity" />
         <activity android:name=".Authenticate.AuthenticationActivity" />
-        <activity android:name=".Billing.BillingActivity"/>
-        <activity android:name=".Report.ReportListActivity"/>
-
-        <activity android:name=".ScheduledTask.ScheduleManageActivity"/>
-
-        <!--Media Download-->
-        <activity android:name=".MediaDownload.MediaDownloadActivity"
+        <activity android:name=".Billing.BillingActivity" />
+        <activity android:name=".Report.ReportListActivity" />
+        <activity android:name=".ScheduledTask.ScheduleManageActivity" /> <!-- Media Download -->
+        <activity
+            android:name=".MediaDownload.MediaDownloadActivity"
             android:label="@string/MediaDownloader">
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".MediaDownload.MediaDownloadService"
-            android:exported="true" />
+        <activity android:name=".Hetzer.HetzerActivity" />
+        <activity android:name=".Hetzer.LogicPairActivity" /> <!-- Hetzer -->
+        <activity android:name=".Hetzer.HetzerReportActivity" />
+        <activity android:name=".Analytics.AnalyticsActivity" />
+        <activity android:name=".Analytics.AnalyticsReportActivity" />
+        <activity android:name=".Analytics.FollowManagementActivity" /> <!-- Tweet Analytics -->
+        <activity android:name=".ChainBlock.ChainBlockActivity" />
+        <activity android:name=".ChainBlock.BlockClearActivity" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
+
         <receiver
             android:name=".MediaDownload.DownloadReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:enabled="true" android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action
+                    android:name="android.intent.action.DOWNLOAD_COMPLETE"
+                    android:enabled="true" />
             </intent-filter>
-        </receiver>
-
-        <!--Hetzer-->
-        <activity android:name=".Hetzer.HetzerActivity" />
-        <activity android:name=".Hetzer.HetzerConditionsActivity" />
-        <activity android:name=".Hetzer.HetzerReportActivity" />
-        <service
-            android:name=".Hetzer.HetzerService"
-            android:exported="true" />
-
-        <!--Tweet Analytics-->
-        <activity android:name=".Analytics.AnalyticsActivity" />
-        <activity android:name=".Analytics.AnalyticsReportActivity" />
-        <activity android:name=".Analytics.FollowManagementActivity" />
-        <service
-            android:name=".Analytics.AnalyticsService"
-            android:exported="true" />
-
-        <!--Chain Block Activities-->
-        <activity android:name=".ChainBlock.ChainBlockActivity" />
-        <service
-            android:name=".ChainBlock.ChainBlockService"
-            android:exported="true" />
-        <activity android:name=".ChainBlock.BlockClearActivity" />
-        <service
-            android:name=".ChainBlock.BlockClearService"
-            android:exported="true" />
-
+        </receiver> <!-- Chain Block Activities -->
         <receiver
             android:name=".Analytics.AnalyticsNotificationReceiver"
-            android:exported="true">
-        </receiver>
-
+            android:exported="true" />
         <receiver
             android:name=".SystemEventReceiver"
             android:exported="true">
@@ -94,10 +75,28 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id" />
-
+        <service
+            android:name=".MediaDownload.MediaDownloadService"
+            android:exported="true" />
+        <service
+            android:name=".Hetzer.HetzerService"
+            android:exported="true" />
+        <service
+            android:name=".Analytics.AnalyticsService"
+            android:exported="true" />
+        <service
+            android:name=".ChainBlock.ChainBlockService"
+            android:exported="true" />
+        <service
+            android:name=".ChainBlock.BlockClearService"
+            android:exported="true" />
     </application>
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 </manifest>

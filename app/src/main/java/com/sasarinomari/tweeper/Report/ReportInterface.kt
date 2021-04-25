@@ -13,13 +13,13 @@ import kotlin.collections.ArrayList
  * 트윗지기 서비스에서 보고서 입출력에 사용하는 클래스.
  */
 class ReportInterface<T>(private val userId: Long, private val prefix: String) {
-    val df = SimpleDateFormat("yyyymmddhhMM", Locale.KOREA)
+    val df = SimpleDateFormat("yyyyMMddhhmm", Locale.KOREA)
     fun getReportCount(context: Context): Int {
         val reports = getPath(context).list()!!
         var maxN = -1
         for (name in reports) {
             if (name.startsWith(prefix)) {
-                val n = name.removePrefix(prefix).toInt()
+                val n = name.removePrefix(prefix).substringBefore("_").toInt()
                 if (n > maxN) maxN = n
             }
         }
@@ -43,11 +43,13 @@ class ReportInterface<T>(private val userId: Long, private val prefix: String) {
         // TODO: 해당 메서드를 참조하는 함수에서 메모리 예외처리 하기
     }
 
-    fun writeReportWithDate(context: Context, reportId: Int, content: T) {
-        File(getPath(context), "$prefix${reportId}_${df.format(Date())}").outputStream().use { fos ->
+    fun writeReportWithDate(context: Context, reportId: Int, content: T): String {
+        val fn = "$prefix${reportId}_${df.format(Date())}"
+        File(getPath(context), fn).outputStream().use { fos ->
             fos.write(Gson().toJson(content).toByteArray(Charsets.UTF_8))
             fos.close()
         }
+        return fn
     }
 
     fun readReport(context: Context, reportId: Int): T? {
@@ -127,7 +129,7 @@ class ReportInterface<T>(private val userId: Long, private val prefix: String) {
         for (item in getPath(context).list()!!) {
             val block = item.split("_")
             if(block.size == 3) list.add(Pair(item, df.parse(block[2])))
-            list.add(Pair(item, null))
+            else list.add(Pair(item, null))
         }
 
         list.sortBy { it.second }

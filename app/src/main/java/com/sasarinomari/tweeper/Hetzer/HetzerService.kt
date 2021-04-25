@@ -236,12 +236,12 @@ class HetzerService : BaseService() {
     /**
      * 트윗 청소 보고서를 작성하는 함수
      */
-    private fun writeReport(targetStatus: ArrayList<Status>, passedStatuses: ArrayList<Status>) : Int {
+    private fun writeReport(targetStatus: ArrayList<Status>, passedStatuses: ArrayList<Status>) : String {
         val ri = ReportInterface<HetzerReport>(twitterAdapter.twitter.id, HetzerReport.prefix)
         val report = HetzerReport(targetStatus, passedStatuses)
         report.id = ri.getReportCount(this) + 1
         report.date = Date()
-        ri.writeReportWithDate(this, report.id, report)
-        return report.id
+        val fn = ri.writeReportWithDate(this, report.id, report)
+        return fn
     }
 }

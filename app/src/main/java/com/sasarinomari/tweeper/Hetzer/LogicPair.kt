@@ -10,6 +10,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.R
+import kotlinx.android.synthetic.main.activity_logic_pair_edit.*
 import kotlinx.android.synthetic.main.item_logic.view.*
 import kotlinx.android.synthetic.main.item_logicpair.view.*
 
@@ -71,6 +72,25 @@ class LogicPair(val logicType: LogicType) {
             return "lp" + AuthData.Recorder(context).getFocusedUser()!!.user!!.id
         }
     }
+
+    fun isEmpty() : Boolean {
+        return  everything==null &&
+                includeFavorite==null &&
+                excludeFavorite==null &&
+                excludeRetweet== null &&
+                includeFavoriteOver== null &&
+                includeFavoriteUnder== null &&
+                includeRetweetOver== null &&
+                includeRetweetUnder== null &&
+                includeMedia== null &&
+                excludeMedia== null &&
+                includeKeywords.isEmpty() &&
+                excludeKeywords.isEmpty() &&
+                includeGEO== null &&
+                excludeGEO== null &&
+                includeRecentTweetNumber== null &&
+                includeRecentTweetUntil== null
+    }
 }
 
 /**
@@ -114,6 +134,8 @@ internal class LogicPairView(context: Context) : LinearLayout(context) {
             LogicPair.LogicType.Remove -> context.getString(R.string.LogicPairSubject_Delete)
         }
 
+        checkEmptyAndDisplayNotice()
+
         if (lp.everything != null) addLogic_Everything(true)
         if (lp.includeFavorite != null) addLogic_includeFav(true)
         if (lp.excludeFavorite != null) addLogic_excludeFav(true)
@@ -149,6 +171,8 @@ internal class LogicPairView(context: Context) : LinearLayout(context) {
      * 트윗 청소기 조건 아이템 뷰 추가
      */
     private fun addLogicview(text: String, callback: () -> Unit) {
+        checkEmptyAndDisplayNotice()
+
         val logic = LogicView(context)
         logic.setText(text)
         if(mode == Mode.Edit) {
@@ -312,6 +336,18 @@ internal class LogicPairView(context: Context) : LinearLayout(context) {
         menu.inflate(R.menu.logicpair_menu)
         menu.gravity = Gravity.END
         menu.show()
+    }
+
+    /**
+     * 아이템이 없으면 아이템이 없다는 문구 출력하는 코드
+     */
+    private fun checkEmptyAndDisplayNotice() {
+        if(logicPair.isEmpty()) {
+            layout_noItem.visibility = View.VISIBLE
+        }
+        else {
+            layout_noItem.visibility = View.GONE
+        }
     }
 }
 

@@ -192,4 +192,5 @@
     <string name="LogicPairSubject_Delete">아래 조건을 모두 만족하는 트윗을 삭제합니다.</string>
     <string name="LogicPairSubject_Save">아래 조건을 모두 만족하는 트윗을 삭제하지 않습니다.</string>
     <string name="Edit">편집</string>
+    <string name="NoLogic">설정된 조건이 없어요!</string>
 </resources>

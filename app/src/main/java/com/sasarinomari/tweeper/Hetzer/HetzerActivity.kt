@@ -7,17 +7,24 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.sasarinomari.tweeper.Authenticate.AuthData
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import com.sasarinomari.tweeper.RecyclerInjector
 import com.sasarinomari.tweeper.Report.ReportInterface
+import kotlinx.android.synthetic.main.activity_analytics.*
 import kotlinx.android.synthetic.main.activity_hetzer.*
+import kotlinx.android.synthetic.main.activity_hetzer.layout_button
+import kotlinx.android.synthetic.main.activity_hetzer.layout_column_header
+import kotlinx.android.synthetic.main.activity_hetzer.layout_recyclerview
+import kotlinx.android.synthetic.main.activity_hetzer.layout_title_and_desc
 import kotlinx.android.synthetic.main.fragment_column_header.view.*
 import kotlinx.android.synthetic.main.fragment_no_item.view.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 import kotlinx.android.synthetic.main.item_default.view.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class HetzerActivity : BaseActivity() {
@@ -59,11 +66,13 @@ class HetzerActivity : BaseActivity() {
             @SuppressLint("SetTextI18n", "SimpleDateFormat")
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 item as Pair<String, Date?>
-                val block = item.first.split("-")
+                val block = item.first.split("_")
                 view.defaultitem_title.text =
-                    if(block.size > 1) getString(R.string.TweetCleanerReport) + ' ' + (block[1] + 1)
+                    if(block.size > 1) getString(R.string.TweetCleanerReport) + ' ' + (block[1].toInt() + 1)
                     else item.first
-                view.defaultitem_description.text = item.second?.toString()
+                view.defaultitem_description.text =
+                    if(item.second != null) SimpleDateFormat("yyyy년 MM월 dd일 hh시 mm분", Locale.KOREA).format(item.second)
+                    else null
             }
 
             override fun onClickListItem(item: Any?) {
@@ -82,8 +91,9 @@ class HetzerActivity : BaseActivity() {
             }
         })
 
-        layout_recyclerview.layoutManager = LinearLayoutManager(this)
-        layout_recyclerview.adapter = adapter
+        val recycler = layout_recyclerview as RecyclerView
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.adapter = adapter
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -54,7 +54,7 @@ class HetzerReportActivity : BaseActivity() {
             override fun draw(view: View, item: Any?, viewType: Int, listItemIndex: Int) {
                 view.title_text.text = getString(R.string.TweetCleanerReport)
                 view.title_description.text = if(report.date.after(Date(1577804400))) {
-                    val dateFormat = SimpleDateFormat("yyyy년 mm월 dd일 hh시 MM분", Locale.KOREA)
+                    val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일 hh시 mm분", Locale.KOREA)
                     dateFormat.format(report.date)
                 } else {
                     getString(R.string.UnknownTime)

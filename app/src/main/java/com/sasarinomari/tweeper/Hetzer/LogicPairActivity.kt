@@ -3,6 +3,7 @@ package com.sasarinomari.tweeper.Hetzer
 import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.View
 import android.widget.TextView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.gson.Gson
@@ -30,6 +31,13 @@ internal class LogicPairActivity : BaseActivity(), LogicPairView.EventListener {
         }
 
         button_ok.setOnClickListener {
+            // 논리쌍이 비어있을 경우
+            if(logicPairs.isEmpty()) {
+                da.error(getString(R.string.Error), getString(R.string.NoLogic)).show()
+                return@setOnClickListener
+            }
+
+            // 확인 다이얼로그 출력
             showConfirmDialog {
                 it.dismissWithAnimation()
                 RewardedAdAdapter.show(this, object : RewardedAdAdapter.RewardInterface {
@@ -45,8 +53,23 @@ internal class LogicPairActivity : BaseActivity(), LogicPairView.EventListener {
         }
     }
 
+    /**
+     * 아이템이 없으면 아이템이 없다는 문구 출력하는 코드
+     */
+    private fun checkEmptyAndDisplayNotice(lps: List<LogicPair>) {
+        if(lps.isEmpty()) {
+            layout_noItem.visibility = View.VISIBLE
+            scrollView.visibility = View.GONE
+        }
+        else {
+            layout_noItem.visibility = View.GONE
+            scrollView.visibility = View.VISIBLE
+        }
+    }
+
     private fun initViewWithLogicPairs(lps: List<LogicPair>) {
         layout_content.removeAllViews()
+        checkEmptyAndDisplayNotice(lps)
         for(lp in lps) addLogicPairView(lp)
     }
 
@@ -82,28 +105,41 @@ internal class LogicPairActivity : BaseActivity(), LogicPairView.EventListener {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == 0) {
-            if(resultCode == RESULT_OK) {
-                if(data == null) return
+        /**
+         * 새 아이템 추가하고 돌아온 경우
+         */
+        if(requestCode == 0 || requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                if (data == null) return
 
-                val json = data.getStringExtra(LogicPairEditActivity.Results.LogicPair.name)?: return
+                val json = data.getStringExtra(LogicPairEditActivity.Results.LogicPair.name) ?: return
                 val lp = Gson().fromJson(json, LogicPair::class.java)!!
+                logicPairs.remove(temp)
                 logicPairs.add(lp)
-                addLogicPairView(lp)
+                checkEmptyAndDisplayNotice(logicPairs)
+                initViewWithLogicPairs(logicPairs)
             }
         }
         else super.onActivityResult(requestCode, resultCode, data)
     }
 
+    /**
+     * 아이템 삭제될 때 호출되는 인터페이스
+     */
     override fun onRemove(logicPair: LogicPair) {
         logicPairs.remove(logicPair)
         initViewWithLogicPairs(logicPairs)
     }
 
+    /**
+     * 아이템 편집할 때 호출되는 인터페이스
+     */
+    var temp : LogicPair? = null
     override fun onEdit(logicPair: LogicPair) {
         val i = Intent(this, LogicPairEditActivity::class.java)
         i.putExtra(LogicPairEditActivity.Parameters.LogicType.name, logicPair.logicType.ordinal)
+        temp = logicPair
         i.putExtra(LogicPairEditActivity.Parameters.LogicPair.name, Gson().toJson(logicPair))
-        startActivityForResult(i, 0)
+        startActivityForResult(i, 1)
     }
 }

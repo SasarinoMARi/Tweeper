@@ -3,6 +3,7 @@ package com.sasarinomari.tweeper.Hetzer
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -15,6 +16,10 @@ import com.google.gson.Gson
 import com.sasarinomari.tweeper.Base.BaseActivity
 import com.sasarinomari.tweeper.R
 import kotlinx.android.synthetic.main.activity_logic_pair_edit.*
+import kotlinx.android.synthetic.main.activity_logic_pair_edit.button_ok
+import kotlinx.android.synthetic.main.activity_logic_pair_edit.layout_content
+import kotlinx.android.synthetic.main.activity_logic_pair_edit.layout_title_and_desc
+import kotlinx.android.synthetic.main.activity_logicpair.*
 import kotlinx.android.synthetic.main.fragment_title_with_desc.view.*
 
 class LogicPairEditActivity : BaseActivity() {
@@ -66,6 +71,17 @@ class LogicPairEditActivity : BaseActivity() {
             }
         }
         button_ok.setOnClickListener {
+            /**
+             * 논리쌍이 비어있을 경우
+             */
+            if(lpView.logicPair.isEmpty()) {
+                da.warning(getString(R.string.Error), getString(R.string.NoLogic)).show()
+                return@setOnClickListener
+            }
+
+            /**
+             * 인탠드에 결과 담아서 종료
+             */
             val i = Intent()
             i.putExtra(Results.LogicPair.name, Gson().toJson(lpView.logicPair))
             setResult(RESULT_OK, i)

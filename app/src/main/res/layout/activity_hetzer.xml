@@ -3,45 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_title"
     android:orientation="vertical">
 
     <include
         android:id="@+id/layout_title_and_desc"
         layout="@layout/fragment_title_with_desc" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="30dp"
+        android:layout_weight="1"
+        android:background="@drawable/roundrect_white_border"
+        android:orientation="vertical"
+        android:padding="1dp">
 
         <include
             android:id="@+id/layout_column_header"
-            layout="@layout/fragment_column_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp" />
+            layout="@layout/fragment_column_header" />
 
-        <View
+        <include
+            android:id="@+id/layout_recyclerview"
+            layout="@layout/full_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
+            android:layout_height="match_parent" />
 
     </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/layout_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight="1" />
-
 
     <include
         android:id="@+id/layout_button"

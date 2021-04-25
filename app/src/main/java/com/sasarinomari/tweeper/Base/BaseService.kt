@@ -39,9 +39,6 @@ abstract class BaseService: Service() {
     protected val ChannelName: String = "Service"
     protected val NotificationId:Int = Date().time.toInt()
 
-    private lateinit var silentChannelBuilder: NotificationCompat.Builder
-    private lateinit var defaultChannelBuilder: NotificationCompat.Builder
-
     @Suppress("DEPRECATION")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         // region 서비스 중단 분기 코드
@@ -52,19 +49,6 @@ abstract class BaseService: Service() {
         }
         // endregion
         innerRunningFlag = true
-        // region 알림 채널 빌드 코드
-        silentChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
-            NotificationCompat.Builder(this, ChannelName)
-        } else {
-            NotificationCompat.Builder(this)
-        }
-        silentChannelBuilder.setSound(null)
-        defaultChannelBuilder = if (Build.VERSION.SDK_INT >= 26) {
-            NotificationCompat.Builder(this, "General")
-        } else {
-            NotificationCompat.Builder(this)
-        }
-        // endregion
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -89,7 +73,7 @@ abstract class BaseService: Service() {
         redirect: Intent = Intent()
     ): Notification {
         val pendingIntent = PendingIntent.getActivity(this, 0, redirect, PendingIntent.FLAG_UPDATE_CURRENT)
-        val builder = if (silent) silentChannelBuilder else defaultChannelBuilder
+        val builder = getBuilder(silent)
 
         builder.setSmallIcon(R.drawable.ic_stat_icon)
         builder.setContentTitle(title)
@@ -102,11 +86,33 @@ abstract class BaseService: Service() {
             val cancelIntent = Intent(this, cls)
             cancelIntent.action = ACTION_STOP_SERVICE
             val cancelPendingIntent = PendingIntent.getService(this, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-            builder.mActions.clear()
             builder.addAction(0, "중지", cancelPendingIntent)
         }
 
         return builder.build()!!
+    }
+
+    /**
+     * 알림 채널 빌드 코드
+     */
+    private fun getBuilder(silent: Boolean): NotificationCompat.Builder {
+        val builder : NotificationCompat.Builder
+        if(silent) {
+            builder = if (Build.VERSION.SDK_INT >= 26) {
+                NotificationCompat.Builder(this, ChannelName)
+            } else {
+                NotificationCompat.Builder(this)
+            }
+            builder.setSound(null)
+        }
+        else {
+            builder = if (Build.VERSION.SDK_INT >= 26) {
+                NotificationCompat.Builder(this, "General")
+            } else {
+                NotificationCompat.Builder(this)
+            }
+        }
+        return builder
     }
 
     protected fun sendNotification(

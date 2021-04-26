@@ -20,12 +20,22 @@ abstract class TwitterExceptionHandler(private val te: TwitterException,
                 when (te.errorCode) {
                     TwitterErrorCode.RateLlimitExceeded.code -> {
                         onRateLimitExceeded()
-                        Log.i(LOG_HEADER, "Rate Limit Exceeded:\n\t[API] $apiEndPoint\n\tSeconds Until Reset: ${te.rateLimitStatus.secondsUntilReset}")
+                        Log.i(LOG_HEADER,
+                            "Rate Limit Exceeded:\n\t[API] $apiEndPoint\n\tSeconds Until Reset: ${te.rateLimitStatus.secondsUntilReset}"
+                        )
 
-                        if(te.rateLimitStatus.secondsUntilReset > 0)
-                            Thread.sleep((1000 * te.rateLimitStatus.secondsUntilReset).toLong())
-
-                        onRateLimitReset()
+                        if (te.rateLimitStatus.secondsUntilReset > 0)
+                            try {
+                                /**
+                                 * 이유는 모르겠으나 sleep 도중 스레드가 종료되어서 Interrupted Exception 발생하는 듯 함.
+                                 * 4월 26일 버전에서 우선 이렇게 예외처리함. 이후에도 같은 문제 발생하면 조치 필요
+                                 */
+                                Thread.sleep((1000 * te.rateLimitStatus.secondsUntilReset).toLong())
+                            } catch (ex: InterruptedException) {
+                                ex.printStackTrace()
+                            } finally {
+                                onRateLimitReset()
+                            }
                     }
                     TwitterErrorCode.UserNotFound.code -> {
                         onNotFound()

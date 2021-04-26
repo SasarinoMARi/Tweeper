@@ -1,6 +1,7 @@
 package com.sasarinomari.tweeper.Hetzer
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
@@ -50,6 +51,15 @@ internal class LogicPairActivity : BaseActivity(), LogicPairView.EventListener {
                     }
                 })
             }
+        }
+
+        text_warning.setOnClickListener {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://help.twitter.com/ko/using-twitter/missing-tweets")
+                )
+            )
         }
     }
 

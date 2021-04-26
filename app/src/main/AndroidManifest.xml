@@ -12,7 +12,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
-        <activity android:name=".Hetzer.LogicPairEditActivity"></activity>
+        <activity android:name=".FavCleaner.FavCleanerActivity"></activity>
+        <activity android:name=".Hetzer.LogicPairEditActivity" />
         <activity android:name=".Hetzer.LogicpairTypeSelectActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -91,12 +92,12 @@
             android:name=".ChainBlock.BlockClearService"
             android:exported="true" />
     </application>
-    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+    <uses-permission android:name="com.android.vending.BILLING" />
 
 </manifest>

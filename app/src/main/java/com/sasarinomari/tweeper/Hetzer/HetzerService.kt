@@ -148,8 +148,11 @@ class HetzerService : BaseService() {
                      * 이번에 Fetch한 트윗 갯수로 이번 Fetch가 마지막인지 판단
                      * 20개 미만이면 마지막 페이지임.
                      */
-                    if(list.size >= 20) {
-                        val maxId = if(BuildConfig.DEBUG) list.last().id else statuses_passed.last().id
+                    if (BuildConfig.DEBUG && list.size >= 20) {
+                        val maxId = list.last().id
+                        getTweets(maxId - 1) // 해당 트윗을 포함하지 않도록 1을 뺀다
+                    } else if (!BuildConfig.DEBUG && statuses_passed.size > 0) {
+                        val maxId = statuses_passed.last().id
                         getTweets(maxId - 1) // 해당 트윗을 포함하지 않도록 1을 뺀다
                     }
                     else {
